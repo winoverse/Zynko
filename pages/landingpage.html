@@ -1,0 +1,2033 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zynko - Your One-Stop Hub for Smarter Learning</title>
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        /* Navbar Styles */
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 5%;
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.4);
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .logo img {
+            height: 45px;
+            width: auto;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: #333;
+            position: relative;
+            padding: 5px 0;
+            transition: color 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            color: #FF6B00;
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: 0;
+            left: 0;
+            background-color: #FF6B00;
+            transition: width 0.3s ease;
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        .auth-buttons {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
+
+        .sign-up {
+            color: #FF6B00;
+            text-decoration: none;
+            font-size: 1rem;
+            font-weight: 500;
+            padding: 0.5rem 1.2rem;
+            border-radius: 25px;
+            transition: all 0.3s ease;
+            background: rgba(255, 107, 0, 0.08);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+        }
+
+        .log-in {
+            background: rgba(255, 107, 0, 0.95);
+            color: white;
+            padding: 0.5rem 1.2rem;
+            border-radius: 25px;
+            text-decoration: none;
+            font-size: 1rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            box-shadow: 0 4px 15px rgba(255, 107, 0, 0.1);
+        }
+
+        .sign-up:hover {
+            background: rgba(255, 107, 0, 0.2);
+        }
+
+        .log-in:hover {
+            background: rgba(255, 107, 0, 1);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(255, 107, 0, 0.2);
+        }
+
+        /* Mobile Menu Styles */
+        .menu-toggle {
+            display: none;
+            cursor: pointer;
+            z-index: 1000;
+        }
+
+        .menu-toggle span {
+            display: block;
+            width: 25px;
+            height: 2px;
+            background-color: #333;
+            margin: 5px 0;
+            transition: 0.3s;
+        }
+
+        .mobile-menu {
+            display: none;
+            position: fixed;
+            top: 0;
+            right: -100%;
+            width: 80%;
+            height: 100vh;
+            background: #ffffff; /* Solid white background */
+            padding: 80px 40px;
+            transition: 0.3s ease;
+            z-index: 999;
+            border-left: 1px solid rgba(0, 0, 0, 0.1);
+            box-shadow: -4px 0 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .mobile-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5); /* Darker overlay */
+            z-index: 998;
+        }
+
+        .mobile-menu a {
+            display: block;
+            padding: 15px 0;
+            color: #333;
+            text-decoration: none;
+            font-size: 1.1rem;
+            border-bottom: 1px solid #eee;
+            transition: all 0.3s ease;
+        }
+
+        .mobile-menu a:hover {
+            color: #FF6B00;
+            transform: translateX(10px);
+            background: #FFF5EB;
+            padding: 15px 10px;
+            border-radius: 8px;
+            margin: 0 -10px;
+        }
+
+        .mobile-auth {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+            display: flex;
+            gap: 1rem;
+        }
+
+        .mobile-signup {
+            background: rgba(255, 107, 0, 0.08);
+            color: #FF6B00 !important;
+            border-radius: 25px;
+            padding: 10px 20px !important;
+            border: none !important;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+        }
+
+        .mobile-login {
+            background: rgba(255, 107, 0, 0.95);
+            color: white !important;
+            padding: 10px 20px !important;
+            border-radius: 25px;
+            border: none !important;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+
+        .mobile-signup:hover {
+            background: rgba(255, 107, 0, 0.2);
+        }
+
+        .mobile-login:hover {
+            background: rgba(255, 107, 0, 1);
+            transform: translateY(-2px);
+        }
+
+        @media screen and (max-width: 768px) {
+            .nav-links, .auth-buttons {
+                display: none;
+            }
+
+            .menu-toggle {
+                display: block;
+            }
+
+            .mobile-menu {
+                display: block;
+            }
+
+            .mobile-menu.active {
+                right: 0;
+            }
+
+            .mobile-overlay.active {
+                display: block;
+            }
+
+            .menu-toggle.active span:nth-child(1) {
+                transform: rotate(45deg) translate(5px, 5px);
+            }
+
+            .menu-toggle.active span:nth-child(2) {
+                opacity: 0;
+            }
+
+            .menu-toggle.active span:nth-child(3) {
+                transform: rotate(-45deg) translate(7px, -7px);
+            }
+
+            .navbar {
+                background: rgba(255, 255, 255, 0.85);
+                backdrop-filter: blur(12px);
+                -webkit-backdrop-filter: blur(12px);
+            }
+
+            .mobile-signup {
+                background: rgba(255, 107, 0, 0.08);
+                backdrop-filter: blur(10px);
+                -webkit-backdrop-filter: blur(10px);
+            }
+
+            .mobile-login {
+                background: rgba(255, 107, 0, 0.95);
+                backdrop-filter: blur(10px);
+                -webkit-backdrop-filter: blur(10px);
+            }
+        }
+
+        /* Hero Section Styles */
+        .hero {
+            display: flex;
+            padding: 2rem 5%;
+            align-items: center;
+            gap: 2rem;
+        }
+
+        .hero-content {
+            flex: 1;
+        }
+
+        .hero-tag {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .hero-tag img {
+            width: 24px;
+        }
+
+        .hero-tag span {
+            color: #FF6B00;
+        }
+
+        .hero h1 {
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+            line-height: 1.2;
+        }
+
+        .hero h1 .highlight {
+            color: #FF6B00;
+        }
+
+        .hero p {
+            color: #666;
+            margin-bottom: 2rem;
+            line-height: 1.6;
+        }
+
+        .get-started {
+            background-color: #FFB800;
+            color: white;
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            text-decoration: none;
+            display: inline-block;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        .get-started:hover {
+            background-color: #FF9100;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(255, 184, 0, 0.3);
+        }
+
+        .hero-image {
+            flex: 1;
+            position: relative;
+        }
+
+        .hero-image img {
+            width: 100%;
+            max-width: 500px;
+        }
+
+        /* Add these media queries at the end of your style section */
+        
+        /* Tablet Devices */
+        @media screen and (max-width: 1024px) {
+            .hero h1 {
+                font-size: 3rem;
+            }
+
+            .hero-image img {
+                max-width: 400px;
+            }
+        }
+
+        /* Mobile Devices */
+        @media screen and (max-width: 768px) {
+            .navbar {
+                padding: 1rem 5%;
+                background: rgba(255, 255, 255, 0.95);
+            }
+
+            .nav-links {
+                flex-wrap: wrap;
+                justify-content: center;
+                gap: 1rem;
+            }
+
+            .auth-buttons {
+                margin-top: 2rem;
+                flex-direction: column;
+                width: 100%;
+                gap: 1rem;
+            }
+
+            .sign-up, .log-in {
+                width: 100%;
+                text-align: center;
+                padding: 0.8rem 1.5rem;
+            }
+
+            .hero {
+                flex-direction: column;
+                padding: 2rem 3%;
+                text-align: center;
+            }
+
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+
+            .hero-tag {
+                justify-content: center;
+            }
+
+            .hero p {
+                font-size: 0.9rem;
+            }
+
+            .get-started {
+                padding: 0.8rem 1.8rem;
+            }
+
+            .hero-image {
+                margin-top: 2rem;
+            }
+
+            .hero-image img {
+                max-width: 100%;
+            }
+        }
+
+        /* Small Mobile Devices */
+        @media screen and (max-width: 480px) {
+            .navbar {
+                padding: 1rem 2%;
+            }
+
+            .logo img {
+                height: 35px;
+            }
+
+            .nav-links {
+                gap: 0.8rem;
+                font-size: 0.9rem;
+            }
+
+            .auth-buttons {
+                gap: 1rem;
+            }
+
+            .sign-up, .log-in {
+                padding: 0.4rem 1rem;
+                font-size: 0.9rem;
+            }
+
+            .hero {
+                padding: 1.5rem 2%;
+            }
+
+            .hero h1 {
+                font-size: 2rem;
+            }
+
+            .hero-tag {
+                font-size: 0.9rem;
+            }
+
+            .hero-tag img {
+                width: 20px;
+            }
+
+            .get-started {
+                padding: 0.7rem 1.5rem;
+                font-size: 0.9rem;
+            }
+        }
+
+        /* For very small devices */
+        @media screen and (max-width: 320px) {
+            .nav-links {
+                font-size: 0.8rem;
+                gap: 0.6rem;
+            }
+
+            .hero h1 {
+                font-size: 1.8rem;
+            }
+
+            .hero p {
+                font-size: 0.8rem;
+            }
+        }
+
+        /* Stats Section Styles */
+        .stats-section {
+            padding: 6rem 5%;
+            text-align: center;
+            background-color: #fff;
+            position: relative;
+        }
+
+        .stats-header {
+            font-size: 3.5rem;
+            color: #333;
+            margin-bottom: 4rem;
+        }
+
+        .loved-by {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 1.5rem;
+            margin-bottom: 4rem;
+            font-size: 2rem;
+            border-bottom: 1px solid #e0e0e0;
+            padding-bottom: 3rem;
+            text-align: left;
+            max-width: 1000px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .loved-by .group {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
+
+        .loved-by img {
+            width: 120px;
+            height: 80px;
+            border-radius: 8px;
+            object-fit: cover;
+        }
+
+        .loved-by .highlight {
+            color: #FF6B00;
+            font-weight: 500;
+        }
+
+        .stats-container {
+            position: relative;
+            max-width: 1000px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 1rem;
+        }
+
+        .stats-grid {
+            flex: 0 0 50%;
+            text-align: left;
+        }
+
+        .stat-item {
+            padding: 2rem 0;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .stat-item:last-child {
+            border-bottom: none;
+        }
+
+        .stat-number {
+            font-size: 4.5rem;
+            font-weight: bold;
+            color: #FF6B00;
+            line-height: 1;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            font-size: 1.25rem;
+            color: #333;
+        }
+
+        .stat-label span {
+            color: #888;
+        }
+
+        .india-map {
+            flex: 0 0 35%;
+            max-width: 350px;
+            margin-left: -2rem;
+        }
+
+        /* Responsive Styles */
+        @media screen and (max-width: 1200px) {
+            .stats-header {
+                font-size: 3rem;
+            }
+            
+            .india-map {
+                max-width: 400px;
+            }
+        }
+
+        /* Update Stats Section Mobile Styles */
+        @media screen and (max-width: 768px) {
+            .stats-section {
+                padding: 4rem 3%;
+                text-align: center;
+            }
+
+            .stats-header {
+                font-size: 2.5rem;
+                margin-bottom: 3rem;
+            }
+
+            .loved-by {
+                align-items: center;
+                text-align: center;
+            }
+
+            .loved-by .group {
+                justify-content: center;
+            }
+
+            .stats-container {
+                flex-direction: column; /* Change to column layout on mobile */
+                gap: 2rem;
+                padding: 0;
+            }
+
+            .stats-grid {
+                flex: 0 0 100%; /* Take full width */
+                width: 100%;
+            }
+
+            .india-map {
+                flex: 0 0 100%;
+                max-width: 250px; /* Control the map size */
+                margin: 0 auto; /* Center the map */
+                opacity: 0.6; /* Make it slightly transparent */
+            }
+
+            .stat-item {
+                text-align: center; /* Center stats on mobile */
+            }
+        }
+
+        @media screen and (max-width: 480px) {
+            .stats-header {
+                font-size: 2rem;
+            }
+
+            .loved-by {
+                font-size: 1.5rem;
+            }
+
+            .stat-number {
+                font-size: 3rem;
+            }
+
+            .stat-label {
+                font-size: 1.1rem;
+            }
+
+            .india-map {
+                max-width: 200px; /* Smaller map for very small screens */
+            }
+        }
+
+        /* AI Tutor Section Styles */
+        .ai-tutor-section {
+            padding-top: 2rem;
+            padding-bottom: 6rem;
+            padding-left: 5%;
+            padding-right: 5%;
+            background-color: #fff;
+            text-align: center;
+        }
+
+        .tutor-block {
+            margin-top: 8rem; /* Space between blocks */
+        }
+
+        .tutor-block h2 {
+            font-size: 3.5rem;
+            margin-bottom: 3rem;
+            line-height: 1.2;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .tutor-block h2 span {
+            color: #FF6B00;
+            display: block; /* Makes the orange text go to next line */
+        }
+
+        .ai-tutor-tagline {
+            color: #FF6B00;
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+        }
+
+        .ai-tutor-heading {
+            max-width: 800px;
+            margin: 0 auto 4rem;
+        }
+
+        .ai-tutor-heading h2 {
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+            line-height: 1.2;
+        }
+
+        .ai-tutor-heading h2 span {
+            color: #FF6B00;
+        }
+
+        .ui-components-display {
+            max-width: 1000px;
+            margin: 0 auto;
+            border-radius: 20px;
+            padding: 1rem;
+        }
+
+        .ui-components-display img {
+            width: 100%;
+            height: auto;
+            border-radius: 10px;
+        }
+
+        /* Update mobile styles */
+        @media screen and (max-width: 768px) {
+            .tutor-block {
+                margin-top: 6rem;
+            }
+
+            .tutor-block h2 {
+                font-size: 2.5rem;
+            }
+
+            .ai-tutor-section {
+                padding-top: 1rem;
+                padding-bottom: 4rem;
+                padding-left: 3%;
+                padding-right: 3%;
+            }
+
+            .ui-components-display {
+                padding: 0.5rem;
+            }
+        }
+
+        @media screen and (max-width: 480px) {
+            .tutor-block {
+                margin-top: 4rem;
+            }
+
+            .tutor-block h2 {
+                font-size: 2rem;
+            }
+
+            .ai-tutor-heading h2 {
+                font-size: 2rem;
+            }
+
+            .ai-tutor-tagline {
+                font-size: 1rem;
+            }
+        }
+
+        /* Custom Fit Block Styles */
+        .curriculum-cards {
+            text-align: center;
+            padding: 6rem 5%;
+            background-color: #fff;
+        }
+
+        .curriculum-cards h2 {
+            font-size: 3.5rem;
+            margin-bottom: 4rem;
+            line-height: 1.2;
+        }
+
+        .curriculum-cards h2 .text-line {
+            display: block;
+            opacity: 0;
+            animation: fadeInUp 0.5s ease forwards;
+            margin-bottom: 0.5rem; /* Add space between lines */
+        }
+
+        .curriculum-cards h2 .highlight {
+            color: #FF6B00;
+        }
+
+        .curriculum-cards h2 .text-line:nth-child(1) {
+            animation-delay: 0s;
+        }
+
+        .curriculum-cards h2 .text-line:nth-child(2) {
+            animation-delay: 0.5s;
+        }
+
+        .curriculum-cards h2 .text-line:nth-child(3) {
+            animation-delay: 1s;
+        }
+
+        /* Add back the animation keyframes */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .curriculum-cards-container {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .curriculum-card {
+            background: #FFF5EB;
+            border-radius: 12px;
+            padding: 2.5rem;
+            text-align: center;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 200px;
+        }
+
+        /* Updated background colors to match design */
+        .card-math {
+            background-color: #FFF5EB;
+        }
+
+        .card-science {
+            background-color: #FFE9E9;
+        }
+
+        .card-english {
+            background-color: #EBF5FF;
+        }
+
+        .card-social {
+            background-color: #EBFFF1;
+        }
+
+        .card-physics {
+            background-color: #FFF5EB;
+        }
+
+        .card-biology {
+            background-color: #EBF5FF;
+        }
+
+        .curriculum-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.05);
+        }
+
+        .card-icon {
+            margin-bottom: 1.5rem;
+        }
+
+        .card-icon svg {
+            width: 32px;
+            height: 32px;
+            stroke: #FF6B00;
+            stroke-width: 2;
+        }
+
+        .card-title {
+            font-size: 1.25rem;
+            color: #333;
+            font-weight: 500;
+            margin: 0;
+        }
+
+        /* Update mobile styles for curriculum cards */
+        @media screen and (max-width: 768px) {
+            .curriculum-cards {
+                padding: 4rem 3%;
+            }
+
+            .curriculum-cards h2 {
+                font-size: 2.5rem;
+                margin-bottom: 3rem;
+            }
+
+            /* Remove the row structure and make it one continuous grid */
+            .curriculum-cards-row {
+                display: grid;
+                grid-template-columns: repeat(2, 1fr);
+                gap: 1.2rem;
+                max-width: 500px;
+                margin: 0 auto 1.2rem;
+            }
+
+            /* Remove margin-bottom from the first row */
+            .curriculum-cards-row:first-of-type {
+                margin-bottom: 0;
+            }
+
+            /* Combine both rows into one container */
+            .curriculum-cards-container {
+                display: grid;
+                grid-template-columns: repeat(2, 1fr);
+                gap: 1.2rem;
+                max-width: 500px;
+                margin: 0 auto;
+            }
+        }
+
+        /* Small mobile styles */
+        @media screen and (max-width: 480px) {
+            .curriculum-cards h2 {
+                font-size: 2rem;
+            }
+
+            .curriculum-cards-row {
+                gap: 1rem;
+                max-width: 400px;
+            }
+
+            .curriculum-card {
+                padding: 1.5rem;
+                min-height: 140px;
+            }
+
+            .card-icon svg {
+                width: 28px;
+                height: 28px;
+            }
+
+            .card-title {
+                font-size: 1rem;
+            }
+        }
+
+        /* Very small devices */
+        @media screen and (max-width: 360px) {
+            .curriculum-cards-row {
+                gap: 0.8rem;
+            }
+
+            .curriculum-card {
+                padding: 1.2rem;
+                min-height: 120px;
+            }
+
+            .card-icon svg {
+                width: 24px;
+                height: 24px;
+            }
+
+            .card-title {
+                font-size: 0.9rem;
+            }
+        }
+
+        /* Features Block Styles */
+        .features-block {
+            padding: 6rem 5%;
+            text-align: center;
+            background-color: #fff;
+        }
+
+        .features-block h2 {
+            font-size: 3.5rem;
+            margin-bottom: 4rem;
+            color: #333;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .feature-card {
+            padding: 2rem;
+            border-radius: 12px;
+            text-align: center;
+            transition: transform 0.3s ease;
+        }
+
+        .feature-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1rem;
+        }
+
+        .feature-icon svg {
+            width: 24px;
+            height: 24px;
+            color: white;
+        }
+
+        .feature-title {
+            font-size: 1.1rem;
+            color: #333;
+            margin-top: 1rem;
+            font-weight: 500;
+        }
+
+        /* Feature card variations */
+        .feature-orange {
+            background-color: #FFF5EB;
+        }
+        .feature-orange .feature-icon {
+            background-color: #FF6B00;
+        }
+
+        .feature-yellow {
+            background-color: #FFF9EB;
+        }
+        .feature-yellow .feature-icon {
+            background-color: #FFB800;
+        }
+
+        .feature-blue {
+            background-color: #EBF5FF;
+        }
+        .feature-blue .feature-icon {
+            background-color: #0066FF;
+        }
+
+        .feature-purple {
+            background-color: #F5EBFF;
+        }
+        .feature-purple .feature-icon {
+            background-color: #6B00FF;
+        }
+
+        .feature-light-blue {
+            background-color: #EBF8FF;
+        }
+        .feature-light-blue .feature-icon {
+            background-color: #00B2FF;
+        }
+
+        .feature-violet {
+            background-color: #EBEFFF;
+        }
+        .feature-violet .feature-icon {
+            background-color: #4B6BFF;
+        }
+
+        /* Update mobile styles for feature cards */
+        @media screen and (max-width: 768px) {
+            .features-block h2 {
+                font-size: 2.5rem;
+                margin-bottom: 3rem;
+            }
+
+            .features-grid {
+                grid-template-columns: repeat(2, 1fr); /* Show 2 cards per row */
+                gap: 1rem;
+            }
+
+            .feature-card {
+                padding: 1.5rem;
+            }
+        }
+
+        /* FAQ Section Styles */
+        .faq-section {
+            padding: 6rem 5%;
+            background-color: #fff;
+        }
+
+        .faq-section h2 {
+            font-size: 4rem;
+            text-align: center;
+            margin-bottom: 4rem;
+            color: #333;
+        }
+
+        .faq-container {
+            display: flex;
+            gap: 4rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .faq-categories {
+            flex: 0 0 200px;
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+
+        .faq-category {
+            cursor: pointer;
+            padding: 1rem;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .faq-category h3 {
+            font-size: 1.2rem;
+            color: #333;
+            transition: color 0.3s ease;
+        }
+
+        .faq-category:hover h3 {
+            color: #FF6B00;
+        }
+
+        .faq-category.active h3 {
+            color: #FF6B00;
+        }
+
+        .faq-category::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            bottom: -3px;
+            width: 0;
+            height: 2px;
+            background-color: #FF6B00;
+            transition: width 0.3s ease;
+        }
+
+        .faq-category:hover::after,
+        .faq-category.active::after {
+            width: 100%;
+        }
+
+        .faq-questions {
+            flex: 1;
+        }
+
+        .questions-group {
+            display: none;
+        }
+
+        .questions-group.active {
+            display: block;
+        }
+
+        .faq-item {
+            border-bottom: 1px solid #eee;
+            padding: 1.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .faq-question {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 1.1rem;
+            color: #333;
+            transition: color 0.3s ease;
+        }
+
+        .faq-question svg {
+            width: 20px;
+            height: 20px;
+            transition: transform 0.3s ease;
+        }
+
+        .faq-answer {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease, margin-top 0.3s ease;
+            color: #666;
+            line-height: 1.6;
+        }
+
+        .faq-item:hover {
+            background-color: #FFF5EB;
+        }
+
+        .faq-item.active .faq-question {
+            color: #FF6B00;
+        }
+
+        .faq-item.active .faq-question svg {
+            transform: rotate(180deg);
+            color: #FF6B00;
+        }
+
+        .faq-item.active .faq-answer {
+            max-height: 500px;
+            margin-top: 1rem;
+        }
+
+        /* Update FAQ Mobile Styles */
+        @media screen and (max-width: 768px) {
+            .faq-section {
+                padding: 4rem 3%;
+            }
+
+            .faq-section h2 {
+                font-size: 2.8rem;
+                margin-bottom: 2rem;
+            }
+
+            .faq-container {
+                flex-direction: column;
+                gap: 2rem;
+            }
+
+            .faq-categories {
+                flex: none;
+                flex-direction: row;
+                justify-content: center;
+                gap: 2rem;
+                padding-bottom: 1rem;
+                border-bottom: 1px solid #eee;
+            }
+
+            .faq-category {
+                flex: 0 0 auto;
+                text-align: center;
+                padding: 0.5rem 1rem;
+            }
+
+            .faq-category h3 {
+                font-size: 1.1rem;
+                margin-bottom: 0;
+            }
+
+            .faq-category::after {
+                bottom: -2px;
+            }
+
+            .faq-questions {
+                padding: 0;
+            }
+
+            .faq-item {
+                padding: 1.2rem;
+                border-radius: 8px;
+                margin-bottom: 0.5rem;
+                border: 1px solid #eee;
+            }
+
+            .faq-question {
+                font-size: 1rem;
+                padding-right: 2rem;
+                position: relative;
+            }
+
+            .faq-question svg {
+                width: 18px;
+                height: 18px;
+                position: absolute;
+                right: 0;
+                top: 50%;
+                transform: translateY(-50%);
+            }
+
+            .faq-answer {
+                font-size: 0.95rem;
+                line-height: 1.5;
+            }
+
+            .faq-item.active .faq-answer {
+                margin-top: 1rem;
+                padding-top: 1rem;
+                border-top: 1px solid #eee;
+            }
+        }
+
+        /* Very small devices */
+        @media screen and (max-width: 480px) {
+            .faq-section h2 {
+                font-size: 2.4rem;
+            }
+
+            .faq-categories {
+                gap: 1.5rem;
+            }
+
+            .faq-category h3 {
+                font-size: 1rem;
+            }
+
+            .faq-item {
+                padding: 1rem;
+            }
+
+            .faq-question {
+                font-size: 0.95rem;
+            }
+
+            .faq-answer {
+                font-size: 0.9rem;
+            }
+        }
+
+        /* CTA Section Styles */
+        .cta-section {
+            padding: 4rem 5%;
+            background-color: #FFF5EB;
+            text-align: center;
+            border-radius: 20px;
+            max-width: 1200px;
+            margin: 4rem auto;
+        }
+
+        .cta-section h2 {
+            font-size: 3.5rem;
+            color: #333;
+            margin-bottom: 1rem;
+        }
+
+        .cta-section h2 span {
+            color: #FF6B00;
+        }
+
+        .cta-section p {
+            font-size: 1.5rem;
+            color: #666;
+            margin-bottom: 2rem;
+        }
+
+        .cta-buttons {
+            display: flex;
+            gap: 1.5rem;
+            justify-content: center;
+        }
+
+        .cta-signup {
+            padding: 1rem 2.5rem;
+            background-color: transparent;
+            color: #FF6B00;
+            border: 2px solid #FF6B00;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: 500;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .cta-signup:hover {
+            background-color: #FF6B00;
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .cta-login {
+            padding: 1rem 2.5rem;
+            background-color: #FF6B00;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: 500;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .cta-login:hover {
+            background-color: #e65100;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(255, 107, 0, 0.2);
+        }
+
+        /* Mobile styles */
+        @media screen and (max-width: 768px) {
+            .cta-section {
+                margin: 3rem auto;
+                padding: 3rem 5%;
+            }
+
+            .cta-section h2 {
+                font-size: 2.5rem;
+            }
+
+            .cta-section p {
+                font-size: 1.2rem;
+            }
+        }
+
+        @media screen and (max-width: 480px) {
+            .cta-section {
+                margin: 2rem auto;
+                padding: 2rem 5%;
+            }
+
+            .cta-section h2 {
+                font-size: 2rem;
+            }
+
+            .cta-section p {
+                font-size: 1rem;
+            }
+
+            .cta-buttons {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .cta-signup, .cta-login {
+                width: 100%;
+                text-align: center;
+            }
+        }
+
+        /* Footer Styles */
+        .footer {
+            background-color: #fff;
+            padding: 4rem 5%;
+            border-top: 1px solid #eee;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 3rem;
+        }
+
+        .footer-column h3 {
+            font-size: 1.2rem;
+            color: #333;
+            margin-bottom: 1.5rem;
+        }
+
+        .footer-links {
+            display: flex;
+            flex-direction: column;
+            gap: 0.8rem;
+        }
+
+        .footer-links a {
+            color: #666;
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: color 0.3s ease;
+        }
+
+        .footer-links a:hover {
+            color: #FF6B00;
+        }
+
+        .footer-bottom {
+            max-width: 1200px;
+            margin: 3rem auto 0;
+            padding-top: 2rem;
+            border-top: 1px solid #eee;
+            text-align: center;
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .footer-logo {
+            max-width: 150px;
+            margin-bottom: 1rem;
+        }
+
+        /* Mobile styles */
+        @media screen and (max-width: 768px) {
+            .footer-content {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 2rem;
+            }
+        }
+
+        @media screen and (max-width: 480px) {
+            .footer-content {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+
+            .footer-bottom {
+                margin-top: 2rem;
+            }
+        }
+
+        /* Add margin to body to account for fixed navbar */
+        body {
+            padding-top: 80px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="logo">
+            <img src="/img/zynko-logo.png" alt="Zynko Logo">
+        </div>
+        <div class="nav-links">
+            <a href="#">Home</a>
+            <a href="#">Courses</a>
+            <a href="#">Explore</a>
+            <a href="#">FAQ</a>
+            <a href="#">About Us</a>
+        </div>
+        <div class="auth-buttons">
+            <a href="/pages/authform.html" class="sign-up">Sign up</a>
+            <a href="/pages/authform.html" class="log-in">Log in</a>
+        </div>
+        <div class="menu-toggle">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+        <div class="mobile-menu">
+            <a href="#">Home</a>
+            <a href="#">Courses</a>
+            <a href="#">Explore</a>
+            <a href="#">FAQ</a>
+            <a href="#">About Us</a>
+            <div class="mobile-auth">
+                <a href="/pages/authform.html" class="mobile-signup">Sign up</a>
+                <a href="/pages/authform.html" class="mobile-login">Log in</a>
+            </div>
+        </div>
+        <div class="mobile-overlay"></div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-content" data-aos="fade-right">
+            <div class="hero-tag">
+                <img src="/img/bulb-icon.png" alt="Bulb Icon">
+                <span>Your One-Stop Hub for Smarter Learning</span>
+            </div>
+            <h1>
+                <span class="highlight">Free Learning,</span><br>
+                Easy Access
+            </h1>
+            <p>Transform your learning journey with our open-source, AI-powered platform. Unlock free resources tailored to your needs, all while experiencing smart, personalized lessons designed to help you achieve more.</p>
+            <a href="/pages/authform.html" class="get-started">Get started !</a>
+        </div>
+        <div class="hero-image" data-aos="fade-left" data-aos-delay="200">
+            <img src="/img/student-reading.png" alt="Student Reading">
+        </div>
+    </section>
+
+    <!-- Stats Section -->
+    <section class="stats-section" data-aos="fade-up">
+        <h2 class="stats-header" data-aos="fade-up">20+ subjects, all in one place</h2>
+        
+        <div class="loved-by" data-aos="fade-up" data-aos-delay="100">
+            <div class="group">
+                <span>Loved by</span>
+                <img src="/img/students-group.png" alt="Students">
+                <span class="highlight">Students</span>
+            </div>
+            <div class="group">
+                <span>and by</span>
+                <img src="/img/teacher.png" alt="Teacher">
+                <span class="highlight">Teachers</span>
+            </div>
+        </div>
+
+        <div class="stats-container">
+            <div class="stats-grid" data-aos="fade-right" data-aos-delay="200">
+                <div class="stat-item">
+                    <div class="stat-number">120k</div>
+                    <div class="stat-label">Students <span>worldwide</span></div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">175+</div>
+                    <div class="stat-label">Countries <span>impacted</span></div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">2000+</div>
+                    <div class="stat-label">Schools using <span>our platform</span></div>
+                </div>
+            </div>
+            <img src="/img/india-map.png" alt="India Map" class="india-map" data-aos="fade-left" data-aos-delay="300">
+        </div>
+    </section>
+
+    <!-- AI Tutor Section -->
+    <section class="ai-tutor-section">
+        <div class="ai-tutor-heading" data-aos="fade-up">
+            <p class="ai-tutor-tagline">Empowering India's youth, reshaping the next generation</p>
+            <h2>An AI tutor in the pocket of <span>every Indian child</span></h2>
+        </div>
+        <div class="ui-components-display" data-aos="zoom-in" data-aos-delay="200">
+            <img src="/img/ui-components.png" alt="AI Tutor Interface Components">
+        </div>
+
+        <!-- New Tutor Block -->
+        <div class="tutor-block">
+            <h2 data-aos="fade-up">As if every child had a <span>UniLag-educated tutor</span></h2>
+            <div class="ui-components-display" data-aos="zoom-in" data-aos-delay="200">
+                <img src="/img/ui-components-2.png" alt="AI Tutor Interface Components">
+            </div>
+        </div>
+    </section>
+
+    <!-- Custom Fit Block -->
+    <section class="curriculum-cards">
+        <h2 data-aos="fade-up">
+            <span class="text-line"><span class="highlight">100% custom-fit</span></span>
+            <span class="text-line">to</span>
+            <span class="text-line">your curriculum</span>
+        </h2>
+        <div class="curriculum-cards-container">
+            <!-- All cards in one container -->
+            <div class="curriculum-card card-math" data-aos="fade-up" data-aos-delay="100">
+                <div class="card-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+                        <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+                    </svg>
+                </div>
+                <h3 class="card-title">Math</h3>
+            </div>
+            <div class="curriculum-card card-science" data-aos="fade-up" data-aos-delay="200">
+                <div class="card-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <path d="M10 2v7.31"></path>
+                        <path d="M14 9.3V2"></path>
+                        <path d="M8.5 2h7"></path>
+                        <path d="M14 9.3a6.5 6.5 0 1 1-4 0"></path>
+                    </svg>
+                </div>
+                <h3 class="card-title">Science</h3>
+            </div>
+            <div class="curriculum-card card-english" data-aos="fade-up" data-aos-delay="300">
+                <div class="card-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <path d="M4 7V4h16v3"></path>
+                        <path d="M9 20h6"></path>
+                        <path d="M12 4v16"></path>
+                    </svg>
+                </div>
+                <h3 class="card-title">English</h3>
+            </div>
+            <div class="curriculum-card card-social" data-aos="fade-up" data-aos-delay="400">
+                <div class="card-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <path d="M2 12h20"></path>
+                        <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+                    </svg>
+                </div>
+                <h3 class="card-title">Social Studies</h3>
+            </div>
+            <div class="curriculum-card card-physics" data-aos="fade-up" data-aos-delay="500">
+                <div class="card-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <rect x="4" y="4" width="16" height="16" rx="2"></rect>
+                        <path d="M9 9h6v6H9z"></path>
+                    </svg>
+                </div>
+                <h3 class="card-title">Physics</h3>
+            </div>
+            <div class="curriculum-card card-biology" data-aos="fade-up" data-aos-delay="600">
+                <div class="card-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <path d="M12 2L2 7l10 5 10-5-10-5z"></path>
+                        <path d="M2 17l10 5 10-5"></path>
+                        <path d="M2 12l10 5 10-5"></path>
+                    </svg>
+                </div>
+                <h3 class="card-title">Biology</h3>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Block -->
+    <section class="features-block">
+        <h2 data-aos="fade-up">And there's even more...</h2>
+        <div class="features-grid">
+            <div class="feature-card feature-orange" data-aos="fade-up" data-aos-delay="100">
+                <div class="feature-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <path d="M3 3h18v18H3z M8 12h8 M12 8v8"/>
+                    </svg>
+                </div>
+                <div class="feature-title">Questions sorted by topic</div>
+            </div>
+            <div class="feature-card feature-yellow" data-aos="fade-up" data-aos-delay="200">
+                <div class="feature-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/>
+                    </svg>
+                </div>
+                <div class="feature-title">Save questions for review</div>
+            </div>
+            <div class="feature-card feature-blue" data-aos="fade-up" data-aos-delay="300">
+                <div class="feature-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4 M7 10l5 5 5-5 M12 15V3"/>
+                    </svg>
+                </div>
+                <div class="feature-title">Create decks of flashcards</div>
+            </div>
+            <div class="feature-card feature-purple" data-aos="fade-up" data-aos-delay="400">
+                <div class="feature-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20 M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
+                    </svg>
+                </div>
+                <div class="feature-title">Generate practice exams</div>
+            </div>
+            <div class="feature-card feature-light-blue" data-aos="fade-up" data-aos-delay="500">
+                <div class="feature-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <path d="M12 2H2v10h10V2z M12 12H2v10h10V12z M22 2h-10v10h10V2z M22 12h-10v10h10V12z"/>
+                    </svg>
+                </div>
+                <div class="feature-title">Mobile friendly layout</div>
+            </div>
+            <div class="feature-card feature-violet" data-aos="fade-up" data-aos-delay="600">
+                <div class="feature-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <path d="M3 6h18 M3 12h18 M3 18h18"/>
+                    </svg>
+                </div>
+                <div class="feature-title">Group questions with collections</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ Section -->
+    <section class="faq-section">
+        <h2 data-aos="fade-up">FAQs</h2>
+        <div class="faq-container" data-aos="fade-up" data-aos-delay="200">
+            <div class="faq-categories">
+                <div class="faq-category active" data-category="general">
+                    <h3>General</h3>
+                </div>
+                <div class="faq-category" data-category="using">
+                    <h3>Using Zynko AI</h3>
+                </div>
+            </div>
+            <div class="faq-questions">
+                <!-- General Questions -->
+                <div class="questions-group active" id="general-questions">
+                    <div class="faq-item">
+                        <div class="faq-question">
+                            <span>What is Zynko AI?</span>
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                <path d="M19 9l-7 7-7-7"/>
+                            </svg>
+                        </div>
+                        <div class="faq-answer">
+                            Zynko AI is an innovative educational platform that provides personalized learning experiences through artificial intelligence. It helps students learn at their own pace with customized content and practice materials.
+                        </div>
+                    </div>
+                    <div class="faq-item">
+                        <div class="faq-question">
+                            <span>What subjects does Zynko AI cover?</span>
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                <path d="M19 9l-7 7-7-7"/>
+                            </svg>
+                        </div>
+                        <div class="faq-answer">
+                            Zynko AI covers a wide range of subjects including Mathematics, Science, English, Social Studies, Physics, Biology, and many more. Our curriculum is constantly expanding to meet educational needs.
+                        </div>
+                    </div>
+                    <div class="faq-item">
+                        <div class="faq-question">
+                            <span>Is Zynko AI free?</span>
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                <path d="M19 9l-7 7-7-7"/>
+                            </svg>
+                        </div>
+                        <div class="faq-answer">
+                            Yes, Zynko AI is completely free to use. We believe in making quality education accessible to everyone, regardless of their financial situation.
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Using Zynko AI Questions -->
+                <div class="questions-group" id="using-questions">
+                    <div class="faq-item">
+                        <div class="faq-question">
+                            <span>How do I get started with Zynko AI?</span>
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                <path d="M19 9l-7 7-7-7"/>
+                            </svg>
+                        </div>
+                        <div class="faq-answer">
+                            Getting started with Zynko AI is easy! Simply sign up for a free account and you can immediately begin exploring our learning resources and AI-powered features.
+                        </div>
+                    </div>
+                    <div class="faq-item">
+                        <div class="faq-question">
+                            <span>How can Zynko AI help me learn?</span>
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                <path d="M19 9l-7 7-7-7"/>
+                            </svg>
+                        </div>
+                        <div class="faq-answer">
+                            Zynko AI provides personalized learning paths, adaptive content, and interactive exercises tailored to your learning style and pace.
+                        </div>
+                    </div>
+                    <div class="faq-item">
+                        <div class="faq-question">
+                            <span>What can the AI Tutor do?</span>
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                <path d="M19 9l-7 7-7-7"/>
+                            </svg>
+                        </div>
+                        <div class="faq-answer">
+                            Our AI Tutor can explain concepts, answer questions, provide practice problems, and give instant feedback on your work.
+                        </div>
+                    </div>
+                    <div class="faq-item">
+                        <div class="faq-question">
+                            <span>Can I set mock exams on Zynko AI?</span>
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                <path d="M19 9l-7 7-7-7"/>
+                            </svg>
+                        </div>
+                        <div class="faq-answer">
+                            Yes! You can create and take mock exams that simulate real test conditions and receive detailed performance analysis.
+                        </div>
+                    </div>
+                    <div class="faq-item">
+                        <div class="faq-question">
+                            <span>What are Zynko AI flashcards?</span>
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                <path d="M19 9l-7 7-7-7"/>
+                            </svg>
+                        </div>
+                        <div class="faq-answer">
+                            Zynko AI flashcards are digital study aids that help you memorize and review key concepts efficiently.
+                        </div>
+                    </div>
+                    <div class="faq-item">
+                        <div class="faq-question">
+                            <span>How do I create flashcards on Zynko AI?</span>
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                <path d="M19 9l-7 7-7-7"/>
+                            </svg>
+                        </div>
+                        <div class="faq-answer">
+                            You can easily create flashcards by selecting topics or generating them automatically from your study materials.
+                        </div>
+                    </div>
+                    <div class="faq-item">
+                        <div class="faq-question">
+                            <span>What are the benefits of using Zynko AI flashcards?</span>
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                <path d="M19 9l-7 7-7-7"/>
+                            </svg>
+                        </div>
+                        <div class="faq-answer">
+                            Zynko AI flashcards adapt to your learning progress, focus on areas where you need more practice, and provide spaced repetition for better retention.
+                        </div>
+                    </div>
+                    <div class="faq-item">
+                        <div class="faq-question">
+                            <span>Can I share my flashcards with others?</span>
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                <path d="M19 9l-7 7-7-7"/>
+                            </svg>
+                        </div>
+                        <div class="faq-answer">
+                            Yes, you can share your flashcard decks with friends or study groups to collaborate and learn together.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta-section" data-aos="zoom-in">
+        <h2>Ready to ace your exams?</h2>
+        <p>Get started today</p>
+        <div class="cta-buttons">
+            <a href="/pages/authform.html" class="cta-signup">Sign up</a>
+            <a href="/pages/authform.html" class="cta-login">Log in</a>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer" data-aos="fade-up">
+        <div class="footer-content">
+            <div class="footer-column">
+                <h3>Subjects</h3>
+                <div class="footer-links">
+                    <a href="#">Christian Religious Studies</a>
+                    <a href="#">Computer Studies</a>
+                    <a href="#">Physics</a>
+                    <a href="#">Social Studies</a>
+                    <a href="#">Commerce</a>
+                    <a href="#">Basic Science</a>
+                    <a href="#">Animal Husbandry</a>
+                    <a href="#">Further Maths</a>
+                </div>
+            </div>
+            <div class="footer-column">
+                <h3>More Subjects</h3>
+                <div class="footer-links">
+                    <a href="#">Accounts</a>
+                    <a href="#">Data Processing</a>
+                    <a href="#">Maths</a>
+                    <a href="#">English</a>
+                    <a href="#">Bookkeeping</a>
+                    <a href="#">Government</a>
+                    <a href="#">Civic Education</a>
+                    <a href="#">Agricultural Science</a>
+                </div>
+            </div>
+            <div class="footer-column">
+                <h3>And More</h3>
+                <div class="footer-links">
+                    <a href="#">Biology</a>
+                    <a href="#">Economics</a>
+                    <a href="#">Business Studies</a>
+                    <a href="#">Culture & Creative Arts</a>
+                    <a href="#">Chemistry</a>
+                    <a href="#">Islamic Religious Studies</a>
+                    <a href="#">Literature in English</a>
+                </div>
+            </div>
+            <div class="footer-column">
+                <h3>Zynko</h3>
+                <div class="footer-links">
+                    <a href="#">Pricing</a>
+                    <a href="#">Contact us</a>
+                    <a href="#">Terms and conditions</a>
+                    <a href="#">Privacy policy</a>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <img src="/img/zynko-logo.png" alt="Zynko Logo" class="footer-logo">
+            <p>© 2022 - 2024 Zynko.ai</p>
+        </div>
+    </footer>
+
+    <script>
+        // Initialize AOS
+        AOS.init({
+            duration: 1000,    // Animation duration in milliseconds
+            once: true,        // Whether animation should happen only once
+            easing: 'ease-out-cubic', // Easing function
+            delay: 100,        // Delay between animations
+        });
+
+        // FAQ Functionality
+        const faqCategories = document.querySelectorAll('.faq-category');
+        const questionGroups = document.querySelectorAll('.questions-group');
+        const faqItems = document.querySelectorAll('.faq-item');
+
+        // Category switching
+        faqCategories.forEach(category => {
+            category.addEventListener('click', () => {
+                // Remove active class from all categories and question groups
+                faqCategories.forEach(cat => cat.classList.remove('active'));
+                questionGroups.forEach(group => group.classList.remove('active'));
+
+                // Add active class to clicked category and corresponding question group
+                category.classList.add('active');
+                const groupId = `${category.dataset.category}-questions`;
+                document.getElementById(groupId).classList.add('active');
+
+                // Close all FAQ items when switching categories
+                faqItems.forEach(item => item.classList.remove('active'));
+            });
+        });
+
+        // FAQ item toggle
+        faqItems.forEach(item => {
+            item.addEventListener('click', () => {
+                const isActive = item.classList.contains('active');
+                
+                // Close all other items
+                faqItems.forEach(otherItem => {
+                    if (otherItem !== item) {
+                        otherItem.classList.remove('active');
+                    }
+                });
+
+                // Toggle current item
+                item.classList.toggle('active');
+            });
+        });
+
+        // Hamburger Menu Functionality
+        const menuToggle = document.querySelector('.menu-toggle');
+        const mobileMenu = document.querySelector('.mobile-menu');
+        const mobileOverlay = document.querySelector('.mobile-overlay');
+        
+        menuToggle.addEventListener('click', () => {
+            menuToggle.classList.toggle('active');
+            mobileMenu.classList.toggle('active');
+            mobileOverlay.classList.toggle('active');
+            document.body.style.overflow = mobileMenu.classList.contains('active') ? 'hidden' : '';
+        });
+
+        mobileOverlay.addEventListener('click', () => {
+            menuToggle.classList.remove('active');
+            mobileMenu.classList.remove('active');
+            mobileOverlay.classList.remove('active');
+            document.body.style.overflow = '';
+        });
+
+        // Number Counter Animation
+        const stats = document.querySelectorAll('.stat-number');
+        let animationStarted = false;
+        
+        const startCountAnimation = (element) => {
+            const text = element.textContent;
+            const match = text.match(/(\d+)([k+])?/);
+            const target = parseInt(match[1]);
+            const suffix = match[2] || '';
+            const duration = 4000;
+            const steps = 100; // Increased steps for smoother animation
+            const stepDuration = duration / steps;
+            let current = 0;
+            
+            const updateCount = () => {
+                current += target / steps;
+                
+                if (current < target) {
+                    element.textContent = `${Math.floor(current)}${suffix}`;
+                    requestAnimationFrame(() => setTimeout(updateCount, stepDuration));
+                } else {
+                    element.textContent = `${target}${suffix}`;
+                }
+            };
+            
+            element.textContent = `0${suffix}`;
+            updateCount();
+        };
+
+        // Intersection Observer for stats section
+        const statsSection = document.querySelector('.stats-section');
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting && !animationStarted) {
+                    animationStarted = true;
+                    stats.forEach(stat => startCountAnimation(stat));
+                } else if (!entry.isIntersecting) {
+                    animationStarted = false;
+                }
+            });
+        }, { 
+            threshold: 0.2, // Reduced threshold for earlier trigger
+            rootMargin: '50px' // Added margin to trigger earlier
+        });
+
+        observer.observe(statsSection);
+    </script>
+</body>
+</html>
