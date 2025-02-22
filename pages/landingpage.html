@@ -1542,15 +1542,15 @@
         <div class="stats-container">
             <div class="stats-grid" data-aos="fade-right" data-aos-delay="200">
                 <div class="stat-item">
-                    <div class="stat-number">120k</div>
+                    <div class="stat-number" data-value="120" data-suffix="k">0</div>
                     <div class="stat-label">Students <span>worldwide</span></div>
                 </div>
                 <div class="stat-item">
-                    <div class="stat-number">175+</div>
+                    <div class="stat-number" data-value="175" data-suffix="+">0</div>
                     <div class="stat-label">Countries <span>impacted</span></div>
                 </div>
                 <div class="stat-item">
-                    <div class="stat-number">2000+</div>
+                    <div class="stat-number" data-value="2000" data-suffix="+">0</div>
                     <div class="stat-label">Schools using <span>our platform</span></div>
                 </div>
             </div>
@@ -1983,51 +1983,69 @@
         });
 
         // Number Counter Animation
-        const stats = document.querySelectorAll('.stat-number');
-        let animationStarted = false;
-        
-        const startCountAnimation = (element) => {
-            const text = element.textContent;
-            const match = text.match(/(\d+)([k+])?/);
-            const target = parseInt(match[1]);
-            const suffix = match[2] || '';
-            const duration = 4000;
-            const steps = 100; // Increased steps for smoother animation
-            const stepDuration = duration / steps;
-            let current = 0;
+        function animateValue(element, start, end, duration) {
+            // Ensure we're working with numbers
+            start = Number(start);
+            end = Number(end);
             
-            const updateCount = () => {
-                current += target / steps;
+            // Get the suffix if it exists (k or +)
+            const suffix = element.getAttribute('data-suffix') || '';
+            
+            // Calculate the change in value
+            const range = end - start;
+            
+            // Calculate the step time for smooth animation
+            const minFrame = 50;
+            let stepTime = Math.abs(Math.floor(duration / range));
+            stepTime = Math.max(stepTime, minFrame);
+
+            // Current value and timeStart for animation
+            let current = start;
+            let timeStart = null;
+
+            // Animation function
+            function step(timestamp) {
+                if (!timeStart) timeStart = timestamp;
                 
-                if (current < target) {
-                    element.textContent = `${Math.floor(current)}${suffix}`;
-                    requestAnimationFrame(() => setTimeout(updateCount, stepDuration));
-                } else {
-                    element.textContent = `${target}${suffix}`;
+                const progress = Math.min((timestamp - timeStart) / duration, 1);
+                
+                // Use easeOutQuad for smoother animation
+                const easeProgress = 1 - (1 - progress) * (1 - progress);
+                current = Math.floor(start + (range * easeProgress));
+                
+                // Update the element with proper formatting and suffix
+                element.textContent = current.toLocaleString() + suffix;
+
+                if (progress < 1) {
+                    window.requestAnimationFrame(step);
                 }
-            };
-            
-            element.textContent = `0${suffix}`;
-            updateCount();
+            }
+
+            window.requestAnimationFrame(step);
+        }
+
+        // Intersection Observer to trigger animation when element is in view
+        const observerOptions = {
+            root: null,
+            rootMargin: '0px',
+            threshold: 0.1
         };
 
-        // Intersection Observer for stats section
-        const statsSection = document.querySelector('.stats-section');
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
-                if (entry.isIntersecting && !animationStarted) {
-                    animationStarted = true;
-                    stats.forEach(stat => startCountAnimation(stat));
-                } else if (!entry.isIntersecting) {
-                    animationStarted = false;
+                if (entry.isIntersecting) {
+                    const element = entry.target;
+                    const finalValue = element.getAttribute('data-value');
+                    animateValue(element, 0, finalValue, 2000); // 2000ms duration
+                    observer.unobserve(element); // Only animate once
                 }
             });
-        }, { 
-            threshold: 0.2, // Reduced threshold for earlier trigger
-            rootMargin: '50px' // Added margin to trigger earlier
-        });
+        }, observerOptions);
 
-        observer.observe(statsSection);
+        // Select all stats numbers and observe them
+        document.querySelectorAll('.stat-number').forEach(stat => {
+            observer.observe(stat);
+        });
     </script>
 </body>
 </html>
