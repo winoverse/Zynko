@@ -467,7 +467,87 @@
             text-align: center;
             font-size: 1.5rem;
         }
+
+        /* Add these to your existing styles */
+        .reset-password-popup {
+            border-radius: 20px !important;
+            padding: 2rem !important;
+        }
+
+        .reset-password-title {
+            color: #FF9B3F !important;
+            font-size: 1.5rem !important;
+            margin-bottom: 1.5rem !important;
+        }
+
+        .custom-reset-form .form-group {
+            position: relative;
+            margin: 1.5rem 0;
+        }
+
+        .custom-reset-form input {
+            width: 100%;
+            padding: 0.8rem 1rem;
+            border: 1px solid #ddd;
+            border-radius: 25px;
+            font-size: 0.9rem;
+            outline: none;
+            transition: border-color 0.3s ease;
+        }
+
+        .custom-reset-form input:focus {
+            border-color: #FF9B3F;
+        }
+
+        .custom-reset-form svg {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 20px;
+            height: 20px;
+            color: #999;
+        }
+
+        .reset-password-confirm {
+            background: #FF9B3F !important;
+            color: white !important;
+            padding: 0.8rem 2rem !important;
+            border-radius: 25px !important;
+            font-size: 0.9rem !important;
+            border: none !important;
+            cursor: pointer !important;
+            transition: all 0.3s ease !important;
+        }
+
+        .reset-password-confirm:hover {
+            background: #ff8c2f !important;
+            transform: translateY(-2px) !important;
+        }
+
+        .reset-password-cancel {
+            background: transparent !important;
+            color: #666 !important;
+            padding: 0.8rem 2rem !important;
+            border-radius: 25px !important;
+            font-size: 0.9rem !important;
+            border: 1px solid #ddd !important;
+            cursor: pointer !important;
+            transition: all 0.3s ease !important;
+            margin-left: 1rem !important;
+        }
+
+        .reset-password-cancel:hover {
+            background: #f5f5f5 !important;
+        }
     </style>
+    
+    <!-- Add Firebase SDK -->
+    <script type="module" src="https://www.gstatic.com/firebasejs/11.3.1/firebase-app.js"></script>
+    <script type="module" src="https://www.gstatic.com/firebasejs/11.3.1/firebase-auth.js"></script>
+    
+    <!-- Add SweetAlert -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body>
     <div class="container">
@@ -483,16 +563,16 @@
 
                 <div class="divider">or use your Email</div>
 
-                <form>
+                <form id="loginForm">
                     <div class="form-group">
-                        <input type="email" placeholder="E-mail" required>
+                        <input type="email" id="loginEmail" placeholder="E-mail" required>
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
                             <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
                             <path d="M22 6l-10 7L2 6"/>
                         </svg>
                     </div>
                     <div class="form-group">
-                        <input type="password" placeholder="Password" required>
+                        <input type="password" id="loginPassword" placeholder="Password" required>
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
                             <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
                             <circle cx="12" cy="12" r="3"/>
@@ -616,6 +696,208 @@
             if (newIsMobile !== isMobile) {
                 location.reload(); // Refresh page when switching between mobile and desktop
             }
+        });
+    </script>
+
+    <script type="module">
+        // Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyDQw162F-ABofLGvXoZdqT54dxhRNBlH68",
+            authDomain: "zynko-cd394.firebaseapp.com",
+            projectId: "zynko-cd394",
+            storageBucket: "zynko-cd394.firebasestorage.app",
+            messagingSenderId: "551662653914",
+            appId: "1:551662653914:web:501e9e792c7b471ada70e3",
+            measurementId: "G-KSN55XH26B"
+        };
+
+        // Initialize Firebase
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.3.1/firebase-app.js";
+        import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, GoogleAuthProvider, signInWithPopup, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/11.3.1/firebase-auth.js";
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const googleProvider = new GoogleAuthProvider();
+
+        // Sweet Alert Configuration
+        const Toast = Swal.mixin({
+            toast: true,
+            position: 'top-end',
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true,
+            didOpen: (toast) => {
+                toast.addEventListener('mouseenter', Swal.stopTimer)
+                toast.addEventListener('mouseleave', Swal.resumeTimer)
+            }
+        });
+
+        // Handle Sign Up
+        const signupFormAuth = document.querySelector('.signup-form form');
+        signupFormAuth.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const name = signupFormAuth.querySelector('input[type="text"]').value;
+            const email = signupFormAuth.querySelector('input[type="email"]').value;
+            
+            // Add password field to signup form HTML first
+            const password = signupFormAuth.querySelector('input[type="password"]').value;
+
+            try {
+                const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+                await Toast.fire({
+                    icon: 'success',
+                    title: 'Account created successfully!',
+                    background: '#fff',
+                    color: '#333',
+                    iconColor: '#FF9B3F'
+                });
+                window.location.href = '/dashboard.html';
+            } catch (error) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Signup Failed',
+                    text: error.message,
+                    confirmButtonColor: '#FF9B3F'
+                });
+            }
+        });
+
+        // Handle Sign In
+        const signinFormAuth = document.querySelector('#loginForm');
+        signinFormAuth.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+
+            try {
+                const userCredential = await signInWithEmailAndPassword(auth, email, password);
+                await Toast.fire({
+                    icon: 'success',
+                    title: 'Signed in successfully!',
+                    background: '#fff',
+                    color: '#333',
+                    iconColor: '#FF9B3F'
+                });
+                window.location.href = '/dashboard.html';
+            } catch (error) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Login Failed',
+                    text: error.message,
+                    confirmButtonColor: '#FF9B3F'
+                });
+            }
+        });
+
+        // Handle Google Sign In
+        const googleButtons = document.querySelectorAll('.google-btn');
+        googleButtons.forEach(button => {
+            button.addEventListener('click', async () => {
+                try {
+                    const result = await signInWithPopup(auth, googleProvider);
+                    await Toast.fire({
+                        icon: 'success',
+                        title: 'Signed in with Google successfully!',
+                        background: '#fff',
+                        color: '#333',
+                        iconColor: '#FF9B3F'
+                    });
+                    // Redirect or handle successful Google sign-in
+                    window.location.href = '/dashboard.html';
+                } catch (error) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Google Sign In Failed',
+                        text: error.message,
+                        confirmButtonColor: '#FF9B3F'
+                    });
+                }
+            });
+        });
+
+        // Handle Forgot Password
+        const forgotPasswordLink = document.querySelector('.forgot-password a');
+        forgotPasswordLink.addEventListener('click', async (e) => {
+            e.preventDefault();
+            
+            const { value: formValues } = await Swal.fire({
+                title: 'Reset Password',
+                html: `
+                    <div class="custom-reset-form">
+                        <div class="form-group">
+                            <input type="email" id="reset-email" class="swal2-input" placeholder="Enter your email">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+                                <path d="M22 6l-10 7L2 6"/>
+                            </svg>
+                        </div>
+                    </div>
+                `,
+                customClass: {
+                    container: 'reset-password-modal',
+                    popup: 'reset-password-popup',
+                    title: 'reset-password-title',
+                    confirmButton: 'reset-password-confirm',
+                    cancelButton: 'reset-password-cancel'
+                },
+                confirmButtonText: 'Reset Password',
+                showCancelButton: true,
+                cancelButtonText: 'Cancel',
+                buttonsStyling: false,
+                showCloseButton: true,
+                preConfirm: () => {
+                    const email = document.getElementById('reset-email').value;
+                    if (!email) {
+                        Swal.showValidationMessage('Please enter your email');
+                        return false;
+                    }
+                    return email;
+                }
+            });
+
+            if (formValues) {
+                try {
+                    await sendPasswordResetEmail(auth, formValues);
+                    Toast.fire({
+                        icon: 'success',
+                        title: 'Password reset email sent!',
+                        background: '#fff',
+                        color: '#333',
+                        iconColor: '#FF9B3F'
+                    });
+                } catch (error) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Password Reset Failed',
+                        text: error.message,
+                        confirmButtonColor: '#FF9B3F'
+                    });
+                }
+            }
+        });
+
+        // Password Toggle Functionality
+        const passwordFields = document.querySelectorAll('input[type="password"]');
+        const passwordIcons = document.querySelectorAll('.form-group input[type="password"] + svg');
+
+        passwordIcons.forEach((icon, index) => {
+            icon.style.cursor = 'pointer';
+            icon.addEventListener('click', () => {
+                const passwordField = passwordFields[index];
+                if (passwordField.type === 'password') {
+                    passwordField.type = 'text';
+                    icon.innerHTML = `
+                        <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24" stroke-linecap="round" stroke-linejoin="round"/>
+                        <line x1="1" y1="1" x2="23" y2="23" stroke-linecap="round" stroke-linejoin="round"/>
+                    `;
+                } else {
+                    passwordField.type = 'password';
+                    icon.innerHTML = `
+                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                        <circle cx="12" cy="12" r="3"/>
+                    `;
+                }
+            });
         });
     </script>
 </body>
