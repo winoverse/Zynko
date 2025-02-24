@@ -250,6 +250,151 @@
             background-color: rgba(255, 255, 255, 0.3);
             border-radius: 3px;
         }
+
+        /* Update mobile styles */
+        @media (max-width: 768px) {
+            /* Remove previous mobile nav styles */
+            .sidebar {
+                transform: translateX(100%);
+                right: 0;
+                left: auto;
+                top: 0;
+                width: 250px;
+                height: 100vh;
+                transition: transform 0.3s ease;
+                padding: 2rem 1rem;
+                z-index: 1000;
+            }
+
+            .sidebar.active {
+                transform: translateX(0);
+            }
+
+            /* Hamburger Menu */
+            .hamburger {
+                display: block;
+                position: fixed;
+                right: 20px;
+                top: 20px;
+                z-index: 1001;
+                background: none;
+                border: none;
+                cursor: pointer;
+                padding: 0;
+            }
+
+            .hamburger span {
+                display: block;
+                width: 25px;
+                height: 3px;
+                background: #FF9B3F;
+                margin: 5px 0;
+                transition: all 0.3s ease;
+                border-radius: 3px;
+            }
+
+            /* Hamburger Animation */
+            .hamburger.active span:nth-child(1) {
+                transform: rotate(45deg) translate(6px, 6px);
+            }
+
+            .hamburger.active span:nth-child(2) {
+                opacity: 0;
+            }
+
+            .hamburger.active span:nth-child(3) {
+                transform: rotate(-45deg) translate(6px, -6px);
+            }
+
+            /* Overlay */
+            .overlay {
+                display: none;
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background: rgba(0, 0, 0, 0.5);
+                z-index: 999;
+            }
+
+            .overlay.active {
+                display: block;
+            }
+
+            /* Keep logo visible in mobile sidebar */
+            .logo {
+                display: block;
+                margin-bottom: 2rem;
+            }
+
+            /* Adjust nav links for mobile */
+            .nav-links {
+                flex-direction: column;
+                padding: 0;
+            }
+
+            .nav-item {
+                margin: 0.5rem 0;
+            }
+
+            .nav-link {
+                padding: 0.8rem 1rem;
+                font-size: 1rem;
+                flex-direction: row;
+            }
+
+            .nav-link svg {
+                width: 20px;
+                height: 20px;
+                margin-right: 10px;
+            }
+
+            /* Show all nav items */
+            .nav-item:nth-child(n+6) {
+                display: block;
+            }
+
+            /* Main content adjustments */
+            .main-content {
+                margin-left: 0;
+                padding: 1rem;
+            }
+        }
+
+        /* Additional breakpoint for very small devices */
+        @media (max-width: 380px) {
+            .subjects-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .welcome-text h2 {
+                font-size: 1.3rem;
+            }
+
+            .banner-image {
+                height: 150px;
+            }
+        }
+
+        /* Update mobile header styles */
+        .mobile-header {
+            display: none; /* Hide by default */
+        }
+
+        @media (max-width: 768px) {
+            .mobile-header {
+                display: flex; /* Show only on mobile */
+                align-items: center;
+                justify-content: space-between;
+                margin-bottom: 1rem;
+            }
+
+            .mobile-logo {
+                width: 40px;
+                height: auto;
+            }
+        }
     </style>
 </head>
 <body>
@@ -397,12 +542,49 @@
         </section>
     </main>
 
+    <!-- Hamburger Menu Button -->
+    <button class="hamburger">
+        <span></span>
+        <span></span>
+        <span></span>
+    </button>
+
+    <!-- Overlay -->
+    <div class="overlay"></div>
+
     <!-- Add this script before closing body tag -->
     <script>
         // Format and display current date
         const date = new Date();
         const options = { year: 'numeric', month: 'long', day: 'numeric' };
         document.getElementById('currentDate').textContent = date.toLocaleDateString('en-US', options);
+
+        // Hamburger Menu functionality
+        const hamburger = document.querySelector('.hamburger');
+        const sidebar = document.querySelector('.sidebar');
+        const overlay = document.querySelector('.overlay');
+
+        hamburger.addEventListener('click', () => {
+            hamburger.classList.toggle('active');
+            sidebar.classList.toggle('active');
+            overlay.classList.toggle('active');
+        });
+
+        // Close menu when clicking overlay
+        overlay.addEventListener('click', () => {
+            hamburger.classList.remove('active');
+            sidebar.classList.remove('active');
+            overlay.classList.remove('active');
+        });
+
+        // Close menu when clicking a link
+        document.querySelectorAll('.nav-link').forEach(link => {
+            link.addEventListener('click', () => {
+                hamburger.classList.remove('active');
+                sidebar.classList.remove('active');
+                overlay.classList.remove('active');
+            });
+        });
     </script>
 </body>
 </html> 
