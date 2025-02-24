@@ -253,12 +253,11 @@
 
         /* Update mobile styles */
         @media (max-width: 768px) {
-            /* Remove previous mobile nav styles */
+            /* Update sidebar position */
             .sidebar {
-                transform: translateX(100%);
-                right: 0;
-                left: auto;
-                top: 0;
+                transform: translateX(-100%); /* Change from 100% to -100% */
+                right: auto; /* Remove right positioning */
+                left: 0; /* Keep on left side */
                 width: 250px;
                 height: 100vh;
                 transition: transform 0.3s ease;
@@ -266,99 +265,19 @@
                 z-index: 1000;
             }
 
-            .sidebar.active {
-                transform: translateX(0);
-            }
-
-            /* Hamburger Menu */
+            /* Update hamburger position */
             .hamburger {
-                display: block;
-                position: fixed;
-                right: 20px;
+                left: 20px; /* Change from right to left */
+                right: auto; /* Remove right positioning */
                 top: 20px;
                 z-index: 1001;
-                background: none;
-                border: none;
-                cursor: pointer;
-                padding: 0;
-            }
-
-            .hamburger span {
-                display: block;
-                width: 25px;
-                height: 3px;
-                background: #FF9B3F;
-                margin: 5px 0;
-                transition: all 0.3s ease;
-                border-radius: 3px;
-            }
-
-            /* Hamburger Animation */
-            .hamburger.active span:nth-child(1) {
-                transform: rotate(45deg) translate(6px, 6px);
-            }
-
-            .hamburger.active span:nth-child(2) {
-                opacity: 0;
-            }
-
-            .hamburger.active span:nth-child(3) {
-                transform: rotate(-45deg) translate(6px, -6px);
-            }
-
-            /* Overlay */
-            .overlay {
-                display: none;
-                position: fixed;
-                top: 0;
-                left: 0;
-                right: 0;
-                bottom: 0;
-                background: rgba(0, 0, 0, 0.5);
-                z-index: 999;
-            }
-
-            .overlay.active {
-                display: block;
-            }
-
-            /* Keep logo visible in mobile sidebar */
-            .logo {
-                display: block;
-                margin-bottom: 2rem;
-            }
-
-            /* Adjust nav links for mobile */
-            .nav-links {
-                flex-direction: column;
-                padding: 0;
-            }
-
-            .nav-item {
-                margin: 0.5rem 0;
-            }
-
-            .nav-link {
-                padding: 0.8rem 1rem;
-                font-size: 1rem;
-                flex-direction: row;
-            }
-
-            .nav-link svg {
-                width: 20px;
-                height: 20px;
-                margin-right: 10px;
-            }
-
-            /* Show all nav items */
-            .nav-item:nth-child(n+6) {
-                display: block;
             }
 
             /* Main content adjustments */
             .main-content {
                 margin-left: 0;
                 padding: 1rem;
+                padding-top: 70px; /* Add space for hamburger */
             }
         }
 
