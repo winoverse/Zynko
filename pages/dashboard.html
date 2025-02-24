@@ -253,11 +253,10 @@
 
         /* Update mobile styles */
         @media (max-width: 768px) {
-            /* Update sidebar position */
+            /* Sidebar styles remain the same */
             .sidebar {
-                transform: translateX(-100%); /* Change from 100% to -100% */
-                right: auto; /* Remove right positioning */
-                left: 0; /* Keep on left side */
+                transform: translateX(-100%);
+                left: 0;
                 width: 250px;
                 height: 100vh;
                 transition: transform 0.3s ease;
@@ -265,12 +264,68 @@
                 z-index: 1000;
             }
 
-            /* Update hamburger position */
+            .sidebar.active {
+                transform: translateX(0);
+            }
+
+            /* Add back hamburger styles */
             .hamburger {
-                left: 20px; /* Change from right to left */
-                right: auto; /* Remove right positioning */
+                display: block;
+                position: fixed;
+                left: 20px;
                 top: 20px;
                 z-index: 1001;
+                background: none;
+                border: none;
+                cursor: pointer;
+                padding: 0;
+            }
+
+            .hamburger span {
+                display: block;
+                width: 25px;
+                height: 3px;
+                background: #FF9B3F;
+                margin: 5px 0;
+                transition: all 0.3s ease;
+                border-radius: 3px;
+            }
+
+            /* Hamburger Animation */
+            .hamburger.active span:nth-child(1) {
+                transform: rotate(45deg) translate(6px, 6px);
+                background: #ffffff;
+            }
+
+            .hamburger.active span:nth-child(2) {
+                opacity: 0;
+                background: #ffffff;
+            }
+
+            .hamburger.active span:nth-child(3) {
+                transform: rotate(-45deg) translate(6px, -6px);
+                background: #ffffff;
+            }
+
+            /* Keep the shadow for better visibility */
+            .hamburger.active {
+                filter: drop-shadow(0px 0px 1px rgba(0, 0, 0, 0.5));
+            }
+
+            /* Overlay styles */
+            .overlay {
+                display: none;
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background: rgba(0, 0, 0, 0.5);
+                z-index: 999;
+            }
+
+            .overlay.active {
+                display: block;
             }
 
             /* Main content adjustments */
@@ -278,6 +333,48 @@
                 margin-left: 0;
                 padding: 1rem;
                 padding-top: 70px; /* Add space for hamburger */
+            }
+
+            /* Update Welcome Banner for mobile */
+            .welcome-banner {
+                height: auto;
+                padding: 1.5rem;
+                position: relative;
+                overflow: hidden;
+            }
+
+            .banner-image {
+                position: absolute;
+                right: 0;
+                top: 50%;
+                transform: translateY(-50%);
+                height: 100%;
+                width: auto;
+                opacity: 0.3; /* Make image more transparent */
+                z-index: 1;
+            }
+
+            .welcome-text {
+                position: relative;
+                z-index: 2; /* Ensure text stays on top */
+                text-align: left;
+            }
+
+            .welcome-text h2 {
+                font-size: 1.5rem;
+                margin-bottom: 0.5rem;
+                color: white;
+                text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1); /* Optional: adds subtle shadow for better readability */
+            }
+
+            .welcome-text p {
+                font-size: 0.9rem;
+                color: white;
+            }
+
+            .banner-date {
+                color: rgba(255, 255, 255, 0.9);
+                margin-bottom: 0.5rem;
             }
         }
 
