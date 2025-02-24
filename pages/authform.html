@@ -564,14 +564,14 @@
                 <div class="divider">or use your Email</div>
 
                 <form id="loginForm">
-                    <div class="form-group">
+                <div class="form-group">
                         <input type="email" id="loginEmail" placeholder="E-mail" required>
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
                             <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
                             <path d="M22 6l-10 7L2 6"/>
                         </svg>
-                    </div>
-                    <div class="form-group">
+                </div>
+                <div class="form-group">
                         <input type="password" id="loginPassword" placeholder="Password" required>
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
                             <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
@@ -580,8 +580,8 @@
                     </div>
                     <div class="forgot-password">
                         <a href="#">Forgot Password?</a>
-                    </div>
-                    <button type="submit">LOG IN</button>
+                </div>
+                <button type="submit">LOG IN</button>
                 </form>
 
                 <div class="signup-link">
@@ -601,24 +601,24 @@
                 <div class="divider">or use your Email</div>
 
                 <form>
-                    <div class="form-group">
-                        <input type="text" placeholder="Full Name" required>
-                    </div>
-                    <div class="form-group">
+                <div class="form-group">
+                    <input type="text" placeholder="Full Name" required>
+                </div>
+                <div class="form-group">
                         <input type="email" placeholder="E-mail" required>
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
                             <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
                             <path d="M22 6l-10 7L2 6"/>
                         </svg>
-                    </div>
-                    <div class="form-group">
-                        <input type="password" placeholder="Password" required>
+                </div>
+                <div class="form-group">
+                    <input type="password" placeholder="Password" required>
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
                             <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
                             <circle cx="12" cy="12" r="3"/>
                         </svg>
-                    </div>
-                    <button type="submit">SIGN UP</button>
+                </div>
+                <button type="submit">SIGN UP</button>
                 </form>
 
                 <div class="signup-link">
@@ -660,8 +660,8 @@
 
         if (!isMobile) {
             // Desktop sliding animation
-            toggleBtns.forEach(btn => {
-                btn.addEventListener('click', () => {
+        toggleBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
                     container.classList.toggle('sign-up-mode');
                     setTimeout(() => {
                         signinForm.classList.toggle('active');
@@ -803,7 +803,7 @@
                         iconColor: '#FF9B3F'
                     });
                     // Redirect or handle successful Google sign-in
-                    window.location.href = '/dashboard.html';
+                    window.location.href = '/pages/dashboard.html';
                 } catch (error) {
                     Swal.fire({
                         icon: 'error',
@@ -901,4 +901,4 @@
         });
     </script>
 </body>
-</html> 
+</html>
