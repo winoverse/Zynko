@@ -614,12 +614,11 @@
             }
         }
     </style>
-    <!-- Add these Firebase scripts in the head section -->
-    <script src="https://www.gstatic.com/firebasejs/11.3.1/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/11.3.1/firebase-firestore.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/11.3.1/firebase-auth.js"></script>
+    <!-- Update Firebase SDK imports -->
+    <script src="https://www.gstatic.com/firebasejs/11.3.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/11.3.1/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/11.3.1/firebase-auth-compat.js"></script>
 
-    <!-- Add your Firebase configuration -->
     <script>
         const firebaseConfig = {
             // Your Firebase config object here
@@ -633,9 +632,10 @@
 
         };
 
-        // Initialize Firebase
+        // Initialize Firebase and get references
         firebase.initializeApp(firebaseConfig);
         const db = firebase.firestore();
+        const auth = firebase.auth();
     </script>
 </head>
 <body>
