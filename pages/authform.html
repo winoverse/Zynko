@@ -899,6 +899,41 @@
                 }
             });
         });
+
+        // Add this after successful signup/signin in authform.html
+        firebase.auth().onAuthStateChanged((user) => {
+            if (user) {
+                // Store user ID in localStorage
+                localStorage.setItem('userId', user.uid);
+                window.location.href = '/pages/dashboard.html';
+            }
+        });
+
+        // In your signin handler
+        async function handleSignIn(email, password) {
+            try {
+                const userCredential = await firebase.auth().signInWithEmailAndPassword(email, password);
+                const user = userCredential.user;
+                localStorage.setItem('userId', user.uid);
+                window.location.href = '/pages/dashboard.html';
+            } catch (error) {
+                console.error('Error signing in:', error);
+                alert(error.message);
+            }
+        }
+
+        // In your signup handler
+        async function handleSignUp(email, password) {
+            try {
+                const userCredential = await firebase.auth().createUserWithEmailAndPassword(email, password);
+                const user = userCredential.user;
+                localStorage.setItem('userId', user.uid);
+                window.location.href = '/pages/dashboard.html';
+            } catch (error) {
+                console.error('Error signing up:', error);
+                alert(error.message);
+            }
+        }
     </script>
 </body>
 </html>
