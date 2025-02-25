@@ -909,7 +909,7 @@
             }
         });
 
-        // In your signin handler
+        // Update your existing auth handlers
         async function handleSignIn(email, password) {
             try {
                 const userCredential = await firebase.auth().signInWithEmailAndPassword(email, password);
@@ -922,7 +922,7 @@
             }
         }
 
-        // In your signup handler
+        // Update your existing auth handlers
         async function handleSignUp(email, password) {
             try {
                 const userCredential = await firebase.auth().createUserWithEmailAndPassword(email, password);
