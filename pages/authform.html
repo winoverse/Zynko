@@ -750,11 +750,13 @@
                 });
                 window.location.href = '/pages/dashboard.html';
             } catch (error) {
-                Swal.fire({
+                await Swal.fire({
                     icon: 'error',
                     title: 'Signup Failed',
                     text: error.message,
-                    confirmButtonColor: '#FF9B3F'
+                    confirmButtonColor: '#FF9B3F',
+                    background: '#fff',
+                    color: '#333'
                 });
             }
         });
@@ -770,18 +772,20 @@
                 const userCredential = await auth.signInWithEmailAndPassword(email, password);
                 await Toast.fire({
                     icon: 'success',
-                    title: 'Signed in successfully!',
+                    title: 'Welcome back!',
                     background: '#fff',
                     color: '#333',
                     iconColor: '#FF9B3F'
                 });
                 window.location.href = '/pages/dashboard.html';
             } catch (error) {
-                Swal.fire({
+                await Swal.fire({
                     icon: 'error',
-                    title: 'Login Failed',
+                    title: 'Sign In Failed',
                     text: error.message,
-                    confirmButtonColor: '#FF9B3F'
+                    confirmButtonColor: '#FF9B3F',
+                    background: '#fff',
+                    color: '#333'
                 });
             }
         });
@@ -794,19 +798,20 @@
                     const result = await auth.signInWithPopup(googleProvider);
                     await Toast.fire({
                         icon: 'success',
-                        title: 'Signed in with Google successfully!',
+                        title: 'Signed in with Google!',
                         background: '#fff',
                         color: '#333',
                         iconColor: '#FF9B3F'
                     });
-                    // Redirect or handle successful Google sign-in
                     window.location.href = '/pages/dashboard.html';
                 } catch (error) {
-                    Swal.fire({
+                    await Swal.fire({
                         icon: 'error',
                         title: 'Google Sign In Failed',
                         text: error.message,
-                        confirmButtonColor: '#FF9B3F'
+                        confirmButtonColor: '#FF9B3F',
+                        background: '#fff',
+                        color: '#333'
                     });
                 }
             });
@@ -855,19 +860,22 @@
             if (formValues) {
                 try {
                     await auth.sendPasswordResetEmail(formValues);
-                    Toast.fire({
+                    await Toast.fire({
                         icon: 'success',
-                        title: 'Password reset email sent!',
+                        title: 'Reset email sent!',
+                        text: 'Check your inbox for instructions',
                         background: '#fff',
                         color: '#333',
                         iconColor: '#FF9B3F'
                     });
                 } catch (error) {
-                    Swal.fire({
+                    await Swal.fire({
                         icon: 'error',
                         title: 'Password Reset Failed',
                         text: error.message,
-                        confirmButtonColor: '#FF9B3F'
+                        confirmButtonColor: '#FF9B3F',
+                        background: '#fff',
+                        color: '#333'
                     });
                 }
             }
