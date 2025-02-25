@@ -660,6 +660,161 @@
         const db = firebase.firestore();
         const auth = firebase.auth();
     </script>
+
+    <!-- Add SweetAlert -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <script>
+        // Sweet Alert Configuration
+        const Toast = Swal.mixin({
+            toast: true,
+            position: 'top-end',
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true,
+            didOpen: (toast) => {
+                toast.addEventListener('mouseenter', Swal.stopTimer)
+                toast.addEventListener('mouseleave', Swal.resumeTimer)
+            }
+        });
+
+        // Format and display current date
+        const date = new Date();
+        const options = { year: 'numeric', month: 'long', day: 'numeric' };
+        document.getElementById('currentDate').textContent = date.toLocaleDateString('en-US', options);
+
+        // Hamburger Menu functionality
+        const hamburger = document.querySelector('.hamburger');
+        const sidebar = document.querySelector('.sidebar');
+        const overlay = document.querySelector('.overlay');
+
+        hamburger.addEventListener('click', () => {
+            hamburger.classList.toggle('active');
+            sidebar.classList.toggle('active');
+            overlay.classList.toggle('active');
+        });
+
+        // Close menu when clicking overlay
+        overlay.addEventListener('click', () => {
+            hamburger.classList.remove('active');
+            sidebar.classList.remove('active');
+            overlay.classList.remove('active');
+        });
+
+        // Close menu when clicking a link
+        document.querySelectorAll('.nav-link').forEach(link => {
+            link.addEventListener('click', () => {
+                hamburger.classList.remove('active');
+                sidebar.classList.remove('active');
+                overlay.classList.remove('active');
+            });
+        });
+
+        // Add this function to check user data
+        async function checkUserData(userId) {
+            try {
+                const userDoc = await db.collection('students').doc(userId).get();
+                return userDoc.exists && userDoc.data().name && userDoc.data().board && userDoc.data().class;
+            } catch (error) {
+                console.error('Error checking user data:', error);
+                return false;
+            }
+        }
+
+        // Update the window load event handler
+        window.addEventListener('load', async function() {
+            const loadingOverlay = document.getElementById('loadingOverlay');
+            const onboardingOverlay = document.getElementById('onboardingOverlay');
+            
+            try {
+                const userId = localStorage.getItem('userId');
+                
+                if (!userId) {
+                    window.location.href = '/pages/authform.html';
+                    return;
+                }
+
+                const hasUserData = await checkUserData(userId);
+                
+                if (!hasUserData) {
+                    onboardingOverlay.style.display = 'flex';
+                } else {
+                    // Get and display user data
+                    const userDoc = await db.collection('students').doc(userId).get();
+                    const userData = userDoc.data();
+                    
+                    document.querySelector('.user-name').textContent = userData.name;
+                    document.querySelector('.user-class').textContent = `Class ${userData.class}`;
+                    document.querySelector('.welcome-text h2').textContent = `Welcome back, ${userData.name}!`;
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                onboardingOverlay.style.display = 'flex';
+            } finally {
+                // Hide loading overlay when everything is done
+                loadingOverlay.style.display = 'none';
+            }
+        });
+
+        // Update the form submission handler
+        document.getElementById('onboardingForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const submitButton = this.querySelector('.continue-btn');
+            submitButton.classList.add('loading');
+            submitButton.disabled = true;
+
+            try {
+                const userId = localStorage.getItem('userId');
+                if (!userId) {
+                    throw new Error('No user ID found');
+                }
+
+                const name = document.querySelector('input[type="text"]').value;
+                const board = document.querySelector('select[name="board"]').value;
+                const className = document.querySelector('select[name="class"]').value;
+
+                // Save to Firebase with user's ID
+                await db.collection('students').doc(userId).set({
+                    name: name,
+                    board: board,
+                    class: className,
+                    createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                });
+
+                // Update dashboard UI
+                document.querySelector('.user-name').textContent = name;
+                document.querySelector('.user-class').textContent = `Class ${className}`;
+                document.querySelector('.welcome-text h2').textContent = `Welcome back, ${name}!`;
+
+                // Hide onboarding
+                document.getElementById('onboardingOverlay').style.display = 'none';
+
+                // Show success toast
+                await Toast.fire({
+                    icon: 'success',
+                    title: 'Successfully registered!',
+                    background: '#fff',
+                    color: '#333',
+                    iconColor: '#FF9B3F'
+                });
+
+            } catch (error) {
+                console.error('Error saving data:', error);
+                await Swal.fire({
+                    icon: 'error',
+                    title: 'Registration Failed',
+                    text: 'There was an error saving your information. Please try again.',
+                    confirmButtonColor: '#FF9B3F',
+                    background: '#fff',
+                    color: '#333'
+                });
+            } finally {
+                submitButton.classList.remove('loading');
+                submitButton.disabled = false;
+            }
+        });
+    </script>
 </head>
 <body>
     <!-- Update the HTML structure - Put this right after body tag -->
@@ -863,132 +1018,5 @@
     <div class="loading-overlay" id="loadingOverlay">
         <div class="spinner"></div>
     </div>
-
-    <!-- Add this script before closing body tag -->
-    <script>
-        // Format and display current date
-        const date = new Date();
-        const options = { year: 'numeric', month: 'long', day: 'numeric' };
-        document.getElementById('currentDate').textContent = date.toLocaleDateString('en-US', options);
-
-        // Hamburger Menu functionality
-        const hamburger = document.querySelector('.hamburger');
-        const sidebar = document.querySelector('.sidebar');
-        const overlay = document.querySelector('.overlay');
-
-        hamburger.addEventListener('click', () => {
-            hamburger.classList.toggle('active');
-            sidebar.classList.toggle('active');
-            overlay.classList.toggle('active');
-        });
-
-        // Close menu when clicking overlay
-        overlay.addEventListener('click', () => {
-            hamburger.classList.remove('active');
-            sidebar.classList.remove('active');
-            overlay.classList.remove('active');
-        });
-
-        // Close menu when clicking a link
-        document.querySelectorAll('.nav-link').forEach(link => {
-            link.addEventListener('click', () => {
-                hamburger.classList.remove('active');
-                sidebar.classList.remove('active');
-                overlay.classList.remove('active');
-            });
-        });
-
-        // Add this function to check user data
-        async function checkUserData(userId) {
-            try {
-                const userDoc = await db.collection('students').doc(userId).get();
-                return userDoc.exists && userDoc.data().name && userDoc.data().board && userDoc.data().class;
-            } catch (error) {
-                console.error('Error checking user data:', error);
-                return false;
-            }
-        }
-
-        // Update the window load event handler
-        window.addEventListener('load', async function() {
-            const loadingOverlay = document.getElementById('loadingOverlay');
-            const onboardingOverlay = document.getElementById('onboardingOverlay');
-            
-            try {
-                const userId = localStorage.getItem('userId');
-                
-                if (!userId) {
-                    window.location.href = '/pages/authform.html';
-                    return;
-                }
-
-                const hasUserData = await checkUserData(userId);
-                
-                if (!hasUserData) {
-                    onboardingOverlay.style.display = 'flex';
-                } else {
-                    // Get and display user data
-                    const userDoc = await db.collection('students').doc(userId).get();
-                    const userData = userDoc.data();
-                    
-                    document.querySelector('.user-name').textContent = userData.name;
-                    document.querySelector('.user-class').textContent = `Class ${userData.class}`;
-                    document.querySelector('.welcome-text h2').textContent = `Welcome back, ${userData.name}!`;
-                }
-            } catch (error) {
-                console.error('Error:', error);
-                onboardingOverlay.style.display = 'flex';
-            } finally {
-                // Hide loading overlay when everything is done
-                loadingOverlay.style.display = 'none';
-            }
-        });
-
-        // Update the form submission handler
-        document.getElementById('onboardingForm').addEventListener('submit', async function(e) {
-            e.preventDefault();
-            
-            const submitButton = this.querySelector('.continue-btn');
-            submitButton.classList.add('loading');
-            submitButton.disabled = true;
-
-            try {
-                const userId = localStorage.getItem('userId');
-                if (!userId) {
-                    throw new Error('No user ID found');
-                }
-
-                const name = document.querySelector('input[type="text"]').value;
-                const board = document.querySelector('select[name="board"]').value;
-                const className = document.querySelector('select[name="class"]').value;
-
-                // Save to Firebase with user's ID
-                await db.collection('students').doc(userId).set({
-                    name: name,
-                    board: board,
-                    class: className,
-                    createdAt: firebase.firestore.FieldValue.serverTimestamp()
-                });
-
-                // Update dashboard UI
-                document.querySelector('.user-name').textContent = name;
-                document.querySelector('.user-class').textContent = `Class ${className}`;
-                document.querySelector('.welcome-text h2').textContent = `Welcome back, ${name}!`;
-
-                // Hide onboarding
-                document.getElementById('onboardingOverlay').style.display = 'none';
-
-                // Show success message
-                alert('Successfully registered!');
-
-            } catch (error) {
-                console.error('Error saving data:', error);
-                alert('There was an error saving your information. Please try again.');
-            } finally {
-                submitButton.classList.remove('loading');
-                submitButton.disabled = false;
-            }
-        });
-    </script>
 </body>
 </html> 
