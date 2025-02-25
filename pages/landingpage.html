@@ -1915,47 +1915,107 @@
     </footer>
 
     <script>
-        // Initialize ScrollReveal
+        // Initialize ScrollReveal with default config
         const sr = ScrollReveal({
             origin: 'bottom',
             distance: '60px',
-            duration: 1000,
-            delay: 400,
-            reset: true
+            duration: 1500,
+            delay: 300,
+            reset: true,
+            mobile: true,
+            viewFactor: 0.2,
+            easing: 'cubic-bezier(0.4, 0, 0.2, 1)'
         });
 
-        // Apply animations to sections
-        sr.reveal('.hero', {
-            origin: 'top',
-            distance: '30px'
-        });
-        sr.reveal('.stats-section', {
-            origin: 'bottom',
-            distance: '60px'
-        });
-        sr.reveal('.ai-tutor-section', {
+        // Hero Section
+        sr.reveal('.hero-content', {
             origin: 'left',
-            distance: '60px'
+            distance: '100px',
+            duration: 2000
         });
-        sr.reveal('.curriculum-cards', {
+        sr.reveal('.hero-image', {
             origin: 'right',
-            distance: '60px'
+            distance: '100px',
+            delay: 500
         });
-        sr.reveal('.features-block', {
+
+        // Stats Section
+        sr.reveal('.stats-header', {
+            origin: 'top',
+            delay: 400
+        });
+        sr.reveal('.loved-by', {
+            delay: 600
+        });
+        sr.reveal('.stats-grid', {
+            origin: 'left',
+            delay: 800
+        });
+        sr.reveal('.india-map', {
+            origin: 'right',
+            delay: 1000
+        });
+
+        // AI Tutor Section
+        sr.reveal('.ai-tutor-heading', {
+            origin: 'top'
+        });
+        sr.reveal('.ui-components-display', {
             origin: 'bottom',
-            distance: '60px'
+            delay: 300
         });
-        sr.reveal('.faq-section', {
+        sr.reveal('.tutor-block', {
             origin: 'bottom',
-            distance: '60px'
+            delay: 400
         });
+
+        // Curriculum Cards
+        sr.reveal('.curriculum-cards h2', {
+            origin: 'top'
+        });
+        sr.reveal('.curriculum-card', {
+            origin: 'bottom',
+            interval: 300,
+            distance: '50px'
+        });
+
+        // Features Block
+        sr.reveal('.features-block h2', {
+            origin: 'top'
+        });
+        sr.reveal('.feature-card', {
+            origin: 'bottom',
+            interval: 300,
+            distance: '40px'
+        });
+
+        // FAQ Section
+        sr.reveal('.faq-section h2', {
+            origin: 'top'
+        });
+        sr.reveal('.faq-categories', {
+            origin: 'left',
+            delay: 300
+        });
+        sr.reveal('.faq-questions', {
+            origin: 'right',
+            delay: 400
+        });
+
+        // CTA Section
         sr.reveal('.cta-section', {
             origin: 'bottom',
             distance: '30px'
         });
-        sr.reveal('.footer', {
+
+        // Footer
+        sr.reveal('.footer-column', {
             origin: 'bottom',
-            distance: '30px'
+            interval: 300
+        });
+        sr.reveal('.footer-bottom', {
+            origin: 'bottom',
+            delay: 400
         });
 
         // FAQ Functionality
