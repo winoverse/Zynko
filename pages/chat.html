@@ -613,19 +613,50 @@
 
                 // Online status tracking
                 const statusRef = db.collection('status');
-                
+                let onlineStatusRef;
+                let userStatusRef;
+
+                // Create a reference to the special '.info/connected' path in Realtime Database
+                const rtdb = firebase.database();
+                const connectedRef = rtdb.ref('.info/connected');
+
                 // Set user online when they open chat
-                async function setUserOnlineStatus(online) {
+                async function setUserOnlineStatus() {
                     try {
                         // Get user's profile data
                         const userDoc = await db.collection('students').doc(currentUser.uid).get();
                         const userData = userDoc.data();
                         const userName = userData?.name || currentUser.displayName || 'Anonymous';
 
-                        await statusRef.doc(currentUser.uid).set({
-                            online,
-                            lastSeen: firebase.firestore.FieldValue.serverTimestamp(),
-                            displayName: userName
+                        // Set up Realtime Database reference
+                        userStatusRef = rtdb.ref(`/status/${currentUser.uid}`);
+                        onlineStatusRef = statusRef.doc(currentUser.uid);
+
+                        // Monitor connection state
+                        connectedRef.on('value', async (snap) => {
+                            if (snap.val() === true) {
+                                // User is online
+                                // Set up onDisconnect hooks
+                                await userStatusRef.onDisconnect().set({
+                                    online: false,
+                                    lastSeen: firebase.database.ServerValue.TIMESTAMP,
+                                    displayName: userName
+                                });
+
+                                // Set user as online
+                                await userStatusRef.set({
+                                    online: true,
+                                    lastSeen: firebase.database.ServerValue.TIMESTAMP,
+                                    displayName: userName
+                                });
+
+                                // Update Firestore status
+                                await onlineStatusRef.set({
+                                    online: true,
+                                    lastSeen: firebase.firestore.FieldValue.serverTimestamp(),
+                                    displayName: userName
+                                });
+                            }
                         });
                     } catch (error) {
                         console.error('Error updating online status:', error);
@@ -633,12 +664,21 @@
                 }
 
                 // Update online status when window/tab closes
-                window.addEventListener('beforeunload', () => {
-                    setUserOnlineStatus(false);
+                window.addEventListener('beforeunload', async () => {
+                    if (userStatusRef) {
+                        await userStatusRef.set({
+                            online: false,
+                            lastSeen: firebase.database.ServerValue.TIMESTAMP
+                        });
+                        await onlineStatusRef.set({
+                            online: false,
+                            lastSeen: firebase.firestore.FieldValue.serverTimestamp()
+                        });
+                    }
                 });
 
                 // Set initial online status
-                setUserOnlineStatus(true);
+                setUserOnlineStatus();
 
                 // Load and update members list with online status
                 const communityRef = db.collection('communities').doc(communityData.id);
@@ -654,37 +694,33 @@
 
                     // Get online status for all members
                     const uniqueUsers = [...new Set([...members, createdBy])];
-                    const statusDocs = await statusRef.where(firebase.firestore.FieldPath.documentId(), 'in', uniqueUsers).get();
-                    const onlineStatus = {};
-                    statusDocs.forEach(doc => {
-                        onlineStatus[doc.id] = doc.data();
+                    
+                    // Listen to realtime status updates
+                    uniqueUsers.forEach(userId => {
+                        rtdb.ref(`/status/${userId}`).on('value', (snap) => {
+                            const status = snap.val() || { online: false };
+                            const memberElement = document.querySelector(`[data-member-id="${userId}"]`);
+                            
+                            if (!memberElement) {
+                                const li = document.createElement('li');
+                                li.className = 'member-item';
+                                li.dataset.memberId = userId;
+                                li.innerHTML = `
+                                    <span class="online-status ${status.online ? 'online' : ''}"></span>
+                                    <span class="member-name">${status.displayName || 'Anonymous'}</span>
+                                    ${userId === createdBy ? '<span class="admin-tag">Admin</span>' : ''}
+                                `;
+                                membersList.appendChild(li);
+                            } else {
+                                const statusDot = memberElement.querySelector('.online-status');
+                                statusDot.className = `online-status ${status.online ? 'online' : ''}`;
+                            }
+                        });
                     });
-
-                    // Create member list items
-                    for (const memberId of uniqueUsers) {
-                        const status = onlineStatus[memberId] || { online: false };
-                        const li = document.createElement('li');
-                        li.className = 'member-item';
-                        li.innerHTML = `
-                            <span class="online-status ${status.online ? 'online' : ''}"></span>
-                            <span class="member-name">${status.displayName || 'Anonymous'}</span>
-                            ${memberId === createdBy ? '<span class="admin-tag">Admin</span>' : ''}
-                        `;
-                        membersList.appendChild(li);
-                    }
                 }
 
                 // Initial members list update
                 updateMembersList();
-
-                // Listen for online status changes
-                statusRef.onSnapshot(snapshot => {
-                    snapshot.docChanges().forEach(change => {
-                        if (change.type === 'modified') {
-                            updateMembersList();
-                        }
-                    });
-                });
 
                 // Add message search functionality
                 const searchInput = document.querySelector('.search-messages input');
