@@ -702,8 +702,9 @@
                     
                     // Listen to realtime status updates
                     uniqueUsers.forEach(userId => {
-                        rtdb.ref(`/status/${userId}`).on('value', (snap) => {
+                        rtdb.ref(`/status/${userId}`).on('value', async (snap) => {
                             const status = snap.val() || { online: false };
+                            const userName = await getUserName(userId);
                             const memberElement = document.querySelector(`[data-member-id="${userId}"]`);
                             
                             if (!memberElement) {
@@ -712,13 +713,15 @@
                                 li.dataset.memberId = userId;
                                 li.innerHTML = `
                                     <span class="online-status ${status.online ? 'online' : ''}"></span>
-                                    <span class="member-name">${status.displayName || 'Anonymous'}</span>
+                                    <span class="member-name">${userName}</span>
                                     ${userId === createdBy ? '<span class="admin-tag">Admin</span>' : ''}
                                 `;
                                 membersList.appendChild(li);
                             } else {
                                 const statusDot = memberElement.querySelector('.online-status');
                                 statusDot.className = `online-status ${status.online ? 'online' : ''}`;
+                                const nameSpan = memberElement.querySelector('.member-name');
+                                nameSpan.textContent = userName;
                             }
                         });
                     });
