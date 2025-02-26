@@ -1185,6 +1185,7 @@
             const communitySection = document.querySelector('.community-section');
             const mainSections = document.querySelectorAll('.main-content > section');
             const createBtn = document.querySelector('.create-community-btn');
+            const modal = document.getElementById('createCommunityModal');
             const searchInput = document.getElementById('communitySearch');
 
             if (!communityLink || !communitySection || !createBtn || !searchInput) {
@@ -1194,11 +1195,9 @@
 
             // Function to update active nav link
             function updateActiveNav(clickedLink) {
-                // Remove active class from all nav links
                 document.querySelectorAll('.nav-link').forEach(link => {
                     link.classList.remove('active');
                 });
-                // Add active class to clicked link
                 clickedLink.classList.add('active');
             }
 
