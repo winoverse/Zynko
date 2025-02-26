@@ -327,11 +327,16 @@
                     const content = messageInput.value.trim();
                     if (!content) return;
 
+                    // Get user's profile data
+                    const userDoc = await db.collection('students').doc(currentUser.uid).get();
+                    const userData = userDoc.data();
+                    const userName = userData?.name || currentUser.displayName || 'Anonymous';
+
                     try {
                         await messagesRef.add({
                             content,
                             senderId: currentUser.uid,
-                            senderName: currentUser.displayName || 'Anonymous',
+                            senderName: userName,
                             timestamp: firebase.firestore.FieldValue.serverTimestamp(),
                             reactions: {}
                         });
@@ -434,10 +439,15 @@
                 // Set user online when they open chat
                 async function setUserOnlineStatus(online) {
                     try {
+                        // Get user's profile data
+                        const userDoc = await db.collection('students').doc(currentUser.uid).get();
+                        const userData = userDoc.data();
+                        const userName = userData?.name || currentUser.displayName || 'Anonymous';
+
                         await statusRef.doc(currentUser.uid).set({
                             online,
                             lastSeen: firebase.firestore.FieldValue.serverTimestamp(),
-                            displayName: currentUser.displayName || 'Anonymous'
+                            displayName: userName
                         });
                     } catch (error) {
                         console.error('Error updating online status:', error);
