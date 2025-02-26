@@ -653,14 +653,15 @@
                     membersList.innerHTML = '';
 
                     // Get online status for all members
-                    const statusDocs = await statusRef.where(firebase.firestore.FieldPath.documentId(), 'in', members).get();
+                    const uniqueUsers = [...new Set([...members, createdBy])];
+                    const statusDocs = await statusRef.where(firebase.firestore.FieldPath.documentId(), 'in', uniqueUsers).get();
                     const onlineStatus = {};
                     statusDocs.forEach(doc => {
                         onlineStatus[doc.id] = doc.data();
                     });
 
                     // Create member list items
-                    for (const memberId of members) {
+                    for (const memberId of uniqueUsers) {
                         const status = onlineStatus[memberId] || { online: false };
                         const li = document.createElement('li');
                         li.className = 'member-item';
