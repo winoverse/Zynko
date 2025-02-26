@@ -331,6 +331,56 @@
         .chat-messages::-webkit-scrollbar-thumb:hover {
             background-color: #cbd5e1;
         }
+
+        /* Add responsive styles */
+        @media (max-width: 768px) {
+            .chat-container {
+                grid-template-columns: 1fr;
+            }
+
+            .members-sidebar {
+                position: fixed;
+                right: -280px;
+                top: 0;
+                width: 280px;
+                height: 100vh;
+                transition: right 0.3s ease;
+                z-index: 1000;
+                box-shadow: -2px 0 5px rgba(0,0,0,0.1);
+            }
+
+            .members-sidebar.active {
+                right: 0;
+            }
+
+            .members-toggle {
+                display: block;
+                padding: 8px;
+                background: none;
+                border: none;
+                cursor: pointer;
+            }
+
+            .overlay {
+                display: none;
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background: rgba(0,0,0,0.5);
+                z-index: 999;
+            }
+
+            .overlay.active {
+                display: block;
+            }
+        }
+
+        /* Hide members toggle on desktop */
+        .members-toggle {
+            display: none;
+        }
     </style>
 </head>
 <body>
@@ -338,7 +388,17 @@
         <div class="chat-main">
             <div class="chat-header">
                 <h2 class="community-name">Community Name</h2>
-                <button class="back-btn">Back to Communities</button>
+                <div class="header-actions">
+                    <button class="members-toggle">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                            <circle cx="9" cy="7" r="4"></circle>
+                            <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                            <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                        </svg>
+                    </button>
+                    <button class="back-btn">Back to Communities</button>
+                </div>
             </div>
 
             <div class="search-messages">
@@ -363,6 +423,7 @@
                 <!-- Members will be added here dynamically -->
             </ul>
         </div>
+        <div class="overlay"></div>
     </div>
 
     <!-- Firebase SDKs -->
@@ -823,6 +884,29 @@
                 console.error('Error initializing chat:', error);
                 alert('Failed to initialize chat. Please try again.');
                 window.close();
+            }
+        });
+
+        // Add mobile menu handlers
+        const membersToggle = document.querySelector('.members-toggle');
+        const membersSidebar = document.querySelector('.members-sidebar');
+        const overlay = document.querySelector('.overlay');
+
+        membersToggle.addEventListener('click', () => {
+            membersSidebar.classList.toggle('active');
+            overlay.classList.toggle('active');
+        });
+
+        overlay.addEventListener('click', () => {
+            membersSidebar.classList.remove('active');
+            overlay.classList.remove('active');
+        });
+
+        // Close sidebar on window resize if we're back to desktop size
+        window.addEventListener('resize', () => {
+            if (window.innerWidth > 768) {
+                membersSidebar.classList.remove('active');
+                overlay.classList.remove('active');
             }
         });
     </script>
