@@ -452,14 +452,25 @@
                 const messageInput = document.getElementById('messageInput');
                 const sendButton = document.getElementById('sendMessage');
 
+                // Get user's profile data
+                async function getUserName(uid) {
+                    try {
+                        const userDoc = await db.collection('students').doc(uid).get();
+                        if (userDoc.exists) {
+                            return userDoc.data().name;
+                        }
+                        return 'Anonymous';
+                    } catch (error) {
+                        console.error('Error getting user name:', error);
+                        return 'Anonymous';
+                    }
+                }
+
                 async function sendMessage() {
                     const content = messageInput.value.trim();
                     if (!content) return;
 
-                    // Get user's profile data
-                    const userDoc = await db.collection('students').doc(currentUser.uid).get();
-                    const userData = userDoc.data();
-                    const userName = userData?.name || currentUser.displayName || 'Anonymous';
+                    const userName = await getUserName(currentUser.uid);
 
                     try {
                         await messagesRef.add({
@@ -623,10 +634,7 @@
                 // Set user online when they open chat
                 async function setUserOnlineStatus() {
                     try {
-                        // Get user's profile data
-                        const userDoc = await db.collection('students').doc(currentUser.uid).get();
-                        const userData = userDoc.data();
-                        const userName = userData?.name || currentUser.displayName || 'Anonymous';
+                        const userName = await getUserName(currentUser.uid);
 
                         // Set up Realtime Database reference
                         userStatusRef = rtdb.ref(`/status/${currentUser.uid}`);
@@ -636,21 +644,18 @@
                         connectedRef.on('value', async (snap) => {
                             if (snap.val() === true) {
                                 // User is online
-                                // Set up onDisconnect hooks
                                 await userStatusRef.onDisconnect().set({
                                     online: false,
                                     lastSeen: firebase.database.ServerValue.TIMESTAMP,
                                     displayName: userName
                                 });
 
-                                // Set user as online
                                 await userStatusRef.set({
                                     online: true,
                                     lastSeen: firebase.database.ServerValue.TIMESTAMP,
                                     displayName: userName
                                 });
 
-                                // Update Firestore status
                                 await onlineStatusRef.set({
                                     online: true,
                                     lastSeen: firebase.firestore.FieldValue.serverTimestamp(),
@@ -767,10 +772,7 @@
                 messageInput.addEventListener('input', async () => {
                     clearTimeout(typingTimeout);
                     
-                    // Get user's profile data
-                    const userDoc = await db.collection('students').doc(currentUser.uid).get();
-                    const userData = userDoc.data();
-                    const userName = userData?.name || currentUser.displayName || 'Anonymous';
+                    const userName = await getUserName(currentUser.uid);
                     
                     // Set typing status
                     typingRef.doc(currentUser.uid).set({
@@ -778,7 +780,7 @@
                         timestamp: firebase.firestore.FieldValue.serverTimestamp()
                     });
 
-                    // Clear typing status after 2 seconds of no input
+                    // Clear typing status after 2 seconds
                     typingTimeout = setTimeout(() => {
                         typingRef.doc(currentUser.uid).delete();
                     }, 2000);
