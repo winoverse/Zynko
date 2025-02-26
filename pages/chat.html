@@ -425,7 +425,7 @@
                 <input type="text" placeholder="Search messages...">
             </div>
 
-            <div class="chat-messages" id="messagesList">
+            <div id="messagesList" class="chat-messages">
                 <!-- Messages will be added here dynamically -->
             </div>
 
@@ -491,6 +491,14 @@
                 const communityNameElement = document.querySelector('.community-name');
                 if (communityNameElement) {
                     communityNameElement.textContent = communityData.name;
+                }
+
+                // Add back button functionality
+                const backBtn = document.querySelector('.back-btn');
+                if (backBtn) {
+                    backBtn.addEventListener('click', () => {
+                        window.location.href = '/pages/dashboard.html';
+                    });
                 }
 
                 // Get message list element
