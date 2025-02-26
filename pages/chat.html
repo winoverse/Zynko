@@ -290,29 +290,28 @@
                 const query = messagesRef.orderBy('timestamp', 'desc').limit(50);
 
                 // Load and display messages
-                query.onSnapshot(snapshot => {
+                query.onSnapshot(async snapshot => {
                     const messagesList = document.getElementById('messagesList');
                     
-                    snapshot.docChanges().forEach(change => {
+                    for (const change of snapshot.docChanges()) {
                         const message = change.doc.data();
                         const messageId = change.doc.id;
                         
                         if (change.type === 'added') {
-                            const messageElement = createMessageElement(message, messageId);
+                            const messageElement = await createMessageElement(message, messageId);
                             messagesList.insertBefore(messageElement, messagesList.firstChild);
                         }
-                        // Handle message updates (reactions) and deletions
                         else if (change.type === 'modified') {
                             const existingMsg = document.querySelector(`[data-message-id="${messageId}"]`);
                             if (existingMsg) {
-                                existingMsg.replaceWith(createMessageElement(message, messageId));
+                                existingMsg.replaceWith(await createMessageElement(message, messageId));
                             }
                         }
                         else if (change.type === 'removed') {
                             const msgToRemove = document.querySelector(`[data-message-id="${messageId}"]`);
                             if (msgToRemove) msgToRemove.remove();
                         }
-                    });
+                    }
                 }, error => {
                     console.error('Error loading messages:', error);
                     alert('Error loading messages. Please refresh the page.');
@@ -350,17 +349,26 @@
                 });
 
                 // Create message element helper function
-                function createMessageElement(message, messageId) {
+                async function createMessageElement(message, messageId) {
                     const div = document.createElement('div');
                     div.className = `message ${message.senderId === currentUser.uid ? 'own' : ''}`;
                     div.dataset.messageId = messageId;
 
                     const time = message.timestamp ? new Date(message.timestamp.toDate()).toLocaleTimeString() : '';
                     
+                    // Get community data to check if user is admin
+                    let isAdmin = false;
+                    try {
+                        const communityRef = db.collection('communities').doc(communityData.id);
+                        isAdmin = communityRef.get().then(doc => doc.data().createdBy === currentUser.uid);
+                    } catch (error) {
+                        console.error('Error checking admin status:', error);
+                    }
+
                     div.innerHTML = `
                         <div class="message-info">
                             <span class="sender-name">${message.senderName}</span>
-                            ${message.isAdmin ? '<span class="admin-tag">Admin</span>' : ''}
+                            ${message.senderId === communityData.createdBy ? '<span class="admin-tag">Admin</span>' : ''}
                             <span class="timestamp">${time}</span>
                         </div>
                         <div class="message-content">${message.content}</div>
