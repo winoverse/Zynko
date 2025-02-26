@@ -496,7 +496,8 @@
                     let isAdmin = false;
                     try {
                         const communityRef = db.collection('communities').doc(communityData.id);
-                        isAdmin = communityRef.get().then(doc => doc.data().createdBy === currentUser.uid);
+                        const doc = await communityRef.get();
+                        isAdmin = doc.data().createdBy === currentUser.uid;
                     } catch (error) {
                         console.error('Error checking admin status:', error);
                     }
@@ -524,7 +525,21 @@
                     // Add delete handler
                     const deleteBtn = div.querySelector('.delete-message');
                     if (deleteBtn) {
-                        deleteBtn.addEventListener('click', () => handleDelete(messageId));
+                        deleteBtn.addEventListener('click', async () => {
+                            // Check if user is admin or message owner before showing delete confirmation
+                            if (message.senderId !== currentUser.uid && !isAdmin) {
+                                await Swal.fire({
+                                    title: 'Permission Denied',
+                                    text: 'Only admins can delete other users\' messages',
+                                    icon: 'error',
+                                    confirmButtonColor: '#FF9B3F',
+                                    background: '#ffffff',
+                                    borderRadius: '12px'
+                                });
+                                return;
+                            }
+                            handleDelete(messageId);
+                        });
                     }
 
                     return div;
