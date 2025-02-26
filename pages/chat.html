@@ -18,6 +18,7 @@
             grid-template-columns: 1fr 280px;
             height: 100vh;
             background: #f8fafc;
+            overflow: hidden;  /* Prevent body scroll */
         }
 
         /* Main chat area */
@@ -26,6 +27,8 @@
             flex-direction: column;
             border-right: 1px solid #e2e8f0;
             background: white;
+            height: 100vh;  /* Full height */
+            overflow: hidden;  /* Prevent container scroll */
         }
 
         .chat-header {
@@ -36,6 +39,7 @@
             align-items: center;
             justify-content: space-between;
             box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            flex-shrink: 0;  /* Prevent header from shrinking */
         }
 
         .chat-header h2 {
@@ -63,11 +67,12 @@
 
         .chat-messages {
             flex: 1;
-            overflow-y: auto;
+            overflow-y: scroll;  /* Always show scrollbar */
             padding: 1rem;
             display: flex;
             flex-direction: column;
             gap: 1rem;
+            height: 0;  /* Allow flex to control height */
         }
 
         .message {
@@ -132,6 +137,7 @@
             display: flex;
             gap: 0.75rem;
             box-shadow: 0 -1px 3px rgba(0,0,0,0.05);
+            flex-shrink: 0;  /* Prevent input from shrinking */
         }
 
         .chat-input input {
@@ -169,6 +175,8 @@
         .members-sidebar {
             padding: 1.5rem;
             background: #ffffff;
+            height: 100vh;
+            overflow-y: auto;  /* Allow sidebar to scroll if needed */
         }
 
         .members-header {
@@ -304,6 +312,24 @@
 
         .delete-message:hover {
             background: #fecaca;
+        }
+
+        /* Custom scrollbar for chat messages */
+        .chat-messages::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .chat-messages::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .chat-messages::-webkit-scrollbar-thumb {
+            background-color: #e2e8f0;
+            border-radius: 3px;
+        }
+
+        .chat-messages::-webkit-scrollbar-thumb:hover {
+            background-color: #cbd5e1;
         }
     </style>
 </head>
