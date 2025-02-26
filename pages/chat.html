@@ -493,19 +493,19 @@
                     communityNameElement.textContent = communityData.name;
                 }
 
-                // Back button functionality
-                document.querySelector('.back-btn').addEventListener('click', () => {
-                    window.location.href = '/pages/dashboard.html';
-                });
+                // Get message list element
+                const messagesList = document.getElementById('messagesList');
+                if (!messagesList) {
+                    console.error('Messages list element not found');
+                    return;
+                }
 
-                // Set up real-time message listener
+                // Initialize Firebase references
                 const messagesRef = db.collection('communities').doc(communityData.id).collection('messages');
                 const query = messagesRef.orderBy('timestamp', 'asc').limit(50);
 
                 // Load and display messages
                 query.onSnapshot(async snapshot => {
-                    const messagesList = document.getElementById('messagesList');
-                    
                     for (const change of snapshot.docChanges()) {
                         const message = change.doc.data();
                         const messageId = change.doc.id;
