@@ -347,21 +347,22 @@
             .members-toggle {
                 display: block;
                 padding: 8px 12px;
-                background: #f8fafc;
+                background: #FF9B3F;
                 border-radius: 6px;
-                color: #1e293b;
+                color: white;
                 transition: all 0.2s;
+                border: none;
             }
 
             .members-toggle:hover {
-                background: #e2e8f0;
+                background: #ff8c20;
                 transform: translateY(-1px);
             }
 
             .members-toggle svg {
                 width: 24px;
                 height: 24px;
-                stroke: #64748b;
+                stroke: currentColor;
             }
 
             .members-sidebar {
@@ -410,7 +411,10 @@
                 <div class="header-actions">
                     <button class="members-toggle">
                         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M12 4v16m8-8H4"></path>
+                            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                            <circle cx="9" cy="7" r="4"></circle>
+                            <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                            <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
                         </svg>
                     </button>
                     <button class="back-btn">Back to Communities</button>
@@ -479,11 +483,11 @@
                 
                 if (!communityData || !currentUser) {
                     alert('Session expired or not authenticated. Please try again.');
-                    window.close();
+                    window.location.href = '/pages/dashboard.html';
                     return;
                 }
 
-                // Update community name in header
+                // Set community name in header
                 document.querySelector('.community-name').textContent = communityData.name;
 
                 // Back button functionality
