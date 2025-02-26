@@ -488,7 +488,10 @@
                 }
 
                 // Set community name in header
-                document.querySelector('.community-name').textContent = communityData.name;
+                const communityNameElement = document.querySelector('.community-name');
+                if (communityNameElement) {
+                    communityNameElement.textContent = communityData.name;
+                }
 
                 // Back button functionality
                 document.querySelector('.back-btn').addEventListener('click', () => {
@@ -772,6 +775,11 @@
 
                 // Get community members and their online status
                 async function updateMembersList() {
+                    if (!membersList) {
+                        console.error('Members list element not found');
+                        return;
+                    }
+
                     const doc = await communityRef.get();
                     const members = doc.data().members;
                     const createdBy = doc.data().createdBy;
