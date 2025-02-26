@@ -549,12 +549,17 @@
                 let typingTimeout;
                 const typingRef = db.collection('communities').doc(communityData.id).collection('typing');
 
-                messageInput.addEventListener('input', () => {
+                messageInput.addEventListener('input', async () => {
                     clearTimeout(typingTimeout);
+                    
+                    // Get user's profile data
+                    const userDoc = await db.collection('students').doc(currentUser.uid).get();
+                    const userData = userDoc.data();
+                    const userName = userData?.name || currentUser.displayName || 'Anonymous';
                     
                     // Set typing status
                     typingRef.doc(currentUser.uid).set({
-                        displayName: currentUser.displayName || 'Anonymous',
+                        displayName: userName,
                         timestamp: firebase.firestore.FieldValue.serverTimestamp()
                     });
 
