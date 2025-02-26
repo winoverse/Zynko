@@ -989,6 +989,21 @@
                 transform: translate(-50%, -50%) rotate(360deg);
             }
         }
+
+        .open-chat-btn {
+            background: #4CAF50;
+            color: white;
+            border: none;
+            padding: 8px 20px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+
+        .open-chat-btn:hover {
+            background: #45a049;
+        }
     </style>
     <!-- Update Firebase SDK imports -->
     <script src="https://www.gstatic.com/firebasejs/11.3.1/firebase-app-compat.js"></script>
@@ -1390,6 +1405,11 @@
                                         ${isJoined ? 'Leave' : 'Join'}
                                     </button>` : ''
                                 }
+                                ${isJoined ? 
+                                    `<button class="open-chat-btn" data-id="${doc.id}" data-name="${data.name}">
+                                        Open Chat
+                                    </button>` : ''
+                                }
                                 ${data.createdBy === currentUserId ? 
                                     `<button class="delete-btn" data-id="${doc.id}">Delete</button>` : 
                                     ''}
@@ -1492,6 +1512,23 @@
                                 });
                             }
                         }
+                    });
+                });
+
+                // Add open chat event listeners
+                document.querySelectorAll('.open-chat-btn').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        const communityId = e.target.dataset.id;
+                        const communityName = e.target.dataset.name;
+                        
+                        // Store community info in sessionStorage
+                        sessionStorage.setItem('currentCommunity', JSON.stringify({
+                            id: communityId,
+                            name: communityName
+                        }));
+                        
+                        // Open chat in new window/tab
+                        window.open('/pages/chat.html', '_blank');
                     });
                 });
             } catch (error) {
