@@ -282,12 +282,12 @@
 
                 // Back button functionality
                 document.querySelector('.back-btn').addEventListener('click', () => {
-                    window.close();
+                    window.location.href = '/pages/dashboard.html';
                 });
 
                 // Set up real-time message listener
                 const messagesRef = db.collection('communities').doc(communityData.id).collection('messages');
-                const query = messagesRef.orderBy('timestamp', 'desc').limit(50);
+                const query = messagesRef.orderBy('timestamp', 'asc').limit(50);
 
                 // Load and display messages
                 query.onSnapshot(async snapshot => {
@@ -299,7 +299,9 @@
                         
                         if (change.type === 'added') {
                             const messageElement = await createMessageElement(message, messageId);
-                            messagesList.insertBefore(messageElement, messagesList.firstChild);
+                            messagesList.appendChild(messageElement);
+                            // Auto scroll to bottom on new message
+                            messagesList.scrollTop = messagesList.scrollHeight;
                         }
                         else if (change.type === 'modified') {
                             const existingMsg = document.querySelector(`[data-message-id="${messageId}"]`);
