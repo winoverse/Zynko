@@ -1517,18 +1517,30 @@
 
                 // Add open chat event listeners
                 document.querySelectorAll('.open-chat-btn').forEach(btn => {
-                    btn.addEventListener('click', (e) => {
+                    btn.addEventListener('click', async (e) => {
+                        const user = firebase.auth().currentUser;
+                        if (!user) {
+                            await Swal.fire({
+                                icon: 'error',
+                                title: 'Authentication Required',
+                                text: 'Please sign in to access the chat'
+                            });
+                            return;
+                        }
+
                         const communityId = e.target.dataset.id;
                         const communityName = e.target.dataset.name;
                         
                         // Store community info in sessionStorage
                         sessionStorage.setItem('currentCommunity', JSON.stringify({
                             id: communityId,
-                            name: communityName
+                            name: communityName,
+                            userId: user.uid,
+                            userName: user.displayName || 'Anonymous'
                         }));
                         
                         // Open chat in new window/tab
-                        window.open('/pages/chat.html', '_blank');
+                        window.open('/pages/chat.html', 'chatWindow', 'width=1000,height=800');
                     });
                 });
             } catch (error) {
