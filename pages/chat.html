@@ -700,11 +700,17 @@
                     // Get online status for all members
                     const uniqueUsers = [...new Set([...members, createdBy])];
                     
+                    // First fetch all user names to avoid race conditions
+                    const userNames = {};
+                    for (const userId of uniqueUsers) {
+                        userNames[userId] = await getUserName(userId);
+                    }
+                    
                     // Listen to realtime status updates
                     uniqueUsers.forEach(userId => {
                         rtdb.ref(`/status/${userId}`).on('value', async (snap) => {
                             const status = snap.val() || { online: false };
-                            const userName = await getUserName(userId);
+                            const userName = userNames[userId];
                             const memberElement = document.querySelector(`[data-member-id="${userId}"]`);
                             
                             if (!memberElement) {
