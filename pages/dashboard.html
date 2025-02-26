@@ -1074,6 +1074,43 @@
                     });
                 });
             }
+
+            // Add logout handler
+            const logoutLink = document.querySelector('.nav-links li:last-child .nav-link');
+            if (logoutLink) {
+                logoutLink.addEventListener('click', async (e) => {
+                    e.preventDefault();
+                    
+                    const result = await Swal.fire({
+                        title: 'Are you sure?',
+                        text: "You will be logged out of your account",
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: '#FF9B3F',
+                        cancelButtonColor: '#666',
+                        confirmButtonText: 'Yes, logout',
+                        background: '#fff',
+                        color: '#333'
+                    });
+
+                    if (result.isConfirmed) {
+                        // Clear localStorage
+                        localStorage.clear();
+                        
+                        // Show success message
+                        await Toast.fire({
+                            icon: 'success',
+                            title: 'Logged out successfully!',
+                            background: '#fff',
+                            color: '#333',
+                            iconColor: '#FF9B3F'
+                        });
+
+                        // Redirect to auth page
+                        window.location.href = '/pages/authform.html';
+                    }
+                });
+            }
         });
 
         // Sweet Alert Configuration
@@ -1559,43 +1596,6 @@
                 clearTimeout(timeout);
                 timeout = setTimeout(later, wait);
             };
-        }
-
-        // Add logout handler
-        const logoutLink = document.querySelector('.nav-link[href="#"]:last-child');
-        if (logoutLink) {
-            logoutLink.addEventListener('click', async (e) => {
-                e.preventDefault();
-                
-                const result = await Swal.fire({
-                    title: 'Are you sure?',
-                    text: "You will be logged out of your account",
-                    icon: 'warning',
-                    showCancelButton: true,
-                    confirmButtonColor: '#FF9B3F',
-                    cancelButtonColor: '#666',
-                    confirmButtonText: 'Yes, logout',
-                    background: '#fff',
-                    color: '#333'
-                });
-
-                if (result.isConfirmed) {
-                    // Clear localStorage
-                    localStorage.clear();
-                    
-                    // Show success message
-                    await Toast.fire({
-                        icon: 'success',
-                        title: 'Logged out successfully!',
-                        background: '#fff',
-                        color: '#333',
-                        iconColor: '#FF9B3F'
-                    });
-
-                    // Redirect to auth page
-                    window.location.href = '/pages/authform.html';
-                }
-            });
         }
     </script>
 </head>
