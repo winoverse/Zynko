@@ -958,6 +958,37 @@
                 font-size: 0.85rem;
             }
         }
+
+        /* Add this CSS for the button loading state */
+        .join-btn.loading {
+            position: relative;
+            color: transparent;
+            pointer-events: none;
+        }
+
+        .join-btn.loading::after {
+            content: '';
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            width: 16px;
+            height: 16px;
+            border: 2px solid #fff;
+            border-radius: 50%;
+            border-top-color: transparent;
+            transform: translate(-50%, -50%);
+            animation: spin 1s linear infinite;
+        }
+
+        /* Add keyframes for spin animation */
+        @keyframes spin {
+            from {
+                transform: translate(-50%, -50%) rotate(0deg);
+            }
+            to {
+                transform: translate(-50%, -50%) rotate(360deg);
+            }
+        }
     </style>
     <!-- Update Firebase SDK imports -->
     <script src="https://www.gstatic.com/firebasejs/11.3.1/firebase-app-compat.js"></script>
@@ -1385,6 +1416,10 @@
                     btn.addEventListener('click', async (e) => {
                         const communityId = e.target.dataset.id;
                         const isJoined = e.target.classList.contains('joined');
+                        const button = e.target;
+                        
+                        // Add loading state
+                        button.classList.add('loading');
                         
                         try {
                             const communityRef = db.collection('communities').doc(communityId);
@@ -1419,6 +1454,8 @@
                                 title: 'Error',
                                 text: 'Failed to update membership'
                             });
+                            // Remove loading state if error occurs
+                            button.classList.remove('loading');
                         }
                     });
                 });
