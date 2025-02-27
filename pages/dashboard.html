@@ -1033,6 +1033,30 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <script>
+        // Add this right after your Firebase initialization and before the DOMContentLoaded events
+        // Define SVG icons
+        const svgIcons = {
+            rocket: `<svg width="50" height="50" viewBox="0 0 24 24" style="margin-bottom:10px">
+                <path fill="#FF9B3F" d="M12 1.85c-.27 0-.54.07-.78.2L3 7.3c-.48.33-.77.87-.77 1.45v6.5c0 .58.29 1.12.77 1.45l8.22 5.25c.24.13.51.2.78.2s.54-.07.78-.2l8.22-5.25c.48-.33.77-.87.77-1.45v-6.5c0-.58-.29-1.12-.77-1.45l-8.22-5.25c-.24-.13-.51-.2-.78-.2zm0 2.9L18.4 9l-6.4 3.7L5.6 9l6.4-4.25zm-7 5.95l6 3.47v6.93l-6-3.83v-6.57zm8 0l6 3.47v6.93l-6-3.83v-6.57z"/>
+            </svg>`,
+            
+            star: `<svg width="50" height="50" viewBox="0 0 24 24" style="margin-bottom:10px">
+                <path fill="#FFD700" d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/>
+            </svg>`,
+            
+            superhero: `<svg width="50" height="50" viewBox="0 0 24 24" style="margin-bottom:10px">
+                <path fill="#4CAF50" d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/>
+            </svg>`,
+            
+            celebration: `<svg width="50" height="50" viewBox="0 0 24 24" style="margin-bottom:10px">
+                <path fill="#FF9B3F" d="M2 22l14-14-4-4 8-8-2 2 6 6-2 2-6-6-4 4L26 18l-4 4H2zm8-8l4 4 10-10-4-4-10 10z"/>
+            </svg>`,
+            
+            magic: `<svg width="50" height="50" viewBox="0 0 24 24" style="margin-bottom:10px">
+                <path fill="#9C27B0" d="M7 4c.28 0 .53.11.71.29L9 5.59V7c0 .55.45 1 1 1h1.41l1.3 1.3c.18.18.29.43.29.71s-.11.53-.29.71L11.41 12H10c-.55 0-1 .45-1 1v1.41l-1.3 1.3c-.18.18-.43.29-.71.29s-.53-.11-.71-.29L5 14.41V13c0-.55-.45-1-1-1H2.41l-1.3-1.3C.93 10.53.82 10.28.82 10s.11-.53.29-.71L2.41 8H4c.55 0 1-.45 1-1V5.41l1.3-1.3C6.47 4.11 6.72 4 7 4zm10 0c.28 0 .53.11.71.29L19 5.59V7c0 .55.45 1 1 1h1.41l1.3 1.3c.18.18.29.43.29.71s-.11.53-.29.71L21.41 12H20c-.55 0-1 .45-1 1v1.41l-1.3 1.3c-.18.18-.43.29-.71.29s-.53-.11-.71-.29L15 14.41V13c0-.55-.45-1-1-1h-1.41l-1.3-1.3c-.18-.18-.29-.43-.29-.71s.11-.53.29-.71L12.59 8H14c.55 0 1-.45 1-1V5.41l1.3-1.3c.18-.18.43-.29.71-.29z"/>
+            </svg>`
+        };
+
         document.addEventListener('DOMContentLoaded', () => {
             const hamburger = document.querySelector('.hamburger');
             const sidebar = document.querySelector('.sidebar');
