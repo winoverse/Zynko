@@ -1128,20 +1128,23 @@
                         if (userClass === '6') {
                             // Fun confirmation for class 6 students
                             const result = await Swal.fire({
-                                title: `Ready for ${subjectName} Adventure? 🚀`,
-                                html: `<div style="font-size: 1.1em; margin: 20px 0;">
-                                    Hey Champion! 🌟<br>
-                                    Let's explore ${subjectName} together!<br>
-                                    Are you ready to become a ${subjectName} superhero? 💪
-                                </div>`,
-                                icon: 'question',
+                                title: `Ready for ${subjectName} Adventure?`,
+                                html: `
+                                    ${svgIcons.rocket}
+                                    <div style="font-size: 1.2em; margin: 20px 0; color: #333;">
+                                        ${svgIcons.star}
+                                        <div style="margin: 15px 0;">Hey Champion!</div>
+                                        <div style="margin: 10px 0;">Let's explore ${subjectName} together!</div>
+                                        ${svgIcons.superhero}
+                                        <div style="margin: 15px 0;">Are you ready to become a<br>${subjectName} superhero?</div>
+                                    </div>
+                                `,
                                 showCancelButton: true,
                                 confirmButtonColor: '#FF9B3F',
                                 cancelButtonColor: '#666',
-                                confirmButtonText: '🎮 Let\'s Go!',
-                                cancelButtonText: '🤔 Not Now',
+                                confirmButtonText: `<div style="font-size: 1.1em">Let's Go!</div>`,
+                                cancelButtonText: `<div style="font-size: 1.1em">Not Now</div>`,
                                 background: '#fff',
-                                color: '#333',
                                 customClass: {
                                     popup: 'animated bounceIn',
                                     title: 'custom-swal-title'
@@ -1157,35 +1160,42 @@
                             if (result.isConfirmed) {
                                 // Success animation before navigation
                                 await Swal.fire({
-                                    title: 'Awesome! 🎉',
-                                    html: `<div style="font-size: 1.1em">
-                                        Get ready for an amazing<br>
-                                        ${subjectName} journey! 🌈
-                                    </div>`,
-                                    icon: 'success',
-                                    confirmButtonColor: '#FF9B3F',
+                                    html: `
+                                        ${svgIcons.celebration}
+                                        <div style="font-size: 1.3em; font-weight: bold; color: #FF9B3F; margin: 15px 0;">
+                                            Awesome!
+                                        </div>
+                                        <div style="font-size: 1.1em; color: #333;">
+                                            Get ready for an amazing<br>
+                                            ${subjectName} journey!
+                                        </div>
+                                    `,
+                                    background: '#fff',
+                                    showConfirmButton: false,
                                     timer: 2000,
-                                    timerProgressBar: true,
-                                    showConfirmButton: false
+                                    timerProgressBar: true
                                 });
-                                // Handle navigation here
                                 console.log(`Starting ${subjectName}`);
                             }
                         } else {
                             // Playful "coming soon" message for other classes
                             await Swal.fire({
-                                title: 'Coming Soon! 🎨',
-                                html: `<div style="font-size: 1.1em">
-                                    Hey Future Champion! 🌟<br><br>
-                                    We're creating something AMAZING for<br>
-                                    <b style="color: #FF9B3F">${subjectName}</b> - Class ${userClass}!<br><br>
-                                    Stay tuned for an incredible learning adventure! 🚀
-                                </div>`,
-                                icon: 'info',
+                                html: `
+                                    ${svgIcons.star}
+                                    <div style="font-size: 1.3em; font-weight: bold; color: #FF9B3F; margin: 15px 0;">
+                                        Coming Soon!
+                                    </div>
+                                    <div style="font-size: 1.1em; color: #333;">
+                                        Hey Future Champion!<br><br>
+                                        We're creating something AMAZING for<br>
+                                        <b style="color: #FF9B3F">${subjectName}</b> - Class ${userClass}!<br><br>
+                                        Stay tuned for an incredible learning adventure!
+                                        ${svgIcons.rocket}
+                                    </div>
+                                `,
                                 confirmButtonColor: '#FF9B3F',
-                                confirmButtonText: '👍 Can\'t Wait!',
+                                confirmButtonText: `<div style="font-size: 1.1em">Can't Wait!</div>`,
                                 background: '#fff',
-                                color: '#333',
                                 showClass: {
                                     popup: 'animate__animated animate__bounceIn'
                                 }
@@ -1194,11 +1204,15 @@
                     } catch (error) {
                         console.error('Error:', error);
                         await Swal.fire({
-                            title: 'Oops... 😅',
-                            text: 'Something went wrong! Let\'s try again!',
-                            icon: 'error',
+                            html: `
+                                <svg width="50" height="50" viewBox="0 0 24 24" style="margin-bottom:10px">
+                                    <path fill="#FF9B3F" d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/>
+                                </svg>
+                                <div style="font-size: 1.2em; color: #FF9B3F; margin: 10px 0;">Oops...</div>
+                                <div style="font-size: 1.1em; color: #333;">Something went wrong! Let's try again!</div>
+                            `,
                             confirmButtonColor: '#FF9B3F',
-                            confirmButtonText: '🔄 Try Again'
+                            confirmButtonText: `<div style="font-size: 1.1em">Try Again</div>`
                         });
                     }
                 });
