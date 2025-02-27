@@ -1033,18 +1033,6 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <script>
-        // Add this function to check user data
-        async function checkUserData(userId) {
-            try {
-                const userDoc = await db.collection('students').doc(userId).get();
-                return userDoc.exists && userDoc.data().name && userDoc.data().board && userDoc.data().class;
-            } catch (error) {
-                console.error('Error checking user data:', error);
-                return false;
-            }
-        }
-
-        // Hamburger Menu functionality
         document.addEventListener('DOMContentLoaded', () => {
             const hamburger = document.querySelector('.hamburger');
             const sidebar = document.querySelector('.sidebar');
@@ -1124,19 +1112,60 @@
                     }
                 });
             }
-        });
 
-        // Sweet Alert Configuration
-        const Toast = Swal.mixin({
-            toast: true,
-            position: 'top-end',
-            showConfirmButton: false,
-            timer: 3000,
-            timerProgressBar: true,
-            didOpen: (toast) => {
-                toast.addEventListener('mouseenter', Swal.stopTimer)
-                toast.addEventListener('mouseleave', Swal.resumeTimer)
-            }
+            // Add subject cards click handlers
+            const subjectCards = document.querySelectorAll('.subject-card');
+            
+            subjectCards.forEach(card => {
+                card.addEventListener('click', async () => {
+                    const subjectName = card.querySelector('.subject-name').textContent;
+                    const userId = localStorage.getItem('userId');
+                    
+                    try {
+                        // Get user's class from Firebase
+                        const userDoc = await db.collection('students').doc(userId).get();
+                        const userClass = userDoc.data().class;
+
+                        if (userClass === '6') {
+                            // Show confirmation for class 6 students
+                            const result = await Swal.fire({
+                                title: `Start ${subjectName}?`,
+                                text: 'Are you ready to start learning?',
+                                icon: 'question',
+                                showCancelButton: true,
+                                confirmButtonColor: '#FF9B3F',
+                                cancelButtonColor: '#666',
+                                confirmButtonText: 'Yes, start now!',
+                                background: '#fff',
+                                color: '#333'
+                            });
+
+                            if (result.isConfirmed) {
+                                // Handle subject start (you can add navigation logic here)
+                                console.log(`Starting ${subjectName}`);
+                            }
+                        } else {
+                            // Show "coming soon" message for other classes
+                            await Swal.fire({
+                                title: 'Coming Soon!',
+                                text: `${subjectName} syllabus for Class ${userClass} will be uploaded soon.`,
+                                icon: 'info',
+                                confirmButtonColor: '#FF9B3F',
+                                background: '#fff',
+                                color: '#333'
+                            });
+                        }
+                    } catch (error) {
+                        console.error('Error:', error);
+                        await Swal.fire({
+                            icon: 'error',
+                            title: 'Oops...',
+                            text: 'Something went wrong!',
+                            confirmButtonColor: '#FF9B3F'
+                        });
+                    }
+                });
+            });
         });
 
         // Update the window load event handler
@@ -1273,6 +1302,30 @@
                     submitButton.disabled = false;
                 }
             });
+        });
+
+        // Add this function to check user data
+        async function checkUserData(userId) {
+            try {
+                const userDoc = await db.collection('students').doc(userId).get();
+                return userDoc.exists && userDoc.data().name && userDoc.data().board && userDoc.data().class;
+            } catch (error) {
+                console.error('Error checking user data:', error);
+                return false;
+            }
+        }
+
+        // Sweet Alert Configuration
+        const Toast = Swal.mixin({
+            toast: true,
+            position: 'top-end',
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true,
+            didOpen: (toast) => {
+                toast.addEventListener('mouseenter', Swal.stopTimer)
+                toast.addEventListener('mouseleave', Swal.resumeTimer)
+            }
         });
 
         // Add this to your existing script
@@ -1610,60 +1663,6 @@
                 timeout = setTimeout(later, wait);
             };
         }
-
-        // Add click handlers for subject cards
-        const subjectCards = document.querySelectorAll('.subject-card');
-        
-        subjectCards.forEach(card => {
-            card.addEventListener('click', async () => {
-                const subjectName = card.querySelector('.subject-name').textContent;
-                const userId = localStorage.getItem('userId');
-                
-                try {
-                    // Get user's class from Firebase
-                    const userDoc = await db.collection('students').doc(userId).get();
-                    const userClass = userDoc.data().class;
-
-                    if (userClass === '6') {
-                        // Show confirmation for class 6 students
-                        const result = await Swal.fire({
-                            title: `Start ${subjectName}?`,
-                            text: 'Are you ready to start learning?',
-                            icon: 'question',
-                            showCancelButton: true,
-                            confirmButtonColor: '#FF9B3F',
-                            cancelButtonColor: '#666',
-                            confirmButtonText: 'Yes, start now!',
-                            background: '#fff',
-                            color: '#333'
-                        });
-
-                        if (result.isConfirmed) {
-                            // Handle subject start (you can add navigation logic here)
-                            console.log(`Starting ${subjectName}`);
-                        }
-                    } else {
-                        // Show "coming soon" message for other classes
-                        await Swal.fire({
-                            title: 'Coming Soon!',
-                            text: `${subjectName} syllabus for Class ${userClass} will be uploaded soon.`,
-                            icon: 'info',
-                            confirmButtonColor: '#FF9B3F',
-                            background: '#fff',
-                            color: '#333'
-                        });
-                    }
-                } catch (error) {
-                    console.error('Error:', error);
-                    await Swal.fire({
-                        icon: 'error',
-                        title: 'Oops...',
-                        text: 'Something went wrong!',
-                        confirmButtonColor: '#FF9B3F'
-                    });
-                }
-            });
-        });
     </script>
 </head>
 <body>
