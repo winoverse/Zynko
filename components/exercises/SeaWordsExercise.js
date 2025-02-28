@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
-const SeaWordsExercise = ({ data }) => {
+function SeaWordsExercise({ data }) {
     const [words, setWords] = useState(['', '', '', '', '']);
     const [sentences, setSentences] = useState(['', '', '', '', '']);
     const [feedback, setFeedback] = useState(null);
@@ -68,74 +68,90 @@ const SeaWordsExercise = ({ data }) => {
         // Here you could also save to a database or context
     };
 
-    return (
-        <motion.div 
-            className="sea-words-container"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-        >
-            <h3>Sea-Related Words</h3>
-            <p className="instruction">{data.instruction}</p>
-            
-            <div className="example">
-                <strong>Example:</strong> {data.example.word} – {data.example.sentence}
-            </div>
-
-            <div className="word-entries">
-                {words.map((word, index) => (
-                    <motion.div 
-                        key={index}
-                        className="word-entry"
-                        initial={{ x: -20, opacity: 0 }}
-                        animate={{ x: 0, opacity: 1 }}
-                        transition={{ delay: index * 0.1 }}
-                    >
-                        <div className="word-input">
-                            <input
-                                type="text"
-                                value={word}
-                                onChange={(e) => handleWordChange(index, e.target.value)}
-                                placeholder="Enter sea-related word"
-                                className={saved ? 'saved' : ''}
-                            />
-                        </div>
-                        <div className="sentence-input">
-                            <input
-                                type="text"
-                                value={sentences[index]}
-                                onChange={(e) => handleSentenceChange(index, e.target.value)}
-                                placeholder="Write a sentence using this word"
-                                className={saved ? 'saved' : ''}
-                            />
-                        </div>
-                    </motion.div>
-                ))}
-            </div>
-
-            <AnimatePresence>
-                {feedback && (
-                    <motion.div 
-                        className={`feedback ${feedback.type}`}
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, y: -20 }}
-                    >
-                        {feedback.message}
-                    </motion.div>
-                )}
-            </AnimatePresence>
-
-            <div className="exercise-controls">
-                <button 
-                    className="save-btn"
-                    onClick={handleSave}
-                    disabled={!words.some(w => w.trim()) || !sentences.some(s => s.trim())}
-                >
-                    {saved ? 'Update' : 'Save'}
-                </button>
-            </div>
-        </motion.div>
+    return React.createElement(
+        motion.div,
+        {
+            className: 'sea-words-container',
+            initial: { opacity: 0 },
+            animate: { opacity: 1 },
+            transition: { duration: 0.5 }
+        },
+        [
+            React.createElement('h3', { key: 'title' }, 'Sea-Related Words'),
+            React.createElement('p', { key: 'instruction', className: 'instruction' }, data.instruction),
+            React.createElement(
+                'div',
+                { key: 'example', className: 'example' },
+                React.createElement('strong', null, 'Example: '),
+                `${data.example.word} – ${data.example.sentence}`
+            ),
+            React.createElement(
+                'div',
+                { key: 'entries', className: 'word-entries' },
+                words.map((word, index) => 
+                    React.createElement(
+                        motion.div,
+                        {
+                            key: index,
+                            className: 'word-entry',
+                            initial: { x: -20, opacity: 0 },
+                            animate: { x: 0, opacity: 1 },
+                            transition: { delay: index * 0.1 }
+                        },
+                        [
+                            React.createElement(
+                                'div',
+                                { key: 'word', className: 'word-input' },
+                                React.createElement('input', {
+                                    type: 'text',
+                                    value: word,
+                                    onChange: (e) => handleWordChange(index, e.target.value),
+                                    placeholder: 'Enter sea-related word'
+                                })
+                            ),
+                            React.createElement(
+                                'div',
+                                { key: 'sentence', className: 'sentence-input' },
+                                React.createElement('input', {
+                                    type: 'text',
+                                    value: sentences[index],
+                                    onChange: (e) => handleSentenceChange(index, e.target.value),
+                                    placeholder: 'Write a sentence using this word'
+                                })
+                            )
+                        ]
+                    )
+                )
+            ),
+            React.createElement(
+                AnimatePresence,
+                null,
+                React.createElement(
+                    motion.div,
+                    {
+                        className: `feedback ${feedback?.type}`,
+                        initial: { opacity: 0, y: 20 },
+                        animate: { opacity: 1, y: 0 },
+                        exit: { opacity: 0, y: -20 }
+                    },
+                    React.createElement('p', null, feedback?.message)
+                )
+            ),
+            React.createElement(
+                'div',
+                { key: 'controls', className: 'exercise-controls' },
+                React.createElement(
+                    'button',
+                    {
+                        className: 'save-btn',
+                        onClick: handleSave,
+                        disabled: !words.some(w => w.trim()) || !sentences.some(s => s.trim())
+                    },
+                    saved ? 'Update' : 'Save'
+                )
+            )
+        ]
     );
-};
+}
 
-export default SeaWordsExercise; 
+window.SeaWordsExercise = SeaWordsExercise; 
