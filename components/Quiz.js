@@ -8,10 +8,10 @@ import WordFill from './exercises/WordFill';
 import MatchingExercise from './exercises/MatchingExercise';
 import SeaWordsExercise from './exercises/SeaWordsExercise';
 
-const Quiz = () => {
-    const { currentSection, sections } = useContext(SectionContext);
+function Quiz() {
+    const { currentSection, sections } = React.useContext(window.SectionContext.SectionContext);
     const quizData = sections[currentSection].quiz;
-    const [currentQuestionType, setCurrentQuestionType] = useState('questions'); // ['questions', 'vocabulary', 'listening']
+    const [currentQuestionType, setCurrentQuestionType] = React.useState('questions'); // ['questions', 'vocabulary', 'listening']
     const [currentQuestion, setCurrentQuestion] = useState(0);
     const [score, setScore] = useState(0);
     const [timeLeft, setTimeLeft] = useState(30);
@@ -164,53 +164,47 @@ const Quiz = () => {
     const renderQuestionsByType = () => {
         switch(currentQuestionType) {
             case 'questions':
-                return <MultipleChoiceQuestions questions={quizData.questions} />;
+                return React.createElement(MultipleChoiceQuestions, { questions: quizData.questions });
             case 'vocabulary':
-                return (
-                    <>
-                        <WordFill questions={quizData.vocabulary.wordFill} />
-                        <MatchingExercise questions={quizData.vocabulary.matching} />
-                        <SeaWordsExercise data={quizData.vocabulary.seaWords} />
-                    </>
+                return React.createElement(
+                    React.Fragment,
+                    null,
+                    React.createElement(WordFill, { questions: quizData.vocabulary.wordFill }),
+                    React.createElement(MatchingExercise, { questions: quizData.vocabulary.matching }),
+                    React.createElement(SeaWordsExercise, { data: quizData.vocabulary.seaWords })
                 );
             case 'listening':
-                return <Listening data={quizData.listening} />;
+                return React.createElement(Listening, { data: quizData.listening });
             default:
                 return null;
         }
     };
 
-    return (
-        <motion.div 
-            className="quiz-container"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.5 }}
-        >
-            <div className="quiz-navigation">
-                <button 
-                    onClick={() => setCurrentQuestionType('questions')}
-                    className={currentQuestionType === 'questions' ? 'active' : ''}
-                >
-                    Quiz Questions
-                </button>
-                <button 
-                    onClick={() => setCurrentQuestionType('vocabulary')}
-                    className={currentQuestionType === 'vocabulary' ? 'active' : ''}
-                >
-                    Vocabulary
-                </button>
-                <button 
-                    onClick={() => setCurrentQuestionType('listening')}
-                    className={currentQuestionType === 'listening' ? 'active' : ''}
-                >
-                    Listening
-                </button>
-            </div>
-
-            {renderQuestionsByType()}
-        </motion.div>
+    return React.createElement(
+        motion.div,
+        {
+            className: 'quiz-container',
+            initial: { opacity: 0 },
+            animate: { opacity: 1 },
+            transition: { duration: 0.5 }
+        },
+        React.createElement(
+            'div',
+            { className: 'quiz-navigation' },
+            ['questions', 'vocabulary', 'listening'].map(type => 
+                React.createElement(
+                    'button',
+                    {
+                        key: type,
+                        onClick: () => setCurrentQuestionType(type),
+                        className: currentQuestionType === type ? 'active' : ''
+                    },
+                    type.charAt(0).toUpperCase() + type.slice(1)
+                )
+            )
+        ),
+        renderQuestionsByType()
     );
-};
+}
 
-export default Quiz; 
+window.Quiz = Quiz; 
