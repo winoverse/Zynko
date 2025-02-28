@@ -58,26 +58,47 @@
     <!-- Add script loading handler -->
     <script>
         let scriptsLoaded = 0;
-        const totalScripts = 12;
+        const totalScripts = 12; // Make sure this matches your actual script count
         
         function handleScriptLoad() {
             scriptsLoaded++;
+            console.log('Script loaded:', scriptsLoaded, 'of', totalScripts); // Add logging
             if (scriptsLoaded === totalScripts) {
-                document.querySelector('.initial-loading').style.display = 'none';
+                const loadingElement = document.querySelector('.initial-loading');
+                if (loadingElement) {
+                    loadingElement.style.display = 'none';
+                }
+                
                 // Initialize the app
                 const root = document.getElementById('root');
-                const selectedUnit = localStorage.getItem('selectedUnit');
-                const contentType = localStorage.getItem('contentType');
-                const contentTitle = localStorage.getItem('contentTitle');
+                if (!root) {
+                    console.error('Root element not found');
+                    return;
+                }
 
-                ReactDOM.render(
-                    React.createElement(window.App, {
-                        unit: selectedUnit,
-                        contentType: contentType,
-                        contentTitle: contentTitle
-                    }),
-                    root
-                );
+                const selectedUnit = localStorage.getItem('selectedUnit') || '1';
+                const contentType = localStorage.getItem('contentType') || 'Prose';
+                const contentTitle = localStorage.getItem('contentTitle') || 'Introduction';
+
+                // Check if App is available
+                if (!window.App) {
+                    console.error('App component not loaded');
+                    return;
+                }
+
+                try {
+                    ReactDOM.render(
+                        React.createElement(window.App, {
+                            unit: selectedUnit,
+                            contentType: contentType,
+                            contentTitle: contentTitle
+                        }),
+                        root
+                    );
+                    console.log('App rendered successfully');
+                } catch (error) {
+                    console.error('Error rendering app:', error);
+                }
             }
         }
     </script>
