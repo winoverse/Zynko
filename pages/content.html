@@ -69,21 +69,29 @@
         function handleScriptLoad(scriptName) {
             try {
                 scriptsLoaded++;
-                loadedScripts.add(scriptName);
-                console.log(`Loaded ${scriptName} (${scriptsLoaded}/${totalScripts})`);
-
-                // Check if the component is actually available
-                const componentName = scriptName.replace(/^.+\//, '');
-                if (!window[componentName]) {
-                    console.error(`Component ${componentName} not found on window object`);
-                }
+                const componentName = scriptName.split('/').pop().replace('.js', '');
+                console.log(`Loading ${componentName}...`);
+                
+                // Log the actual window object state
+                console.log(`${componentName} available:`, !!window[componentName]);
+                console.log(`Scripts loaded: ${scriptsLoaded}/${totalScripts}`);
 
                 if (scriptsLoaded === totalScripts) {
-                    console.log('All scripts loaded, initializing...');
-                    setTimeout(initializeApp, 100); // Add small delay to ensure everything is ready
+                    console.log('All components loaded. Available components:', 
+                        Object.keys(window).filter(k => [
+                            'App', 
+                            'Loading', 
+                            'SectionContext', 
+                            'InteractiveProse', 
+                            'Quiz',
+                            'SectionContent',
+                            'Navigation'
+                        ].includes(k))
+                    );
+                    setTimeout(initializeApp, 100);
                 }
             } catch (error) {
-                console.error('Error in handleScriptLoad:', error);
+                console.error(`Error loading ${scriptName}:`, error);
             }
         }
 
@@ -121,18 +129,22 @@
 
     <!-- Then load your components with named handlers -->
     <script type="text/babel" src="../context/SectionContext.js" 
-        onload="handleScriptLoad('SectionContext')"></script>
+        onload="handleScriptLoad('../context/SectionContext.js')"></script>
     <script type="text/babel" src="../components/Loading.js" 
-        onload="handleScriptLoad('Loading')"></script>
+        onload="handleScriptLoad('../components/Loading.js')"></script>
     <script type="text/babel" src="../components/exercises/WordFill.js" onload="handleScriptLoad('WordFill')"></script>
     <script type="text/babel" src="../components/exercises/MatchingExercise.js" onload="handleScriptLoad('MatchingExercise')"></script>
     <script type="text/babel" src="../components/exercises/SeaWordsExercise.js" onload="handleScriptLoad('SeaWordsExercise')"></script>
-    <script type="text/babel" src="../components/Navigation.js" onload="handleScriptLoad('Navigation')"></script>
-    <script type="text/babel" src="../components/InteractiveProse.js" onload="handleScriptLoad('InteractiveProse')"></script>
+    <script type="text/babel" src="../components/Navigation.js" 
+        onload="handleScriptLoad('../components/Navigation.js')"></script>
+    <script type="text/babel" src="../components/InteractiveProse.js" 
+        onload="handleScriptLoad('../components/InteractiveProse.js')"></script>
     <script type="text/babel" src="../components/Quiz.js" onload="handleScriptLoad('Quiz')"></script>
     <script type="text/babel" src="../components/Glossary.js" onload="handleScriptLoad('Glossary')"></script>
     <script type="text/babel" src="../components/DidYouKnow.js" onload="handleScriptLoad('DidYouKnow')"></script>
-    <script type="text/babel" src="../components/SectionContent.js" onload="handleScriptLoad('SectionContent')"></script>
-    <script type="text/babel" src="../App.js" onload="handleScriptLoad('App')"></script>
+    <script type="text/babel" src="../components/SectionContent.js" 
+        onload="handleScriptLoad('../components/SectionContent.js')"></script>
+    <script type="text/babel" src="../App.js" 
+        onload="handleScriptLoad('../App.js')"></script>
 </body>
 </html> 
