@@ -8,8 +8,8 @@ import DidYouKnow from './DidYouKnow';
 import Loading from './Loading';
 
 function SectionContent({ contentType, contentTitle }) {
-    const [isLoading, setIsLoading] = React.useState(true);
     const { currentSection } = React.useContext(window.SectionContext.SectionContext);
+    const [isLoading, setIsLoading] = React.useState(true);
 
     React.useEffect(() => {
         // Simulate content loading
@@ -18,7 +18,7 @@ function SectionContent({ contentType, contentTitle }) {
     }, [contentType, currentSection]);
 
     if (isLoading) {
-        return React.createElement(Loading);
+        return React.createElement(window.Loading);
     }
 
     const pageTransition = {
@@ -32,28 +32,26 @@ function SectionContent({ contentType, contentTitle }) {
     const renderContent = () => {
         switch(contentType) {
             case 'Prose':
-                return <InteractiveProse />;
+                return React.createElement(window.InteractiveProse);
             case 'Quiz':
-                return <Quiz />;
+                return React.createElement(window.Quiz);
             case 'Glossary':
-                return <Glossary />;
+                return React.createElement(window.Glossary);
             case 'Did You Know':
-                return <DidYouKnow />;
+                return React.createElement(window.DidYouKnow);
             default:
-                return <InteractiveProse />;
+                return React.createElement(window.InteractiveProse);
         }
     };
 
-    return (
-        <AnimatePresence mode="wait">
-            <motion.div 
-                key={currentSection}
-                className="section-content"
-                {...pageTransition}
-            >
-                {renderContent()}
-            </motion.div>
-        </AnimatePresence>
+    return React.createElement(
+        window.motion.div,
+        {
+            className: 'section-content',
+            initial: { opacity: 0 },
+            animate: { opacity: 1 }
+        },
+        renderContent()
     );
 }
 
