@@ -1053,7 +1053,7 @@
             </svg>`,
             
             magic: `<svg width="50" height="50" viewBox="0 0 24 24" style="margin-bottom:10px">
-                <path fill="#9C27B0" d="M7 4c.28 0 .53.11.71.29L9 5.59V7c0 .55.45 1 1 1h1.41l1.3 1.3c.18.18.29.43.29.71s-.11.53-.29.71L11.41 12H10c-.55 0-1 .45-1 1v1.41l-1.3 1.3c-.18.18-.43.29-.71.29s-.53-.11-.71-.29L5 14.41V13c0-.55-.45-1-1-1H2.41l-1.3-1.3C.93 10.53.82 10.28.82 10s.11-.53.29-.71L2.41 8H4c.55 0 1-.45 1-1V5.41l1.3-1.3C6.47 4.11 6.72 4 7 4zm10 0c.28 0 .53.11.71.29L19 5.59V7c0 .55.45 1 1 1h1.41l1.3 1.3c.18.18.29.43.29.71s-.11.53-.29.71L21.41 12H20c-.55 0-1 .45-1 1v1.41l-1.3 1.3c-.18.18-.43.29-.71.29s-.53-.11-.71-.29L15 14.41V13c0-.55-.45-1-1-1h-1.41l-1.3-1.3c-.18-.18-.29-.43-.29-.71s.11-.53.29-.71L12.59 8H14c.55 0 1-.45 1-1V5.41l1.3-1.3c.18-.18.43-.29.71-.29z"/>
+                <path fill="#9C27B0" d="M7 4c.28 0 .53.11.71.29L9 5.59V7c0 .55.45 1 1 1h1.41l1.3 1.3c.18.18.29.43.29.71s-.11.53-.29.71L11.41 12H10c-.55 0-1 .45-1 1-1v1.41l-1.3 1.3c-.18.18-.43.29-.71.29s-.53-.11-.71-.29L5 14.41V13c0-.55-.45-1-1-1H2.41l-1.3-1.3C.93 10.53.82 10.28.82 10s.11-.53.29-.71L2.41 8H4c.55 0 1-.45 1-1V5.41l1.3-1.3C6.47 4.11 6.72 4 7 4zm10 0c.28 0 .53.11.71.29L19 5.59V7c0 .55.45 1 1 1h1.41l1.3 1.3c.18.18.29.43.29.71s-.11.53-.29.71L21.41 12H20c-.55 0-1 .45-1 1-1v1.41l-1.3 1.3c-.18.18-.43.29-.71.29s-.53-.11-.71-.29L15 14.41V13c0-.55-.45-1-1-1h-1.41l-1.3-1.3c-.18-.18-.29-.43-.29-.71s.11-.53.29-.71L12.59 8H14c.55 0 1-.45 1-1V5.41l1.3-1.3c.18-.18.43-.29.71-.29z"/>
             </svg>`
         };
 
@@ -1243,27 +1243,145 @@
                                     btn.addEventListener('click', async () => {
                                         const selectedTerm = btn.textContent.trim();
                                         
-                                        // Show success message with selected term
-                                        await Swal.fire({
-                                            html: `
-                                                ${svgIcons.celebration}
-                                                <div style="font-size: 1.3em; font-weight: bold; color: #FF9B3F; margin: 15px 0;">
-                                                    Awesome!
-                                                </div>
-                                                <div style="font-size: 1.1em; color: #333;">
-                                                    Starting ${subjectName}<br>
-                                                    ${selectedTerm}
-                                                </div>
-                                            `,
-                                            background: '#fff',
-                                            showConfirmButton: false,
-                                            timer: 2000,
-                                            timerProgressBar: true
-                                        });
+                                        if (subjectName === 'English' && selectedTerm === 'Term 1') {
+                                            // Show units dialog
+                                            const unitResult = await Swal.fire({
+                                                title: 'Choose Your Unit',
+                                                html: `
+                                                    <div style="display: flex; flex-direction: column; gap: 15px; margin: 20px 0;">
+                                                        ${[1, 2, 3].map(unit => `
+                                                            <button class="unit-btn" data-unit="${unit}" style="
+                                                                padding: 15px;
+                                                                margin: 5px;
+                                                                border: 2px solid #FF9B3F;
+                                                                border-radius: 10px;
+                                                                background: #fff;
+                                                                color: #FF9B3F;
+                                                                font-size: 1.1em;
+                                                                cursor: pointer;
+                                                                transition: all 0.3s ease;
+                                                            " onmouseover="this.style.background='#FF9B3F'; this.style.color='#fff';" 
+                                                            onmouseout="this.style.background='#fff'; this.style.color='#FF9B3F';">
+                                                                Unit ${unit}
+                                                            </button>
+                                                        `).join('')}
+                                                    </div>
+                                                `,
+                                                showCancelButton: true,
+                                                showConfirmButton: false,
+                                                background: '#fff',
+                                                customClass: {
+                                                    popup: 'animated bounceIn'
+                                                }
+                                            });
 
-                                        // Handle navigation based on selected term
-                                        console.log(`Starting ${subjectName} - ${selectedTerm}`);
-                                        // Add your navigation logic here
+                                            // Define unit content
+                                            const unitContent = {
+                                                1: {
+                                                    'Prose': 'Sea Turtles',
+                                                    'Poem': 'The Crocodile',
+                                                    'Supplementary': 'The Friendship'
+                                                },
+                                                2: {
+                                                    'Prose': 'When the Trees Walked',
+                                                    'Poem': 'Trees',
+                                                    'Supplementary': 'The Apple Tree and the Farmer'
+                                                },
+                                                3: {
+                                                    'Prose': 'A Visitor from Distant Lands',
+                                                    'Poem': 'Dream of Spices',
+                                                    'Supplementary': 'Stone Soup'
+                                                }
+                                            };
+
+                                            // Handle unit button clicks
+                                            document.querySelectorAll('.unit-btn').forEach(unitBtn => {
+                                                unitBtn.addEventListener('click', async () => {
+                                                    const selectedUnit = unitBtn.dataset.unit;
+                                                    const content = unitContent[selectedUnit];
+
+                                                    // Show content types dialog
+                                                    await Swal.fire({
+                                                        title: `Unit ${selectedUnit}`,
+                                                        html: `
+                                                            <div style="display: flex; flex-direction: column; gap: 15px; margin: 20px 0;">
+                                                                ${Object.entries(content).map(([type, title]) => `
+                                                                    <button class="content-btn" data-type="${type}" style="
+                                                                        padding: 15px;
+                                                                        margin: 5px;
+                                                                        border: 2px solid #FF9B3F;
+                                                                        border-radius: 10px;
+                                                                        background: #fff;
+                                                                        color: #FF9B3F;
+                                                                        font-size: 1.1em;
+                                                                        cursor: pointer;
+                                                                        transition: all 0.3s ease;
+                                                                    " onmouseover="this.style.background='#FF9B3F'; this.style.color='#fff';" 
+                                                                    onmouseout="this.style.background='#fff'; this.style.color='#FF9B3F';">
+                                                                        ${type}<br>
+                                                                        <span style="font-size: 0.9em; color: #666;">${title}</span>
+                                                                    </button>
+                                                                `).join('')}
+                                                            </div>
+                                                        `,
+                                                        showCancelButton: true,
+                                                        showConfirmButton: false,
+                                                        background: '#fff',
+                                                        customClass: {
+                                                            popup: 'animated bounceIn'
+                                                        }
+                                                    });
+
+                                                    // Handle content type button clicks
+                                                    document.querySelectorAll('.content-btn').forEach(contentBtn => {
+                                                        contentBtn.addEventListener('click', async () => {
+                                                            const contentType = contentBtn.dataset.type;
+                                                            const contentTitle = content[contentType];
+
+                                                            // Show success message before navigation
+                                                            await Swal.fire({
+                                                                html: `
+                                                                    ${svgIcons.celebration}
+                                                                    <div style="font-size: 1.3em; font-weight: bold; color: #FF9B3F; margin: 15px 0;">
+                                                                        Let's Start Learning!
+                                                                    </div>
+                                                                    <div style="font-size: 1.1em; color: #333;">
+                                                                        Unit ${selectedUnit} - ${contentType}<br>
+                                                                        ${contentTitle}
+                                                                    </div>
+                                                                `,
+                                                                background: '#fff',
+                                                                showConfirmButton: false,
+                                                                timer: 2000,
+                                                                timerProgressBar: true
+                                                            });
+
+                                                            // Handle navigation
+                                                            console.log(`Starting Unit ${selectedUnit} - ${contentType}: ${contentTitle}`);
+                                                            // Add navigation logic here
+                                                        });
+                                                    });
+                                                });
+                                            });
+                                        } else {
+                                            // Handle other terms or subjects
+                                            await Swal.fire({
+                                                html: `
+                                                    ${svgIcons.celebration}
+                                                    <div style="font-size: 1.3em; font-weight: bold; color: #FF9B3F; margin: 15px 0;">
+                                                        Coming Soon!
+                                                    </div>
+                                                    <div style="font-size: 1.1em; color: #333;">
+                                                        ${subjectName} - ${selectedTerm}<br>
+                                                        Will be available soon!
+                                                    </div>
+                                                `,
+                                                background: '#fff',
+                                                showConfirmButton: false,
+                                                timer: 2000,
+                                                timerProgressBar: true
+                                            });
+                                        }
                                     });
                                 });
                             }
