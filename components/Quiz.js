@@ -164,14 +164,14 @@ function Quiz() {
     const renderQuestionsByType = () => {
         switch(currentQuestionType) {
             case 'questions':
-                return React.createElement(MultipleChoiceQuestions, { questions: quizData.questions });
+                return React.createElement(window.MultipleChoiceQuestions, { questions: quizData.questions });
             case 'vocabulary':
                 return React.createElement(
                     React.Fragment,
                     null,
-                    React.createElement(WordFill, { questions: quizData.vocabulary.wordFill }),
-                    React.createElement(MatchingExercise, { questions: quizData.vocabulary.matching }),
-                    React.createElement(SeaWordsExercise, { data: quizData.vocabulary.seaWords })
+                    React.createElement(window.WordFill, { questions: quizData.vocabulary.wordFill }),
+                    React.createElement(window.MatchingExercise, { questions: quizData.vocabulary.matching }),
+                    React.createElement(window.SeaWordsExercise, { data: quizData.vocabulary.seaWords })
                 );
             case 'listening':
                 return React.createElement(Listening, { data: quizData.listening });
@@ -181,7 +181,7 @@ function Quiz() {
     };
 
     return React.createElement(
-        motion.div,
+        window.motion.div,
         {
             className: 'quiz-container',
             initial: { opacity: 0 },
