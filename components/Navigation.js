@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 import { SectionContext } from '../context/SectionContext';
 
 function Navigation() {
-    const { currentSection, sections, progress, nextSection, previousSection } = React.useContext(window.SectionContext.SectionContext);
+    const { currentSection, sections, nextSection, previousSection } = React.useContext(window.SectionContext.SectionContext);
 
     const calculateProgress = (sectionId) => {
         const section = progress[sectionId];
