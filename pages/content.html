@@ -21,19 +21,65 @@
     
     <!-- Add Framer Motion -->
     <script src="https://unpkg.com/framer-motion@4.1.17/dist/framer-motion.js"></script>
+    <style>
+        .initial-loading {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: white;
+            z-index: 1000;
+        }
+
+        .loading-spinner {
+            width: 50px;
+            height: 50px;
+            border: 5px solid #f3f3f3;
+            border-top: 5px solid #FF9B3F;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
 </head>
 <body>
-    <div id="root"></div>
+    <div id="root">
+        <div class="initial-loading">
+            <div class="loading-spinner"></div>
+        </div>
+    </div>
 
-    <!-- Add your JavaScript files with type="text/babel" -->
-    <script type="text/babel" src="../context/SectionContext.js"></script>
-    <script type="text/babel" src="../components/Navigation.js"></script>
-    <script type="text/babel" src="../components/InteractiveProse.js"></script>
-    <script type="text/babel" src="../components/Quiz.js"></script>
-    <script type="text/babel" src="../components/Glossary.js"></script>
-    <script type="text/babel" src="../components/DidYouKnow.js"></script>
-    <script type="text/babel" src="../components/SectionContent.js"></script>
-    <script type="text/babel" src="../App.js"></script>
-    <script type="text/babel" src="../scripts/contentLoader.js"></script>
+    <!-- Add script loading handler -->
+    <script>
+        let scriptsLoaded = 0;
+        const totalScripts = 9; // Total number of scripts to load
+
+        function handleScriptLoad() {
+            scriptsLoaded++;
+            if (scriptsLoaded === totalScripts) {
+                // All scripts loaded, remove loading screen
+                document.querySelector('.initial-loading').style.display = 'none';
+            }
+        }
+    </script>
+
+    <!-- Add your JavaScript files with load handlers -->
+    <script type="text/babel" src="../context/SectionContext.js" onload="handleScriptLoad()"></script>
+    <script type="text/babel" src="../components/Loading.js" onload="handleScriptLoad()"></script>
+    <script type="text/babel" src="../components/Navigation.js" onload="handleScriptLoad()"></script>
+    <script type="text/babel" src="../components/InteractiveProse.js" onload="handleScriptLoad()"></script>
+    <script type="text/babel" src="../components/Quiz.js" onload="handleScriptLoad()"></script>
+    <script type="text/babel" src="../components/Glossary.js" onload="handleScriptLoad()"></script>
+    <script type="text/babel" src="../components/DidYouKnow.js" onload="handleScriptLoad()"></script>
+    <script type="text/babel" src="../components/SectionContent.js" onload="handleScriptLoad()"></script>
+    <script type="text/babel" src="../App.js" onload="handleScriptLoad()"></script>
 </body>
 </html> 
