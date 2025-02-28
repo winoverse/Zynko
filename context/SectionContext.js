@@ -1,7 +1,12 @@
 const SectionContext = React.createContext();
+console.log('Created SectionContext');
 
 function SectionProvider({ children, initialSection }) {
-    const [currentSection, setCurrentSection] = React.useState(initialSection || 1);
+    console.log('SectionProvider rendering with:', { initialSection });
+    
+    const [currentSection, setCurrentSection] = React.useState(initialSection || '1');
+    console.log('Current section:', currentSection);
+
     const [progress, setProgress] = React.useState({
         1: { completed: false, score: 0 },
         2: { completed: false, score: 0 },
@@ -449,19 +454,19 @@ function SectionProvider({ children, initialSection }) {
         }
     };
 
+    const value = {
+        currentSection,
+        setCurrentSection,
+        sections,
+        progress,
+        updateProgress,
+        nextSection,
+        previousSection
+    };
+
     return React.createElement(
         SectionContext.Provider,
-        {
-            value: {
-                currentSection,
-                setCurrentSection,
-                sections,
-                progress,
-                updateProgress,
-                nextSection,
-                previousSection
-            }
-        },
+        { value },
         children
     );
 }
@@ -469,4 +474,5 @@ function SectionProvider({ children, initialSection }) {
 window.SectionContext = {
     SectionContext,
     SectionProvider
-}; 
+};
+console.log('SectionContext registered on window'); 
