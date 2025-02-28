@@ -1,14 +1,5 @@
-import React, { useContext } from 'react';
-import { motion } from 'framer-motion';
-import { SectionContext } from '../context/SectionContext';
-
 function Navigation() {
     const { currentSection, sections, nextSection, previousSection } = React.useContext(window.SectionContext.SectionContext);
-
-    const calculateProgress = (sectionId) => {
-        const section = progress[sectionId];
-        return section.completed ? 100 : 0;
-    };
 
     return React.createElement(
         'nav',
