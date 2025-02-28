@@ -1,0 +1,140 @@
+.glossary-container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+    font-family: 'Arial', sans-serif;
+}
+
+.glossary-title {
+    color: #FF9B3F;
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.word-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    margin-bottom: 30px;
+    justify-content: center;
+}
+
+.word-button {
+    padding: 10px 20px;
+    border: 2px solid #FF9B3F;
+    border-radius: 25px;
+    background: white;
+    color: #FF9B3F;
+    font-size: 1.1em;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.word-button:hover {
+    background: #FF9B3F;
+    color: white;
+}
+
+.word-button.active {
+    background: #FF9B3F;
+    color: white;
+}
+
+.word-card {
+    background: white;
+    padding: 25px;
+    border-radius: 15px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    margin-top: 20px;
+}
+
+.word-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.word-header h3 {
+    color: #FF9B3F;
+    font-size: 1.5em;
+    margin: 0;
+}
+
+.pronunciation-btn {
+    background: none;
+    border: 1px solid #FF9B3F;
+    color: #FF9B3F;
+    padding: 8px 15px;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.pronunciation-btn:hover {
+    background: #FF9B3F;
+    color: white;
+}
+
+.pronunciation {
+    color: #666;
+    font-style: italic;
+    margin-bottom: 15px;
+}
+
+.meaning {
+    font-size: 1.2em;
+    color: #333;
+    margin-bottom: 20px;
+    line-height: 1.5;
+}
+
+.examples {
+    background: #f5f5f5;
+    padding: 15px;
+    border-radius: 10px;
+}
+
+.examples h4 {
+    color: #FF9B3F;
+    margin: 0 0 10px 0;
+}
+
+.examples ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.examples li {
+    color: #666;
+    margin-bottom: 8px;
+    padding-left: 20px;
+    position: relative;
+}
+
+.examples li:before {
+    content: "•";
+    color: #FF9B3F;
+    position: absolute;
+    left: 0;
+}
+
+.word-animation {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    font-size: 3em;
+    color: rgba(255, 155, 63, 0.1);
+    pointer-events: none;
+}
+
+@media (max-width: 600px) {
+    .word-list {
+        flex-direction: column;
+    }
+    
+    .word-button {
+        width: 100%;
+    }
+} 

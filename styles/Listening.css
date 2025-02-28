@@ -1,0 +1,61 @@
+.listening-section {
+    max-width: 800px;
+    margin: 20px auto;
+    padding: 20px;
+}
+
+.controls {
+    margin: 20px 0;
+    text-align: center;
+}
+
+.play-btn, .stop-btn {
+    padding: 10px 20px;
+    font-size: 1.1em;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.play-btn {
+    background: #4CAF50;
+    color: white;
+}
+
+.stop-btn {
+    background: #f44336;
+    color: white;
+}
+
+.questions {
+    margin-top: 30px;
+}
+
+.question {
+    margin-bottom: 20px;
+    padding: 15px;
+    background: #f5f5f5;
+    border-radius: 8px;
+}
+
+.options {
+    display: flex;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.option {
+    padding: 8px 15px;
+    border: 2px solid #ddd;
+    border-radius: 4px;
+    background: white;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.option.selected {
+    background: #FF9B3F;
+    color: white;
+    border-color: #FF9B3F;
+} 

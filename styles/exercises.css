@@ -1,0 +1,183 @@
+/* Matching Exercise Styles */
+.matching-container {
+    padding: 20px;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    margin: 20px 0;
+}
+
+.matching-pairs {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.match-button {
+    padding: 10px 15px;
+    border: 2px solid #FF9B3F;
+    border-radius: 5px;
+    background: white;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    min-width: 150px;
+}
+
+.match-button.selected {
+    background: #FF9B3F;
+    color: white;
+}
+
+.match-button.matched {
+    background: #4CAF50;
+    border-color: #4CAF50;
+    color: white;
+}
+
+/* Sea Words Exercise Styles */
+.sea-words-container {
+    padding: 20px;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    margin: 20px 0;
+}
+
+.instruction {
+    color: #666;
+    margin-bottom: 15px;
+}
+
+.example {
+    background: #f5f5f5;
+    padding: 10px;
+    border-radius: 5px;
+    margin-bottom: 20px;
+}
+
+.word-entries {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.word-entry {
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    gap: 10px;
+    align-items: center;
+}
+
+.word-input input,
+.sentence-input input {
+    width: 100%;
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 1em;
+}
+
+.word-input input:focus,
+.sentence-input input:focus {
+    border-color: #FF9B3F;
+    outline: none;
+}
+
+/* Feedback Styles */
+.feedback {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 12px 24px;
+    border-radius: 8px;
+    color: white;
+    font-weight: 500;
+    z-index: 1000;
+}
+
+.feedback.success {
+    background: #4CAF50;
+}
+
+.feedback.error {
+    background: #f44336;
+}
+
+.feedback.match {
+    background: #FF9B3F;
+}
+
+/* Exercise Controls */
+.exercise-controls {
+    margin-top: 20px;
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+}
+
+.submit-btn, .reset-btn, .save-btn {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.submit-btn {
+    background: #FF9B3F;
+    color: white;
+}
+
+.reset-btn {
+    background: #666;
+    color: white;
+}
+
+.save-btn {
+    background: #4CAF50;
+    color: white;
+}
+
+.submit-btn:disabled, .save-btn:disabled {
+    background: #ccc;
+    cursor: not-allowed;
+}
+
+/* Matching Exercise Updates */
+.match-button.incorrect {
+    background: #ffebee;
+    border-color: #f44336;
+    color: #f44336;
+}
+
+.matching-line.correct {
+    background: #4CAF50;
+}
+
+/* Sea Words Exercise Updates */
+input.saved {
+    border-color: #4CAF50;
+    background: #f1f8e9;
+}
+
+.word-entry {
+    position: relative;
+}
+
+.word-entry::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: -5px;
+    height: 2px;
+    background: #eee;
+    transform: scaleX(0);
+    transition: transform 0.3s ease;
+}
+
+.word-entry:hover::after {
+    transform: scaleX(1);
+} 

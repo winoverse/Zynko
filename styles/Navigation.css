@@ -1,0 +1,100 @@
+.navigation {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    background: white;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    z-index: 1000;
+    padding: 15px 0;
+}
+
+.nav-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 20px;
+}
+
+.nav-button {
+    background: #FF9B3F;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.nav-button:disabled {
+    background: #ccc;
+    cursor: not-allowed;
+}
+
+.nav-button:hover:not(:disabled) {
+    background: #ff8c2f;
+}
+
+.section-indicators {
+    display: flex;
+    gap: 20px;
+    align-items: center;
+}
+
+.section-indicator {
+    position: relative;
+    text-align: center;
+}
+
+.section-title {
+    font-size: 0.8em;
+    color: #666;
+    margin-bottom: 5px;
+}
+
+.progress-bar {
+    width: 100px;
+    height: 4px;
+    background: #eee;
+    border-radius: 2px;
+    overflow: hidden;
+}
+
+.progress-fill {
+    height: 100%;
+    background: #FF9B3F;
+}
+
+.section-number {
+    position: relative;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: #eee;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 5px auto 0;
+}
+
+.current-marker {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: #FF9B3F;
+    border-radius: 50%;
+}
+
+@media (max-width: 768px) {
+    .section-title {
+        display: none;
+    }
+
+    .progress-bar {
+        width: 50px;
+    }
+} 
