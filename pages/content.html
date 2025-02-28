@@ -60,7 +60,7 @@
     <!-- Add script loading handler -->
     <script>
         let scriptsLoaded = 0;
-        const totalScripts = 9; // Total number of scripts to load
+        const totalScripts = 13; // Updated total number of scripts
 
         function handleScriptLoad() {
             scriptsLoaded++;
@@ -81,5 +81,9 @@
     <script type="text/babel" src="../components/DidYouKnow.js" onload="handleScriptLoad()"></script>
     <script type="text/babel" src="../components/SectionContent.js" onload="handleScriptLoad()"></script>
     <script type="text/babel" src="../App.js" onload="handleScriptLoad()"></script>
+    <script type="text/babel" src="../components/exercises/WordFill.js" onload="handleScriptLoad()"></script>
+    <script type="text/babel" src="../components/exercises/MatchingExercise.js" onload="handleScriptLoad()"></script>
+    <script type="text/babel" src="../components/exercises/SeaWordsExercise.js" onload="handleScriptLoad()"></script>
+    <script type="text/babel" src="../components/exercises/Listening.js" onload="handleScriptLoad()"></script>
 </body>
 </html> 
