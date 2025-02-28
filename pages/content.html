@@ -61,51 +61,49 @@
         const totalScripts = 12;
         const loadedScripts = new Set();
         
-        function handleScriptLoad(scriptName) {
-            scriptsLoaded++;
-            loadedScripts.add(scriptName);
-            console.log(`Loaded ${scriptName} (${scriptsLoaded}/${totalScripts})`);
-            console.log('Loaded scripts:', Array.from(loadedScripts));
+        window.onerror = function(msg, url, lineNo, columnNo, error) {
+            console.error('Global error:', { msg, url, lineNo, columnNo, error });
+            return false;
+        };
 
-            if (scriptsLoaded === totalScripts) {
-                initializeApp();
+        function handleScriptLoad(scriptName) {
+            try {
+                scriptsLoaded++;
+                loadedScripts.add(scriptName);
+                console.log(`Loaded ${scriptName} (${scriptsLoaded}/${totalScripts})`);
+
+                // Check if the component is actually available
+                const componentName = scriptName.replace(/^.+\//, '');
+                if (!window[componentName]) {
+                    console.error(`Component ${componentName} not found on window object`);
+                }
+
+                if (scriptsLoaded === totalScripts) {
+                    console.log('All scripts loaded, initializing...');
+                    setTimeout(initializeApp, 100); // Add small delay to ensure everything is ready
+                }
+            } catch (error) {
+                console.error('Error in handleScriptLoad:', error);
             }
         }
 
         function initializeApp() {
-            console.log('Initializing app...');
-            const loadingElement = document.querySelector('.initial-loading');
-            if (loadingElement) {
-                loadingElement.style.display = 'none';
-            }
-
-            // Check dependencies
-            if (!window.SectionContext) {
-                console.error('SectionContext not loaded');
-                return;
-            }
-            if (!window.Loading) {
-                console.error('Loading component not loaded');
-                return;
-            }
-            if (!window.App) {
-                console.error('App component not loaded');
-                return;
-            }
-
-            const root = document.getElementById('root');
-            if (!root) {
-                console.error('Root element not found');
-                return;
-            }
-
-            const selectedUnit = localStorage.getItem('selectedUnit') || '1';
-            const contentType = localStorage.getItem('contentType') || 'Prose';
-            const contentTitle = localStorage.getItem('contentTitle') || 'Introduction';
-
-            console.log('Rendering with:', { selectedUnit, contentType, contentTitle });
-
             try {
+                console.log('Starting app initialization...');
+                console.log('Available components:', Object.keys(window).filter(k => 
+                    ['App', 'Loading', 'SectionContext', 'InteractiveProse', 'Quiz'].includes(k)
+                ));
+
+                const root = document.getElementById('root');
+                if (!root) throw new Error('Root element not found');
+
+                const selectedUnit = '1';  // Hardcode for testing
+                const contentType = 'Prose';  // Hardcode for testing
+                const contentTitle = 'Introduction';  // Hardcode for testing
+
+                if (!window.App) throw new Error('App component not loaded');
+                if (!window.SectionContext) throw new Error('SectionContext not loaded');
+
                 ReactDOM.render(
                     React.createElement(window.App, {
                         unit: selectedUnit,
@@ -116,7 +114,7 @@
                 );
                 console.log('App rendered successfully');
             } catch (error) {
-                console.error('Error rendering app:', error);
+                console.error('Error in initializeApp:', error);
             }
         }
     </script>
