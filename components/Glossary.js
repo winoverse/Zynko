@@ -4,9 +4,9 @@ import Tooltip from '@mui/material/Tooltip';
 import { SectionContext } from '../context/SectionContext';
 
 function Glossary() {
-    const { currentSection, sections } = useContext(SectionContext);
+    const { currentSection, sections } = React.useContext(window.SectionContext.SectionContext);
     const glossaryData = sections[currentSection].glossary;
-    const [searchTerm, setSearchTerm] = useState('');
+    const [searchTerm, setSearchTerm] = React.useState('');
 
     const filteredWords = Object.values(glossaryData).filter(word =>
         word.word.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -135,4 +135,4 @@ function Glossary() {
     );
 }
 
-export default Glossary; 
+window.Glossary = Glossary; 
