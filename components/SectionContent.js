@@ -1,12 +1,3 @@
-import React, { useContext } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { SectionContext } from '../context/SectionContext';
-import InteractiveProse from './InteractiveProse';
-import Quiz from './Quiz';
-import Glossary from './Glossary';
-import DidYouKnow from './DidYouKnow';
-import Loading from './Loading';
-
 function SectionContent({ contentType, contentTitle }) {
     const { currentSection } = React.useContext(window.SectionContext.SectionContext);
     const [isLoading, setIsLoading] = React.useState(true);
