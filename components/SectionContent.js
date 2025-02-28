@@ -5,9 +5,21 @@ import InteractiveProse from './InteractiveProse';
 import Quiz from './Quiz';
 import Glossary from './Glossary';
 import DidYouKnow from './DidYouKnow';
+import Loading from './Loading';
 
-const SectionContent = ({ contentType, contentTitle }) => {
-    const { currentSection } = useContext(SectionContext);
+function SectionContent({ contentType, contentTitle }) {
+    const [isLoading, setIsLoading] = React.useState(true);
+    const { currentSection } = React.useContext(window.SectionContext.SectionContext);
+
+    React.useEffect(() => {
+        // Simulate content loading
+        setIsLoading(true);
+        setTimeout(() => setIsLoading(false), 1000);
+    }, [contentType, currentSection]);
+
+    if (isLoading) {
+        return React.createElement(Loading);
+    }
 
     const pageTransition = {
         initial: { opacity: 0, x: -20 },
@@ -43,6 +55,6 @@ const SectionContent = ({ contentType, contentTitle }) => {
             </motion.div>
         </AnimatePresence>
     );
-};
+}
 
-export default SectionContent; 
+window.SectionContent = SectionContent; 
