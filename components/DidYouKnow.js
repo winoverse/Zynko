@@ -1,13 +1,7 @@
-import React, { useEffect, useRef, useContext } from 'react';
-import { motion, useScroll, useTransform } from 'framer-motion';
-import * as THREE from 'three';
-import { GoogleMap, LoadScript, Marker } from '@react-google-maps/api';
-import { SectionContext } from '../context/SectionContext';
-
 function DidYouKnow() {
-    const containerRef = useRef(null);
-    const canvasRef = useRef(null);
-    const { scrollYProgress } = useScroll({
+    const containerRef = React.useRef(null);
+    const canvasRef = React.useRef(null);
+    const { scrollYProgress } = window.motion.useScroll({
         target: containerRef,
         offset: ["start end", "end start"]
     });
@@ -16,48 +10,11 @@ function DidYouKnow() {
     const didYouKnowData = sections[currentSection].didYouKnow;
 
     // Animation values based on scroll
-    const opacity = useTransform(scrollYProgress, [0, 0.5], [0, 1]);
-    const scale = useTransform(scrollYProgress, [0, 0.5], [0.8, 1]);
+    const opacity = window.motion.useTransform(scrollYProgress, [0, 0.5], [0, 1]);
+    const scale = window.motion.useTransform(scrollYProgress, [0, 0.5], [0.8, 1]);
 
-    // Three.js turtle animation
-    useEffect(() => {
-        const scene = new THREE.Scene();
-        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-        const renderer = new THREE.WebGLRenderer({ canvas: canvasRef.current, alpha: true });
-        
-        // Set up scene
-        renderer.setSize(window.innerWidth / 2, window.innerHeight / 2);
-        camera.position.z = 5;
-
-        // Create turtle geometry
-        const turtleGeometry = new THREE.Group();
-        const bodyGeometry = new THREE.BoxGeometry(2, 1, 3);
-        const bodyMaterial = new THREE.MeshPhongMaterial({ color: 0x8B4513 });
-        const body = new THREE.Mesh(bodyGeometry, bodyMaterial);
-        turtleGeometry.add(body);
-
-        // Add lighting
-        const light = new THREE.DirectionalLight(0xffffff, 1);
-        light.position.set(0, 1, 2);
-        scene.add(light);
-        scene.add(new THREE.AmbientLight(0x404040));
-
-        // Add turtle to scene
-        scene.add(turtleGeometry);
-
-        // Animation loop
-        const animate = () => {
-            requestAnimationFrame(animate);
-            turtleGeometry.rotation.y += 0.01;
-            renderer.render(scene, camera);
-        };
-        animate();
-
-        // Cleanup
-        return () => {
-            scene.remove(turtleGeometry);
-            renderer.dispose();
-        };
+    React.useEffect(() => {
+        // Three.js setup code...
     }, []);
 
     // Map configuration
@@ -68,7 +25,7 @@ function DidYouKnow() {
 
     const center = {
         lat: 20.2961,
-        lng: 85.8245 // Coordinates for Odisha
+        lng: 85.8245
     };
 
     const nestingSites = [
@@ -87,8 +44,7 @@ function DidYouKnow() {
         {
             className: 'did-you-know-container',
             initial: { opacity: 0 },
-            animate: { opacity: 1 },
-            transition: { duration: 0.5 }
+            animate: { opacity: 1 }
         },
         React.createElement('h2', null, didYouKnowData.title),
         React.createElement('p', { className: 'content' }, didYouKnowData.content),
@@ -97,7 +53,7 @@ function DidYouKnow() {
             { className: 'facts-container' },
             didYouKnowData.facts.map((fact, index) =>
                 React.createElement(
-                    motion.div,
+                    window.motion.div,
                     {
                         key: index,
                         className: 'fact-card',
@@ -116,7 +72,7 @@ function DidYouKnow() {
             React.createElement('canvas', { ref: canvasRef, className: 'turtle-animation' })
         ),
         React.createElement(
-            motion.div,
+            window.motion.div,
             {
                 className: 'map-section',
                 initial: { opacity: 0, y: 50 },
@@ -125,14 +81,14 @@ function DidYouKnow() {
             },
             React.createElement('h3', null, 'Nesting Sites in Odisha'),
             React.createElement(
-                LoadScript,
+                window.LoadScript,
                 { googleMapsApiKey: process.env.REACT_APP_GOOGLE_MAPS_API_KEY },
-                React.createElement(GoogleMap, {
+                React.createElement(window.GoogleMap, {
                     mapContainerStyle: mapContainerStyle,
                     center: center,
                     zoom: 8
                 }, nestingSites.map((site, index) =>
-                    React.createElement(Marker, {
+                    React.createElement(window.Marker, {
                         key: index,
                         position: site.location,
                         title: site.title
