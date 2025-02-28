@@ -58,63 +58,83 @@
     <!-- Add script loading handler -->
     <script>
         let scriptsLoaded = 0;
-        const totalScripts = 12; // Make sure this matches your actual script count
+        const totalScripts = 12;
+        const loadedScripts = new Set();
         
-        function handleScriptLoad() {
+        function handleScriptLoad(scriptName) {
             scriptsLoaded++;
-            console.log('Script loaded:', scriptsLoaded, 'of', totalScripts); // Add logging
+            loadedScripts.add(scriptName);
+            console.log(`Loaded ${scriptName} (${scriptsLoaded}/${totalScripts})`);
+            console.log('Loaded scripts:', Array.from(loadedScripts));
+
             if (scriptsLoaded === totalScripts) {
-                const loadingElement = document.querySelector('.initial-loading');
-                if (loadingElement) {
-                    loadingElement.style.display = 'none';
-                }
-                
-                // Initialize the app
-                const root = document.getElementById('root');
-                if (!root) {
-                    console.error('Root element not found');
-                    return;
-                }
+                initializeApp();
+            }
+        }
 
-                const selectedUnit = localStorage.getItem('selectedUnit') || '1';
-                const contentType = localStorage.getItem('contentType') || 'Prose';
-                const contentTitle = localStorage.getItem('contentTitle') || 'Introduction';
+        function initializeApp() {
+            console.log('Initializing app...');
+            const loadingElement = document.querySelector('.initial-loading');
+            if (loadingElement) {
+                loadingElement.style.display = 'none';
+            }
 
-                // Check if App is available
-                if (!window.App) {
-                    console.error('App component not loaded');
-                    return;
-                }
+            // Check dependencies
+            if (!window.SectionContext) {
+                console.error('SectionContext not loaded');
+                return;
+            }
+            if (!window.Loading) {
+                console.error('Loading component not loaded');
+                return;
+            }
+            if (!window.App) {
+                console.error('App component not loaded');
+                return;
+            }
 
-                try {
-                    ReactDOM.render(
-                        React.createElement(window.App, {
-                            unit: selectedUnit,
-                            contentType: contentType,
-                            contentTitle: contentTitle
-                        }),
-                        root
-                    );
-                    console.log('App rendered successfully');
-                } catch (error) {
-                    console.error('Error rendering app:', error);
-                }
+            const root = document.getElementById('root');
+            if (!root) {
+                console.error('Root element not found');
+                return;
+            }
+
+            const selectedUnit = localStorage.getItem('selectedUnit') || '1';
+            const contentType = localStorage.getItem('contentType') || 'Prose';
+            const contentTitle = localStorage.getItem('contentTitle') || 'Introduction';
+
+            console.log('Rendering with:', { selectedUnit, contentType, contentTitle });
+
+            try {
+                ReactDOM.render(
+                    React.createElement(window.App, {
+                        unit: selectedUnit,
+                        contentType: contentType,
+                        contentTitle: contentTitle
+                    }),
+                    root
+                );
+                console.log('App rendered successfully');
+            } catch (error) {
+                console.error('Error rendering app:', error);
             }
         }
     </script>
 
-    <!-- Then load your components -->
-    <script type="text/babel" src="../context/SectionContext.js" onload="handleScriptLoad()"></script>
-    <script type="text/babel" src="../components/Loading.js" onload="handleScriptLoad()"></script>
-    <script type="text/babel" src="../components/exercises/WordFill.js" onload="handleScriptLoad()"></script>
-    <script type="text/babel" src="../components/exercises/MatchingExercise.js" onload="handleScriptLoad()"></script>
-    <script type="text/babel" src="../components/exercises/SeaWordsExercise.js" onload="handleScriptLoad()"></script>
-    <script type="text/babel" src="../components/Navigation.js" onload="handleScriptLoad()"></script>
-    <script type="text/babel" src="../components/InteractiveProse.js" onload="handleScriptLoad()"></script>
-    <script type="text/babel" src="../components/Quiz.js" onload="handleScriptLoad()"></script>
-    <script type="text/babel" src="../components/Glossary.js" onload="handleScriptLoad()"></script>
-    <script type="text/babel" src="../components/DidYouKnow.js" onload="handleScriptLoad()"></script>
-    <script type="text/babel" src="../components/SectionContent.js" onload="handleScriptLoad()"></script>
-    <script type="text/babel" src="../App.js" onload="handleScriptLoad()"></script>
+    <!-- Then load your components with named handlers -->
+    <script type="text/babel" src="../context/SectionContext.js" 
+        onload="handleScriptLoad('SectionContext')"></script>
+    <script type="text/babel" src="../components/Loading.js" 
+        onload="handleScriptLoad('Loading')"></script>
+    <script type="text/babel" src="../components/exercises/WordFill.js" onload="handleScriptLoad('WordFill')"></script>
+    <script type="text/babel" src="../components/exercises/MatchingExercise.js" onload="handleScriptLoad('MatchingExercise')"></script>
+    <script type="text/babel" src="../components/exercises/SeaWordsExercise.js" onload="handleScriptLoad('SeaWordsExercise')"></script>
+    <script type="text/babel" src="../components/Navigation.js" onload="handleScriptLoad('Navigation')"></script>
+    <script type="text/babel" src="../components/InteractiveProse.js" onload="handleScriptLoad('InteractiveProse')"></script>
+    <script type="text/babel" src="../components/Quiz.js" onload="handleScriptLoad('Quiz')"></script>
+    <script type="text/babel" src="../components/Glossary.js" onload="handleScriptLoad('Glossary')"></script>
+    <script type="text/babel" src="../components/DidYouKnow.js" onload="handleScriptLoad('DidYouKnow')"></script>
+    <script type="text/babel" src="../components/SectionContent.js" onload="handleScriptLoad('SectionContent')"></script>
+    <script type="text/babel" src="../App.js" onload="handleScriptLoad('App')"></script>
 </body>
 </html> 
