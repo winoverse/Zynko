@@ -1,8 +1,3 @@
-import React, { useState, useContext } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import Tooltip from '@mui/material/Tooltip';
-import { SectionContext } from '../context/SectionContext';
-
 function Glossary() {
     const { currentSection, sections } = React.useContext(window.SectionContext.SectionContext);
     const glossaryData = sections[currentSection].glossary;
@@ -36,54 +31,48 @@ function Glossary() {
         }
     };
 
-    const WordCard = ({ term }) => (
-        <motion.div 
-            className="word-card"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
-            whileHover={{ scale: 1.02 }}
-        >
-            <div className="word-header">
-                <h3>{term.word}</h3>
-                <button 
-                    className="pronunciation-btn"
-                    onClick={() => playPronunciation(term.word)}
-                >
-                    🔊 Listen
-                </button>
-            </div>
-            
-            <div className="pronunciation">/{term.pronunciation}/</div>
-            
-            <div className="meaning">
-                {term.meaning}
-            </div>
-            
-            <div className="examples">
-                <h4>Examples:</h4>
-                <ul>
-                    {term.examples.map((example, index) => (
-                        <li key={index}>{example}</li>
-                    ))}
-                </ul>
-            </div>
-
-            <motion.div 
-                className="word-animation"
-                animate={{ 
+    const WordCard = ({ term }) => React.createElement(
+        window.motion.div,
+        {
+            className: "word-card",
+            initial: { opacity: 0, y: 20 },
+            animate: { opacity: 1, y: 0 },
+            exit: { opacity: 0, y: -20 },
+            whileHover: { scale: 1.02 }
+        },
+        [
+            React.createElement('div', { key: 'header', className: "word-header" }, [
+                React.createElement('h3', { key: 'word' }, term.word),
+                React.createElement('button', {
+                    key: 'btn',
+                    className: "pronunciation-btn",
+                    onClick: () => playPronunciation(term.word)
+                }, '🔊 Listen')
+            ]),
+            React.createElement('div', { key: 'pron', className: "pronunciation" }, `/${term.pronunciation}/`),
+            React.createElement('div', { key: 'meaning', className: "meaning" }, term.meaning),
+            React.createElement('div', { key: 'examples', className: "examples" }, [
+                React.createElement('h4', { key: 'title' }, 'Examples:'),
+                React.createElement('ul', { key: 'list' }, 
+                    term.examples.map((example, index) => 
+                        React.createElement('li', { key: index }, example)
+                    )
+                )
+            ]),
+            React.createElement(window.motion.div, {
+                key: 'animation',
+                className: "word-animation",
+                animate: { 
                     scale: [1, 1.1, 1],
                     rotate: [0, 5, -5, 0]
-                }}
-                transition={{ duration: 2, repeat: Infinity }}
-            >
-                {term.word}
-            </motion.div>
-        </motion.div>
+                },
+                transition: { duration: 2, repeat: Infinity }
+            }, term.word)
+        ]
     );
 
     return React.createElement(
-        motion.div,
+        window.motion.div,
         {
             className: 'glossary-container',
             initial: { opacity: 0 },
@@ -106,7 +95,7 @@ function Glossary() {
             { className: 'word-list' },
             filteredWords.map((word, index) =>
                 React.createElement(
-                    motion.div,
+                    window.motion.div,
                     {
                         key: word.word,
                         className: 'word-card',
