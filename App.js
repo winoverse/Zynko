@@ -1,18 +1,18 @@
-const { SectionProvider } = window.SectionContext;
-
 function App({ unit, contentType, contentTitle }) {
     return React.createElement(
-        SectionProvider,
+        window.SectionContext.SectionProvider,
         { initialSection: unit },
-        React.createElement(Navigation, null),
-        React.createElement(
-            'div',
-            { className: 'content-wrapper' },
-            React.createElement(SectionContent, {
-                contentType: contentType,
-                contentTitle: contentTitle
-            })
-        )
+        [
+            React.createElement(window.Navigation, { key: 'nav' }),
+            React.createElement(
+                'div',
+                { key: 'content', className: 'content-wrapper' },
+                React.createElement(window.SectionContent, {
+                    contentType: contentType,
+                    contentTitle: contentTitle
+                })
+            )
+        ]
     );
 }
 
