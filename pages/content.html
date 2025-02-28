@@ -58,50 +58,41 @@
     <!-- Add script loading handler -->
     <script>
         console.log('Starting script initialization...');
-        let scriptsLoaded = 0;
-        const totalScripts = 12;
-        const loadedComponents = new Set();
-
-        // Add this to track script loading
-        const scriptStatus = {
-            SectionContext: false,
-            Loading: false,
-            App: false,
-            SectionContent: false
-        };
+        let scriptsLoaded = new Set();
+        const requiredScripts = [
+            'SectionContext.js',
+            'Loading.js',
+            'App.js',
+            'SectionContent.js'
+        ];
 
         function handleScriptLoad(scriptPath) {
             try {
-                scriptsLoaded++;
-                const componentName = scriptPath.split('/').pop().replace('.js', '');
-                loadedComponents.add(componentName);
-                
-                // Log each script load
-                console.log(`Loading ${componentName}... (${scriptsLoaded}/${totalScripts})`);
-
-                // Update status
-                if (scriptStatus.hasOwnProperty(componentName)) {
-                    scriptStatus[componentName] = true;
+                const componentName = scriptPath.split('/').pop();
+                if (scriptsLoaded.has(componentName)) {
+                    console.log(`Skipping duplicate load of ${componentName}`);
+                    return;
                 }
+                
+                scriptsLoaded.add(componentName);
+                console.log(`Loaded ${componentName} (${scriptsLoaded.size} scripts loaded)`);
 
-                // Check if critical components are loaded
-                if (scriptsLoaded === totalScripts) {
-                    console.log('All scripts loaded, checking components...');
-                    console.log('Component status:', scriptStatus);
-                    
-                    // Immediate initialization
+                // Check if all required scripts are loaded
+                const allRequired = requiredScripts.every(script => 
+                    scriptsLoaded.has(script)
+                );
+
+                if (allRequired) {
+                    console.log('All required scripts loaded, initializing app...');
                     initializeApp();
                 }
             } catch (error) {
-                console.error(`Error in handleScriptLoad for ${scriptPath}:`, error);
+                console.error(`Error loading ${scriptPath}:`, error);
             }
         }
 
         function initializeApp() {
             try {
-                console.log('Initializing app...');
-                
-                // Check for React
                 if (!window.React || !window.ReactDOM) {
                     throw new Error('React or ReactDOM not loaded');
                 }
@@ -111,7 +102,20 @@
                     throw new Error('Root element not found');
                 }
 
-                // Remove initial loading spinner
+                // Check required components
+                if (!window.SectionContext) throw new Error('SectionContext not loaded');
+                if (!window.Loading) throw new Error('Loading not loaded');
+                if (!window.App) throw new Error('App not loaded');
+                if (!window.SectionContent) throw new Error('SectionContent not loaded');
+
+                console.log('All components available:', {
+                    SectionContext: !!window.SectionContext,
+                    Loading: !!window.Loading,
+                    App: !!window.App,
+                    SectionContent: !!window.SectionContent
+                });
+
+                // Remove loading spinner
                 const loadingElement = document.querySelector('.initial-loading');
                 if (loadingElement) {
                     loadingElement.style.display = 'none';
@@ -126,16 +130,16 @@
                     }),
                     root
                 );
-                
-                console.log('App rendered');
             } catch (error) {
-                console.error('Error in initializeApp:', error);
-                // Show error to user
+                console.error('Initialization error:', error);
                 const root = document.getElementById('root');
                 if (root) {
-                    root.innerHTML = `<div style="color: red; padding: 20px;">
-                        Error loading application: ${error.message}
-                    </div>`;
+                    root.innerHTML = `
+                        <div style="color: red; padding: 20px;">
+                            Error loading application: ${error.message}<br>
+                            <pre>${error.stack}</pre>
+                        </div>
+                    `;
                 }
             }
         }
@@ -149,40 +153,30 @@
         console.log('Script handler initialized');
     </script>
 
-    <!-- Update script loading order -->
-    <script src="https://unpkg.com/react@17/umd/react.development.js" crossorigin 
-        onload="console.log('React loaded')"></script>
-    <script src="https://unpkg.com/react-dom@17/umd/react-dom.development.js" crossorigin 
-        onload="console.log('ReactDOM loaded')"></script>
-    <script src="https://unpkg.com/framer-motion@4.1.17/dist/framer-motion.js" crossorigin 
-        onload="console.log('Framer Motion loaded')"></script>
-    <script src="https://unpkg.com/@babel/standalone/babel.min.js" 
-        onload="console.log('Babel loaded')"></script>
+    <!-- Load dependencies first -->
+    <script src="https://unpkg.com/react@17/umd/react.development.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@17/umd/react-dom.development.js" crossorigin></script>
+    <script src="https://unpkg.com/framer-motion@4.1.17/dist/framer-motion.js" crossorigin></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 
-    <!-- Then load your components -->
+    <!-- Then load components in order -->
     <script type="text/babel" src="../context/SectionContext.js" 
         onload="handleScriptLoad('../context/SectionContext.js')"></script>
     <script type="text/babel" src="../components/Loading.js" 
         onload="handleScriptLoad('../components/Loading.js')"></script>
-    <script type="text/babel" src="../components/exercises/WordFill.js" 
-        onload="handleScriptLoad('../components/exercises/WordFill.js')"></script>
-    <script type="text/babel" src="../components/exercises/MatchingExercise.js" 
-        onload="handleScriptLoad('../components/exercises/MatchingExercise.js')"></script>
-    <script type="text/babel" src="../components/exercises/SeaWordsExercise.js" 
-        onload="handleScriptLoad('../components/exercises/SeaWordsExercise.js')"></script>
-    <script type="text/babel" src="../components/Navigation.js" 
-        onload="handleScriptLoad('../components/Navigation.js')"></script>
-    <script type="text/babel" src="../components/InteractiveProse.js" 
-        onload="handleScriptLoad('../components/InteractiveProse.js')"></script>
-    <script type="text/babel" src="../components/Quiz.js" 
-        onload="handleScriptLoad('../components/Quiz.js')"></script>
-    <script type="text/babel" src="../components/Glossary.js" 
-        onload="handleScriptLoad('../components/Glossary.js')"></script>
-    <script type="text/babel" src="../components/DidYouKnow.js" 
-        onload="handleScriptLoad('../components/DidYouKnow.js')"></script>
     <script type="text/babel" src="../components/SectionContent.js" 
         onload="handleScriptLoad('../components/SectionContent.js')"></script>
     <script type="text/babel" src="../App.js" 
         onload="handleScriptLoad('../App.js')"></script>
+
+    <!-- Load other components after -->
+    <script type="text/babel" src="../components/exercises/WordFill.js"></script>
+    <script type="text/babel" src="../components/exercises/MatchingExercise.js"></script>
+    <script type="text/babel" src="../components/exercises/SeaWordsExercise.js"></script>
+    <script type="text/babel" src="../components/Navigation.js"></script>
+    <script type="text/babel" src="../components/InteractiveProse.js"></script>
+    <script type="text/babel" src="../components/Quiz.js"></script>
+    <script type="text/babel" src="../components/Glossary.js"></script>
+    <script type="text/babel" src="../components/DidYouKnow.js"></script>
 </body>
 </html> 
