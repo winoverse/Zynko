@@ -12,13 +12,13 @@ function Quiz() {
     const { currentSection, sections } = React.useContext(window.SectionContext.SectionContext);
     const quizData = sections[currentSection].quiz;
     const [currentQuestionType, setCurrentQuestionType] = React.useState('questions'); // ['questions', 'vocabulary', 'listening']
-    const [currentQuestion, setCurrentQuestion] = useState(0);
-    const [score, setScore] = useState(0);
-    const [timeLeft, setTimeLeft] = useState(30);
-    const [isActive, setIsActive] = useState(false);
-    const [showResults, setShowResults] = useState(false);
-    const [leaderboard, setLeaderboard] = useState([]);
-    const [questions, setQuestions] = useState([]);
+    const [currentQuestion, setCurrentQuestion] = React.useState(0);
+    const [score, setScore] = React.useState(0);
+    const [timeLeft, setTimeLeft] = React.useState(30);
+    const [isActive, setIsActive] = React.useState(false);
+    const [showResults, setShowResults] = React.useState(false);
+    const [leaderboard, setLeaderboard] = React.useState([]);
+    const [questions, setQuestions] = React.useState([]);
 
     // Quiz questions
     const quizQuestions = [
