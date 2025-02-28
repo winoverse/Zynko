@@ -1,13 +1,3 @@
-import React, { useState, useEffect, useContext } from 'react';
-import { motion } from 'framer-motion';
-import { db } from '../firebase-config';
-import { collection, addDoc, query, orderBy, limit, onSnapshot } from 'firebase/firestore';
-import { auth } from '../firebase-config';
-import { SectionContext } from '../context/SectionContext';
-import WordFill from './exercises/WordFill';
-import MatchingExercise from './exercises/MatchingExercise';
-import SeaWordsExercise from './exercises/SeaWordsExercise';
-
 function Quiz() {
     const { currentSection, sections } = React.useContext(window.SectionContext.SectionContext);
     const quizData = sections[currentSection].quiz;
@@ -185,8 +175,7 @@ function Quiz() {
         {
             className: 'quiz-container',
             initial: { opacity: 0 },
-            animate: { opacity: 1 },
-            transition: { duration: 0.5 }
+            animate: { opacity: 1 }
         },
         React.createElement(
             'div',
