@@ -4,7 +4,7 @@ import * as THREE from 'three';
 import { GoogleMap, LoadScript, Marker } from '@react-google-maps/api';
 import { SectionContext } from '../context/SectionContext';
 
-const DidYouKnow = () => {
+function DidYouKnow() {
     const containerRef = useRef(null);
     const canvasRef = useRef(null);
     const { scrollYProgress } = useScroll({
@@ -12,7 +12,7 @@ const DidYouKnow = () => {
         offset: ["start end", "end start"]
     });
 
-    const { currentSection, sections } = useContext(SectionContext);
+    const { currentSection, sections } = React.useContext(window.SectionContext.SectionContext);
     const didYouKnowData = sections[currentSection].didYouKnow;
 
     // Animation values based on scroll
@@ -83,7 +83,7 @@ const DidYouKnow = () => {
     ];
 
     return React.createElement(
-        motion.div,
+        window.motion.div,
         {
             className: 'did-you-know-container',
             initial: { opacity: 0 },
@@ -141,6 +141,6 @@ const DidYouKnow = () => {
             )
         )
     );
-};
+}
 
-export default DidYouKnow; 
+window.DidYouKnow = DidYouKnow; 
