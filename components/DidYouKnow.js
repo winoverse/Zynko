@@ -82,69 +82,64 @@ const DidYouKnow = () => {
         }
     ];
 
-    return (
-        <div ref={containerRef} className="did-you-know-container">
-            <motion.div 
-                className="title-section"
-                style={{ opacity, scale }}
-            >
-                <h2>Did You Know?</h2>
-                <h3>{didYouKnowData.title}</h3>
-            </motion.div>
-
-            <div className="content-section">
-                <motion.div 
-                    className="text-content"
-                    initial={{ opacity: 0, x: -50 }}
-                    whileInView={{ opacity: 1, x: 0 }}
-                    transition={{ duration: 0.8 }}
-                >
-                    <p>{didYouKnowData.content}</p>
-                </motion.div>
-
-                <div className="animation-section">
-                    <canvas ref={canvasRef} className="turtle-animation" />
-                </div>
-            </div>
-
-            <motion.div 
-                className="map-section"
-                initial={{ opacity: 0, y: 50 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8 }}
-            >
-                <h3>Nesting Sites in Odisha</h3>
-                <LoadScript googleMapsApiKey={process.env.REACT_APP_GOOGLE_MAPS_API_KEY}>
-                    <GoogleMap
-                        mapContainerStyle={mapContainerStyle}
-                        center={center}
-                        zoom={8}
-                    >
-                        {nestingSites.map((site, index) => (
-                            <Marker
-                                key={index}
-                                position={site.location}
-                                title={site.title}
-                            />
-                        ))}
-                    </GoogleMap>
-                </LoadScript>
-            </motion.div>
-
-            <motion.div 
-                className="fun-facts"
-                initial={{ opacity: 0 }}
-                whileInView={{ opacity: 1 }}
-                transition={{ duration: 0.8 }}
-            >
-                <h3>Amazing Facts</h3>
-                <ul>
-                    {didYouKnowData.facts.map((fact, index) => (
-                        <li key={index}>{fact}</li>
-                    ))}
-                </ul>
-            </motion.div>
-        </div>
+    return React.createElement(
+        motion.div,
+        {
+            className: 'did-you-know-container',
+            initial: { opacity: 0 },
+            animate: { opacity: 1 },
+            transition: { duration: 0.5 }
+        },
+        React.createElement('h2', null, didYouKnowData.title),
+        React.createElement('p', { className: 'content' }, didYouKnowData.content),
+        React.createElement(
+            'div',
+            { className: 'facts-container' },
+            didYouKnowData.facts.map((fact, index) =>
+                React.createElement(
+                    motion.div,
+                    {
+                        key: index,
+                        className: 'fact-card',
+                        initial: { opacity: 0, x: -20 },
+                        animate: { opacity: 1, x: 0 },
+                        transition: { delay: index * 0.2 }
+                    },
+                    React.createElement('span', { className: 'fact-number' }, `#${index + 1}`),
+                    React.createElement('p', null, fact)
+                )
+            )
+        ),
+        React.createElement(
+            'div',
+            { className: 'animation-section' },
+            React.createElement('canvas', { ref: canvasRef, className: 'turtle-animation' })
+        ),
+        React.createElement(
+            motion.div,
+            {
+                className: 'map-section',
+                initial: { opacity: 0, y: 50 },
+                animate: { opacity: 1, y: 0 },
+                transition: { duration: 0.8 }
+            },
+            React.createElement('h3', null, 'Nesting Sites in Odisha'),
+            React.createElement(
+                LoadScript,
+                { googleMapsApiKey: process.env.REACT_APP_GOOGLE_MAPS_API_KEY },
+                React.createElement(GoogleMap, {
+                    mapContainerStyle: mapContainerStyle,
+                    center: center,
+                    zoom: 8
+                }, nestingSites.map((site, index) =>
+                    React.createElement(Marker, {
+                        key: index,
+                        position: site.location,
+                        title: site.title
+                    })
+                ))
+            )
+        )
     );
 };
 
