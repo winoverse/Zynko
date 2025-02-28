@@ -1,19 +1,19 @@
-import { SectionProvider } from './context/SectionContext';
-import Navigation from './components/Navigation';
-import SectionContent from './components/SectionContent';
+const { SectionProvider } = window.SectionContext;
 
 function App({ unit, contentType, contentTitle }) {
-    return (
-        <SectionProvider initialSection={unit}>
-            <Navigation />
-            <div className="content-wrapper">
-                <SectionContent 
-                    contentType={contentType}
-                    contentTitle={contentTitle}
-                />
-            </div>
-        </SectionProvider>
+    return React.createElement(
+        SectionProvider,
+        { initialSection: unit },
+        React.createElement(Navigation, null),
+        React.createElement(
+            'div',
+            { className: 'content-wrapper' },
+            React.createElement(SectionContent, {
+                contentType: contentType,
+                contentTitle: contentTitle
+            })
+        )
     );
 }
 
-export default App; 
+window.App = App; 
