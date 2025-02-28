@@ -7,7 +7,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Initialize your React app with these values
     const root = document.getElementById('root');
     ReactDOM.render(
-        React.createElement(App, {
+        React.createElement(window.App, {
             unit: selectedUnit,
             contentType: contentType,
             contentTitle: contentTitle
