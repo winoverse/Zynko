@@ -58,33 +58,33 @@
     <!-- Add script loading handler -->
     <script>
         console.log('Starting script initialization...');
-        let scriptsLoaded = new Set();
-        const requiredScripts = [
-            'SectionContext.js',
-            'Loading.js',
-            'App.js',
-            'SectionContent.js'
-        ];
+        const loadedScripts = new Set();
+        const requiredComponents = {
+            SectionContext: false,
+            Loading: false,
+            SectionContent: false,
+            App: false
+        };
 
         function handleScriptLoad(scriptPath) {
             try {
-                const componentName = scriptPath.split('/').pop();
-                if (scriptsLoaded.has(componentName)) {
-                    console.log(`Skipping duplicate load of ${componentName}`);
-                    return;
+                const componentName = scriptPath.split('/').pop().replace('.js', '');
+                if (loadedScripts.has(componentName)) {
+                    return; // Skip if already loaded
                 }
                 
-                scriptsLoaded.add(componentName);
-                console.log(`Loaded ${componentName} (${scriptsLoaded.size} scripts loaded)`);
+                loadedScripts.add(componentName);
+                console.log(`Loading ${componentName}...`);
 
-                // Check if all required scripts are loaded
-                const allRequired = requiredScripts.every(script => 
-                    scriptsLoaded.has(script)
-                );
+                if (requiredComponents.hasOwnProperty(componentName)) {
+                    requiredComponents[componentName] = true;
+                    console.log(`Required component ${componentName} loaded`);
+                }
 
-                if (allRequired) {
-                    console.log('All required scripts loaded, initializing app...');
-                    initializeApp();
+                // Check if all required components are loaded
+                if (Object.values(requiredComponents).every(loaded => loaded)) {
+                    console.log('All required components loaded:', requiredComponents);
+                    setTimeout(initializeApp, 100); // Small delay to ensure everything is ready
                 }
             } catch (error) {
                 console.error(`Error loading ${scriptPath}:`, error);
@@ -153,21 +153,21 @@
         console.log('Script handler initialized');
     </script>
 
-    <!-- Load dependencies first -->
+    <!-- Load core dependencies first -->
     <script src="https://unpkg.com/react@17/umd/react.development.js" crossorigin></script>
     <script src="https://unpkg.com/react-dom@17/umd/react-dom.development.js" crossorigin></script>
     <script src="https://unpkg.com/framer-motion@4.1.17/dist/framer-motion.js" crossorigin></script>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 
-    <!-- Then load components in order -->
+    <!-- Load required components in order -->
     <script type="text/babel" src="../context/SectionContext.js" 
-        onload="handleScriptLoad('../context/SectionContext.js')"></script>
+        onload="handleScriptLoad(this.src)"></script>
     <script type="text/babel" src="../components/Loading.js" 
-        onload="handleScriptLoad('../components/Loading.js')"></script>
+        onload="handleScriptLoad(this.src)"></script>
     <script type="text/babel" src="../components/SectionContent.js" 
-        onload="handleScriptLoad('../components/SectionContent.js')"></script>
+        onload="handleScriptLoad(this.src)"></script>
     <script type="text/babel" src="../App.js" 
-        onload="handleScriptLoad('../App.js')"></script>
+        onload="handleScriptLoad(this.src)"></script>
 
     <!-- Load other components after -->
     <script type="text/babel" src="../components/exercises/WordFill.js"></script>
