@@ -12,7 +12,7 @@ function ErrorBoundary({ children }) {
     }, []);
 
     if (hasError) {
-        return React.createElement('div', { style: { color: 'red' } },
+        return React.createElement('div', { style: { color: 'red', padding: '20px' } },
             'Something went wrong:',
             React.createElement('pre', null, error?.toString())
         );
@@ -22,11 +22,6 @@ function ErrorBoundary({ children }) {
 }
 
 function App({ unit, contentType, contentTitle }) {
-    console.log('App rendering, checking dependencies...');
-    console.log('SectionContext available:', !!window.SectionContext);
-    console.log('SectionContent available:', !!window.SectionContent);
-    console.log('Loading available:', !!window.Loading);
-    
     console.log('App rendering with:', { unit, contentType, contentTitle });
     
     return React.createElement(
@@ -34,13 +29,14 @@ function App({ unit, contentType, contentTitle }) {
         null,
         React.createElement(
             window.SectionContext.SectionProvider,
-            { initialSection: unit || '1' },
+            { initialSection: unit },
             React.createElement(window.SectionContent, {
-                contentType: contentType || 'Prose',
-                contentTitle: contentTitle || 'Introduction'
+                contentType,
+                contentTitle
             })
         )
     );
 }
 
-window.App = App; 
+window.App = App;
+console.log('App component registered'); 
