@@ -6,21 +6,18 @@
     <title>Sea Turtles - Learning Content</title>
     
     <!-- Add your CSS files -->
-    <link rel="stylesheet" href="../styles/InteractiveProse.css">
-    <link rel="stylesheet" href="../styles/Quiz.css">
-    <link rel="stylesheet" href="../styles/Glossary.css">
-    <link rel="stylesheet" href="../styles/exercises.css">
     <link rel="stylesheet" href="../styles/styles.css">
     
     <!-- Add React and ReactDOM -->
     <script src="https://unpkg.com/react@17/umd/react.development.js" crossorigin></script>
     <script src="https://unpkg.com/react-dom@17/umd/react-dom.development.js" crossorigin></script>
     
-    <!-- Add Babel for JSX -->
-    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-    
     <!-- Add Framer Motion -->
-    <script src="https://unpkg.com/framer-motion@4.1.17/dist/framer-motion.js"></script>
+    <script src="https://unpkg.com/framer-motion@4.1.17/dist/framer-motion.js" crossorigin></script>
+    
+    <!-- Add Babel -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
     <style>
         .initial-loading {
             position: fixed;
@@ -60,30 +57,42 @@
     <!-- Add script loading handler -->
     <script>
         let scriptsLoaded = 0;
-        const totalScripts = 13; // Updated total number of scripts
-
+        const totalScripts = 12;
+        
         function handleScriptLoad() {
             scriptsLoaded++;
             if (scriptsLoaded === totalScripts) {
-                // All scripts loaded, remove loading screen
                 document.querySelector('.initial-loading').style.display = 'none';
+                // Initialize the app
+                const root = document.getElementById('root');
+                const selectedUnit = localStorage.getItem('selectedUnit');
+                const contentType = localStorage.getItem('contentType');
+                const contentTitle = localStorage.getItem('contentTitle');
+
+                ReactDOM.render(
+                    React.createElement(window.App, {
+                        unit: selectedUnit,
+                        contentType: contentType,
+                        contentTitle: contentTitle
+                    }),
+                    root
+                );
             }
         }
     </script>
 
-    <!-- Add your JavaScript files with load handlers -->
+    <!-- Load components in order -->
     <script type="text/babel" src="../context/SectionContext.js" onload="handleScriptLoad()"></script>
     <script type="text/babel" src="../components/Loading.js" onload="handleScriptLoad()"></script>
     <script type="text/babel" src="../components/Navigation.js" onload="handleScriptLoad()"></script>
     <script type="text/babel" src="../components/InteractiveProse.js" onload="handleScriptLoad()"></script>
+    <script type="text/babel" src="../components/exercises/WordFill.js" onload="handleScriptLoad()"></script>
+    <script type="text/babel" src="../components/exercises/MatchingExercise.js" onload="handleScriptLoad()"></script>
+    <script type="text/babel" src="../components/exercises/SeaWordsExercise.js" onload="handleScriptLoad()"></script>
     <script type="text/babel" src="../components/Quiz.js" onload="handleScriptLoad()"></script>
     <script type="text/babel" src="../components/Glossary.js" onload="handleScriptLoad()"></script>
     <script type="text/babel" src="../components/DidYouKnow.js" onload="handleScriptLoad()"></script>
     <script type="text/babel" src="../components/SectionContent.js" onload="handleScriptLoad()"></script>
     <script type="text/babel" src="../App.js" onload="handleScriptLoad()"></script>
-    <script type="text/babel" src="../components/exercises/WordFill.js" onload="handleScriptLoad()"></script>
-    <script type="text/babel" src="../components/exercises/MatchingExercise.js" onload="handleScriptLoad()"></script>
-    <script type="text/babel" src="../components/exercises/SeaWordsExercise.js" onload="handleScriptLoad()"></script>
-    <script type="text/babel" src="../components/exercises/Listening.js" onload="handleScriptLoad()"></script>
 </body>
 </html> 
