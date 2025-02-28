@@ -1,5 +1,3 @@
-import React, { useState } from 'react';
-
 function WordFill({ questions }) {
     const [answers, setAnswers] = React.useState({});
 
