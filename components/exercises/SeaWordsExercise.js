@@ -2,8 +2,8 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 function SeaWordsExercise({ data }) {
-    const [words, setWords] = useState(['', '', '', '', '']);
-    const [sentences, setSentences] = useState(['', '', '', '', '']);
+    const [words, setWords] = React.useState(['', '', '', '', '']);
+    const [sentences, setSentences] = React.useState(['', '', '', '', '']);
     const [feedback, setFeedback] = useState(null);
     const [saved, setSaved] = useState(false);
 
@@ -69,12 +69,11 @@ function SeaWordsExercise({ data }) {
     };
 
     return React.createElement(
-        motion.div,
+        window.motion.div,
         {
             className: 'sea-words-container',
             initial: { opacity: 0 },
-            animate: { opacity: 1 },
-            transition: { duration: 0.5 }
+            animate: { opacity: 1 }
         },
         [
             React.createElement('h3', { key: 'title' }, 'Sea-Related Words'),
@@ -90,7 +89,7 @@ function SeaWordsExercise({ data }) {
                 { key: 'entries', className: 'word-entries' },
                 words.map((word, index) => 
                     React.createElement(
-                        motion.div,
+                        window.motion.div,
                         {
                             key: index,
                             className: 'word-entry',
@@ -127,7 +126,7 @@ function SeaWordsExercise({ data }) {
                 AnimatePresence,
                 null,
                 React.createElement(
-                    motion.div,
+                    window.motion.div,
                     {
                         className: `feedback ${feedback?.type}`,
                         initial: { opacity: 0, y: 20 },
