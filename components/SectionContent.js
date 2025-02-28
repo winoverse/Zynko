@@ -15,47 +15,16 @@ function SectionContent({ contentType, contentTitle }) {
             console.log('SectionContent effect running');
             setIsLoading(true);
             
-            // Verify sections data
-            if (!sections || !sections[currentSection]) {
-                console.error('Invalid sections data:', { sections, currentSection });
-                return;
-            }
-
             setTimeout(() => {
                 setIsLoading(false);
                 console.log('Loading complete');
             }, 1000);
-        }, [contentType, currentSection, sections]);
+        }, [contentType, currentSection]);
 
         if (isLoading) {
             console.log('Returning Loading component');
             return React.createElement(window.Loading);
         }
-
-        console.log('Rendering content:', contentType);
-
-        const pageTransition = {
-            initial: { opacity: 0, x: -20 },
-            animate: { opacity: 1, x: 0 },
-            exit: { opacity: 0, x: 20 },
-            transition: { duration: 0.5 }
-        };
-
-        // Render content based on type
-        const renderContent = () => {
-            switch(contentType) {
-                case 'Prose':
-                    return React.createElement(window.InteractiveProse);
-                case 'Quiz':
-                    return React.createElement(window.Quiz);
-                case 'Glossary':
-                    return React.createElement(window.Glossary);
-                case 'Did You Know':
-                    return React.createElement(window.DidYouKnow);
-                default:
-                    return React.createElement(window.InteractiveProse);
-            }
-        };
 
         return React.createElement(
             window.motion.div,
@@ -64,7 +33,7 @@ function SectionContent({ contentType, contentTitle }) {
                 initial: { opacity: 0 },
                 animate: { opacity: 1 }
             },
-            renderContent()
+            React.createElement(window.InteractiveProse)
         );
     } catch (error) {
         console.error('Error in SectionContent:', error);
@@ -72,4 +41,5 @@ function SectionContent({ contentType, contentTitle }) {
     }
 }
 
-window.SectionContent = SectionContent; 
+window.SectionContent = SectionContent;
+console.log('SectionContent registered'); 
