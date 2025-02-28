@@ -22,6 +22,11 @@ function ErrorBoundary({ children }) {
 }
 
 function App({ unit, contentType, contentTitle }) {
+    console.log('App rendering, checking dependencies...');
+    console.log('SectionContext available:', !!window.SectionContext);
+    console.log('SectionContent available:', !!window.SectionContent);
+    console.log('Loading available:', !!window.Loading);
+    
     console.log('App rendering with:', { unit, contentType, contentTitle });
     
     return React.createElement(
