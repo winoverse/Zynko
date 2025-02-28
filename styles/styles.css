@@ -1,4 +1,5 @@
 /* Import all your styles */
+@import 'loading.css';
 @import 'InteractiveProse.css';
 @import 'Quiz.css';
 @import 'Glossary.css';
