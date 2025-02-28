@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 
 function WordFill({ questions }) {
-    const [answers, setAnswers] = useState({});
+    const [answers, setAnswers] = React.useState({});
 
     return React.createElement(
         'div',
