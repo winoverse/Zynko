@@ -4,8 +4,8 @@ import { motion, AnimatePresence } from 'framer-motion';
 function SeaWordsExercise({ data }) {
     const [words, setWords] = React.useState(['', '', '', '', '']);
     const [sentences, setSentences] = React.useState(['', '', '', '', '']);
-    const [feedback, setFeedback] = useState(null);
-    const [saved, setSaved] = useState(false);
+    const [feedback, setFeedback] = React.useState(null);
+    const [saved, setSaved] = React.useState(false);
 
     const handleWordChange = (index, value) => {
         const newWords = [...words];
