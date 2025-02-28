@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 
-const Listening = ({ data }) => {
+function Listening({ data }) {
     const [isPlaying, setIsPlaying] = useState(false);
     const [selectedAnswers, setSelectedAnswers] = useState({});
+    const [showResults, setShowResults] = useState(false);
 
     const playNews = () => {
         setIsPlaying(true);
@@ -18,47 +19,40 @@ const Listening = ({ data }) => {
         setIsPlaying(false);
     };
 
-    return (
-        <motion.div 
-            className="listening-section"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.5 }}
-        >
-            <h2>{data.title}</h2>
-            
-            <div className="controls">
-                <button 
-                    onClick={isPlaying ? stopNews : playNews}
-                    className={isPlaying ? 'stop-btn' : 'play-btn'}
-                >
-                    {isPlaying ? '⏹️ Stop' : '▶️ Play News'}
-                </button>
-            </div>
-
-            <div className="questions">
-                {data.questions.map((q, index) => (
-                    <div key={index} className="question">
-                        <p>{q.question}</p>
-                        <div className="options">
-                            {q.options.map((option, optIndex) => (
-                                <button
-                                    key={optIndex}
-                                    className={`option ${selectedAnswers[index] === option ? 'selected' : ''}`}
-                                    onClick={() => setSelectedAnswers({
-                                        ...selectedAnswers,
-                                        [index]: option
-                                    })}
-                                >
-                                    {option}
-                                </button>
-                            ))}
-                        </div>
-                    </div>
-                ))}
-            </div>
-        </motion.div>
+    return React.createElement(
+        motion.div,
+        {
+            className: 'listening-container',
+            initial: { opacity: 0 },
+            animate: { opacity: 1 }
+        },
+        React.createElement('h2', { key: 'title' }, data.title),
+        React.createElement('div', { className: 'controls' },
+            React.createElement('button', {
+                onClick: isPlaying ? stopNews : playNews,
+                className: isPlaying ? 'stop-btn' : 'play-btn'
+            }, isPlaying ? '⏹️ Stop' : '▶️ Play News')
+        ),
+        React.createElement('div', { className: 'questions' },
+            data.questions.map((q, index) => (
+                React.createElement('div', { key: index, className: 'question' },
+                    React.createElement('p', { key: 'question' }, q.question),
+                    React.createElement('div', { className: 'options' },
+                        q.options.map((option, optIndex) => (
+                            React.createElement('button', {
+                                key: optIndex,
+                                className: `option ${selectedAnswers[index] === option ? 'selected' : ''}`,
+                                onClick: () => setSelectedAnswers({
+                                    ...selectedAnswers,
+                                    [index]: option
+                                })
+                            }, option)
+                        ))
+                    )
+                )
+            ))
+        )
     );
-};
+}
 
-export default Listening; 
+window.Listening = Listening; 
