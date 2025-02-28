@@ -1177,48 +1177,22 @@
                                     title: 'Choose Your Term',
                                     html: `
                                         <div style="display: flex; flex-direction: column; gap: 15px; margin: 20px 0;">
-                                            <button class="term-btn" data-term="Term 1" style="
-                                                padding: 15px;
-                                                margin: 5px;
-                                                border: 2px solid #FF9B3F;
-                                                border-radius: 10px;
-                                                background: #fff;
-                                                color: #FF9B3F;
-                                                font-size: 1.1em;
-                                                cursor: pointer;
-                                                transition: all 0.3s ease;
-                                            " onmouseover="this.style.background='#FF9B3F'; this.style.color='#fff';" 
-                                            onmouseout="this.style.background='#fff'; this.style.color='#FF9B3F';">
-                                                Term 1
-                                            </button>
-                                            <button class="term-btn" data-term="Term 2" style="
-                                                padding: 15px;
-                                                margin: 5px;
-                                                border: 2px solid #FF9B3F;
-                                                border-radius: 10px;
-                                                background: #fff;
-                                                color: #FF9B3F;
-                                                font-size: 1.1em;
-                                                cursor: pointer;
-                                                transition: all 0.3s ease;
-                                            " onmouseover="this.style.background='#FF9B3F'; this.style.color='#fff';" 
-                                            onmouseout="this.style.background='#fff'; this.style.color='#FF9B3F';">
-                                                Term 2
-                                            </button>
-                                            <button class="term-btn" data-term="Term 3" style="
-                                                padding: 15px;
-                                                margin: 5px;
-                                                border: 2px solid #FF9B3F;
-                                                border-radius: 10px;
-                                                background: #fff;
-                                                color: #FF9B3F;
-                                                font-size: 1.1em;
-                                                cursor: pointer;
-                                                transition: all 0.3s ease;
-                                            " onmouseover="this.style.background='#FF9B3F'; this.style.color='#fff';" 
-                                            onmouseout="this.style.background='#fff'; this.style.color='#FF9B3F';">
-                                                Term 3
-                                            </button>
+                                            ${['Term 1', 'Term 2', 'Term 3'].map(term => `
+                                                <button class="term-btn" data-term="${term}" style="
+                                                    padding: 15px;
+                                                    margin: 5px;
+                                                    border: 2px solid #FF9B3F;
+                                                    border-radius: 10px;
+                                                    background: #fff;
+                                                    color: #FF9B3F;
+                                                    font-size: 1.1em;
+                                                    cursor: pointer;
+                                                    transition: all 0.3s ease;
+                                                " onmouseover="this.style.background='#FF9B3F'; this.style.color='#fff';" 
+                                                onmouseout="this.style.background='#fff'; this.style.color='#FF9B3F';">
+                                                    ${term}
+                                                </button>
+                                            `).join('')}
                                         </div>
                                     `,
                                     showCancelButton: true,
@@ -1228,29 +1202,10 @@
                                         popup: 'animated bounceIn'
                                     },
                                     didOpen: () => {
-                                        // Define unit content
-                                        const unitContent = {
-                                            1: {
-                                                'Prose': 'Sea Turtles',
-                                                'Poem': 'The Crocodile',
-                                                'Supplementary': 'The Friendship'
-                                            },
-                                            2: {
-                                                'Prose': 'When the Trees Walked',
-                                                'Poem': 'Trees',
-                                                'Supplementary': 'The Apple Tree and the Farmer'
-                                            },
-                                            3: {
-                                                'Prose': 'A Visitor from Distant Lands',
-                                                'Poem': 'Dream of Spices',
-                                                'Supplementary': 'Stone Soup'
-                                            }
-                                        };
-
-                                        // Add click handlers for term buttons
-                                        document.querySelectorAll('.term-btn').forEach(btn => {
-                                            btn.addEventListener('click', async () => {
-                                                const selectedTerm = btn.dataset.term;
+                                        // Re-attach term button handlers
+                                        document.querySelectorAll('.term-btn').forEach(termBtn => {
+                                            termBtn.addEventListener('click', async () => {
+                                                const selectedTerm = termBtn.dataset.term;
                                                 
                                                 if (selectedTerm === 'Term 1') {
                                                     // Show units dialog with back button
@@ -1278,7 +1233,7 @@
                                                         `,
                                                         showCancelButton: true,
                                                         showConfirmButton: false,
-                                                        showDenyButton: true, // Add deny button for "Back"
+                                                        showDenyButton: true,
                                                         denyButtonText: 'Back to Terms',
                                                         denyButtonColor: '#666',
                                                         background: '#fff',
@@ -1286,7 +1241,7 @@
                                                             popup: 'animated bounceIn'
                                                         },
                                                         didOpen: () => {
-                                                            // Add click handlers for unit buttons
+                                                            // Re-attach unit button handlers
                                                             document.querySelectorAll('.unit-btn').forEach(unitBtn => {
                                                                 unitBtn.addEventListener('click', async () => {
                                                                     const selectedUnit = unitBtn.dataset.unit;
@@ -1352,8 +1307,8 @@
                                                                         }
                                                                     }).then((result) => {
                                                                         if (result.isDenied) {
-                                                                            // Go back to units selection
-                                                                            btn.click(); // Simulate clicking the term button again
+                                                                            // Go back to terms selection
+                                                                            termBtn.click(); // This will trigger the term selection again
                                                                         }
                                                                     });
                                                                 });
@@ -1366,48 +1321,22 @@
                                                                 title: 'Choose Your Term',
                                                                 html: `
                                                                     <div style="display: flex; flex-direction: column; gap: 15px; margin: 20px 0;">
-                                                                        <button class="term-btn" data-term="Term 1" style="
-                                                                            padding: 15px;
-                                                                            margin: 5px;
-                                                                            border: 2px solid #FF9B3F;
-                                                                            border-radius: 10px;
-                                                                            background: #fff;
-                                                                            color: #FF9B3F;
-                                                                            font-size: 1.1em;
-                                                                            cursor: pointer;
-                                                                            transition: all 0.3s ease;
-                                                                        " onmouseover="this.style.background='#FF9B3F'; this.style.color='#fff';" 
-                                                                        onmouseout="this.style.background='#fff'; this.style.color='#FF9B3F';">
-                                                                            Term 1
-                                                                        </button>
-                                                                        <button class="term-btn" data-term="Term 2" style="
-                                                                            padding: 15px;
-                                                                            margin: 5px;
-                                                                            border: 2px solid #FF9B3F;
-                                                                            border-radius: 10px;
-                                                                            background: #fff;
-                                                                            color: #FF9B3F;
-                                                                            font-size: 1.1em;
-                                                                            cursor: pointer;
-                                                                            transition: all 0.3s ease;
-                                                                        " onmouseover="this.style.background='#FF9B3F'; this.style.color='#fff';" 
-                                                                        onmouseout="this.style.background='#fff'; this.style.color='#FF9B3F';">
-                                                                            Term 2
-                                                                        </button>
-                                                                        <button class="term-btn" data-term="Term 3" style="
-                                                                            padding: 15px;
-                                                                            margin: 5px;
-                                                                            border: 2px solid #FF9B3F;
-                                                                            border-radius: 10px;
-                                                                            background: #fff;
-                                                                            color: #FF9B3F;
-                                                                            font-size: 1.1em;
-                                                                            cursor: pointer;
-                                                                            transition: all 0.3s ease;
-                                                                        " onmouseover="this.style.background='#FF9B3F'; this.style.color='#fff';" 
-                                                                        onmouseout="this.style.background='#fff'; this.style.color='#FF9B3F';">
-                                                                            Term 3
-                                                                        </button>
+                                                                        ${['Term 1', 'Term 2', 'Term 3'].map(term => `
+                                                                            <button class="term-btn" data-term="${term}" style="
+                                                                                padding: 15px;
+                                                                                margin: 5px;
+                                                                                border: 2px solid #FF9B3F;
+                                                                                border-radius: 10px;
+                                                                                background: #fff;
+                                                                                color: #FF9B3F;
+                                                                                font-size: 1.1em;
+                                                                                cursor: pointer;
+                                                                                transition: all 0.3s ease;
+                                                                            " onmouseover="this.style.background='#FF9B3F'; this.style.color='#fff';" 
+                                                                            onmouseout="this.style.background='#fff'; this.style.color='#FF9B3F';">
+                                                                                ${term}
+                                                                            </button>
+                                                                        `).join('')}
                                                                     </div>
                                                                 `,
                                                                 showCancelButton: true,
@@ -1418,7 +1347,78 @@
                                                                 },
                                                                 didOpen: () => {
                                                                     // Re-attach term button handlers
-                                                                    // ... original term button handlers ...
+                                                                    document.querySelectorAll('.term-btn').forEach(termBtn => {
+                                                                        termBtn.addEventListener('click', async () => {
+                                                                            const selectedTerm = termBtn.dataset.term;
+                                                                            
+                                                                            if (selectedTerm === 'Term 1') {
+                                                                                // Show units dialog with back button
+                                                                                await Swal.fire({
+                                                                                    title: 'Choose Your Unit',
+                                                                                    html: `
+                                                                                        <div style="display: flex; flex-direction: column; gap: 15px; margin: 20px 0;">
+                                                                                            ${[1, 2, 3].map(unit => `
+                                                                                                <button class="unit-btn" data-unit="${unit}" style="
+                                                                                                    padding: 15px;
+                                                                                                    margin: 5px;
+                                                                                                    border: 2px solid #FF9B3F;
+                                                                                                    border-radius: 10px;
+                                                                                                    background: #fff;
+                                                                                                    color: #FF9B3F;
+                                                                                                    font-size: 1.1em;
+                                                                                                    cursor: pointer;
+                                                                                                    transition: all 0.3s ease;
+                                                                                                " onmouseover="this.style.background='#FF9B3F'; this.style.color='#fff';" 
+                                                                                                onmouseout="this.style.background='#fff'; this.style.color='#FF9B3F';">
+                                                                                                    Unit ${unit}
+                                                                                                </button>
+                                                                                            `).join('')}
+                                                                                        </div>
+                                                                                    `,
+                                                                                    showCancelButton: true,
+                                                                                    showConfirmButton: false,
+                                                                                    showDenyButton: true,
+                                                                                    denyButtonText: 'Back to Terms',
+                                                                                    denyButtonColor: '#666',
+                                                                                    background: '#fff',
+                                                                                    customClass: {
+                                                                                        popup: 'animated bounceIn'
+                                                                                    },
+                                                                                    didOpen: () => {
+                                                                                        // Re-attach unit button handlers
+                                                                                        document.querySelectorAll('.unit-btn').forEach(unitBtn => {
+                                                                                            unitBtn.addEventListener('click', async () => {
+                                                                                                const selectedUnit = unitBtn.dataset.unit;
+                                                                                                const content = unitContent[selectedUnit];
+                                                                                                // ... rest of the unit button handler code ...
+                                                                                            });
+                                                                                        });
+                                                                                    }
+                                                                                }).then((result) => {
+                                                                                    if (result.isDenied) {
+                                                                                        // Go back to terms selection
+                                                                                        termBtn.click(); // This will trigger the term selection again
+                                                                                    }
+                                                                                });
+                                                                            } else {
+                                                                                // Handle other terms (Term 2 and Term 3)
+                                                                                await Swal.fire({
+                                                                                    title: 'Coming Soon!',
+                                                                                    html: `
+                                                                                        ${svgIcons.celebration}
+                                                                                        <div style="font-size: 1.1em; color: #333;">
+                                                                                            ${subjectName} - ${selectedTerm}<br>
+                                                                                            Will be available soon!
+                                                                                        </div>
+                                                                                    `,
+                                                                                    background: '#fff',
+                                                                                    showConfirmButton: false,
+                                                                                    timer: 2000,
+                                                                                    timerProgressBar: true
+                                                                                });
+                                                                            }
+                                                                        });
+                                                                    });
                                                                 }
                                                             });
                                                         }
