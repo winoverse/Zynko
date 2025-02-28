@@ -1,11 +1,8 @@
-import React, { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-
 function MatchingExercise({ questions }) {
-    const [selectedStart, setSelectedStart] = useState(null);
-    const [matches, setMatches] = useState({});
-    const [feedback, setFeedback] = useState(null);
-    const [isSubmitted, setIsSubmitted] = useState(false);
+    const [selectedStart, setSelectedStart] = React.useState(null);
+    const [matches, setMatches] = React.useState({});
+    const [feedback, setFeedback] = React.useState(null);
+    const [isSubmitted, setIsSubmitted] = React.useState(false);
 
     const handleMatch = (start, end) => {
         if (selectedStart === start) {
@@ -39,7 +36,7 @@ function MatchingExercise({ questions }) {
     };
 
     return React.createElement(
-        motion.div,
+        window.motion.div,
         {
             className: 'matching-container',
             initial: { opacity: 0 },
@@ -51,7 +48,7 @@ function MatchingExercise({ questions }) {
             { className: 'matching-pairs' },
             questions.map((q, index) => 
                 React.createElement(
-                    motion.div,
+                    window.motion.div,
                     {
                         key: index,
                         className: 'matching-pair',
@@ -71,7 +68,7 @@ function MatchingExercise({ questions }) {
                             q.start
                         ),
                         React.createElement(
-                            motion.div,
+                            window.motion.div,
                             {
                                 key: 'line',
                                 className: 'matching-line',
@@ -94,10 +91,10 @@ function MatchingExercise({ questions }) {
             )
         ),
         React.createElement(
-            AnimatePresence,
+            React.Fragment,
             null,
             feedback && React.createElement(
-                motion.div,
+                window.motion.div,
                 {
                     className: `feedback ${feedback.type}`,
                     initial: { opacity: 0, y: 20 },
