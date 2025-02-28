@@ -1,6 +1,3 @@
-import React, { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-
 function SeaWordsExercise({ data }) {
     const [words, setWords] = React.useState(['', '', '', '', '']);
     const [sentences, setSentences] = React.useState(['', '', '', '', '']);
