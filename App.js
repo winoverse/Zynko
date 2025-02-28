@@ -25,16 +25,12 @@ function App({ unit, contentType, contentTitle }) {
     console.log('App rendering with:', { unit, contentType, contentTitle });
     
     return React.createElement(
-        ErrorBoundary,
-        null,
-        React.createElement(
-            window.SectionContext.SectionProvider,
-            { initialSection: unit },
-            React.createElement(window.SectionContent, {
-                contentType,
-                contentTitle
-            })
-        )
+        window.SectionContext.SectionProvider,
+        { initialSection: unit || '1' },
+        React.createElement(window.SectionContent, {
+            contentType: contentType || 'Prose',
+            contentTitle: contentTitle || 'Introduction'
+        })
     );
 }
 
