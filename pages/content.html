@@ -59,70 +59,62 @@
     <script>
         let scriptsLoaded = 0;
         const totalScripts = 12;
-        const loadedScripts = new Set();
-        
+        const loadedComponents = new Set();
+
         window.onerror = function(msg, url, lineNo, columnNo, error) {
             console.error('Global error:', { msg, url, lineNo, columnNo, error });
             return false;
         };
 
-        function handleScriptLoad(scriptName) {
+        function handleScriptLoad(scriptPath) {
             try {
                 scriptsLoaded++;
-                const componentName = scriptName.split('/').pop().replace('.js', '');
-                console.log(`Loading ${componentName}...`);
+                const componentName = scriptPath.split('/').pop().replace('.js', '');
+                loadedComponents.add(componentName);
                 
-                // Log the actual window object state
-                console.log(`${componentName} available:`, !!window[componentName]);
-                console.log(`Scripts loaded: ${scriptsLoaded}/${totalScripts}`);
+                console.log(`[${scriptsLoaded}/${totalScripts}] Loaded: ${componentName}`);
+                console.log(`Component ${componentName} available:`, !!window[componentName]);
 
                 if (scriptsLoaded === totalScripts) {
-                    console.log('All components loaded. Available components:', 
-                        Object.keys(window).filter(k => [
-                            'App', 
-                            'Loading', 
-                            'SectionContext', 
-                            'InteractiveProse', 
-                            'Quiz',
-                            'SectionContent',
-                            'Navigation'
-                        ].includes(k))
-                    );
-                    setTimeout(initializeApp, 100);
+                    console.log('=== All scripts loaded ===');
+                    console.log('Loaded components:', Array.from(loadedComponents));
+                    console.log('Available on window:', Object.keys(window).filter(k => 
+                        ['App', 'Loading', 'SectionContext', 'SectionContent'].includes(k)
+                    ));
+                    
+                    // Give a small delay before initialization
+                    setTimeout(() => {
+                        console.log('Starting initialization...');
+                        initializeApp();
+                    }, 500);
                 }
             } catch (error) {
-                console.error(`Error loading ${scriptName}:`, error);
+                console.error(`Error loading ${scriptPath}:`, error);
             }
         }
 
         function initializeApp() {
             try {
-                console.log('Starting app initialization...');
-                console.log('Available components:', Object.keys(window).filter(k => 
-                    ['App', 'Loading', 'SectionContext', 'InteractiveProse', 'Quiz'].includes(k)
-                ));
-
                 const root = document.getElementById('root');
                 if (!root) throw new Error('Root element not found');
 
-                const selectedUnit = '1';  // Hardcode for testing
-                const contentType = 'Prose';  // Hardcode for testing
-                const contentTitle = 'Introduction';  // Hardcode for testing
+                if (!window.App) throw new Error('App component not found');
+                if (!window.SectionContext) throw new Error('SectionContext not found');
+                if (!window.SectionContent) throw new Error('SectionContent not found');
+                if (!window.Loading) throw new Error('Loading component not found');
 
-                if (!window.App) throw new Error('App component not loaded');
-                if (!window.SectionContext) throw new Error('SectionContext not loaded');
+                console.log('All required components available, rendering app...');
 
                 ReactDOM.render(
                     React.createElement(window.App, {
-                        unit: selectedUnit,
-                        contentType: contentType,
-                        contentTitle: contentTitle
+                        unit: '1',
+                        contentType: 'Prose',
+                        contentTitle: 'Introduction'
                     }),
                     root
                 );
-                console.log('App rendered successfully');
             } catch (error) {
-                console.error('Error in initializeApp:', error);
+                console.error('Initialization error:', error);
             }
         }
     </script>
@@ -132,16 +124,22 @@
         onload="handleScriptLoad('../context/SectionContext.js')"></script>
     <script type="text/babel" src="../components/Loading.js" 
         onload="handleScriptLoad('../components/Loading.js')"></script>
-    <script type="text/babel" src="../components/exercises/WordFill.js" onload="handleScriptLoad('WordFill')"></script>
-    <script type="text/babel" src="../components/exercises/MatchingExercise.js" onload="handleScriptLoad('MatchingExercise')"></script>
-    <script type="text/babel" src="../components/exercises/SeaWordsExercise.js" onload="handleScriptLoad('SeaWordsExercise')"></script>
+    <script type="text/babel" src="../components/exercises/WordFill.js" 
+        onload="handleScriptLoad('../components/exercises/WordFill.js')"></script>
+    <script type="text/babel" src="../components/exercises/MatchingExercise.js" 
+        onload="handleScriptLoad('../components/exercises/MatchingExercise.js')"></script>
+    <script type="text/babel" src="../components/exercises/SeaWordsExercise.js" 
+        onload="handleScriptLoad('../components/exercises/SeaWordsExercise.js')"></script>
     <script type="text/babel" src="../components/Navigation.js" 
         onload="handleScriptLoad('../components/Navigation.js')"></script>
     <script type="text/babel" src="../components/InteractiveProse.js" 
         onload="handleScriptLoad('../components/InteractiveProse.js')"></script>
-    <script type="text/babel" src="../components/Quiz.js" onload="handleScriptLoad('Quiz')"></script>
-    <script type="text/babel" src="../components/Glossary.js" onload="handleScriptLoad('Glossary')"></script>
-    <script type="text/babel" src="../components/DidYouKnow.js" onload="handleScriptLoad('DidYouKnow')"></script>
+    <script type="text/babel" src="../components/Quiz.js" 
+        onload="handleScriptLoad('../components/Quiz.js')"></script>
+    <script type="text/babel" src="../components/Glossary.js" 
+        onload="handleScriptLoad('../components/Glossary.js')"></script>
+    <script type="text/babel" src="../components/DidYouKnow.js" 
+        onload="handleScriptLoad('../components/DidYouKnow.js')"></script>
     <script type="text/babel" src="../components/SectionContent.js" 
         onload="handleScriptLoad('../components/SectionContent.js')"></script>
     <script type="text/babel" src="../App.js" 
