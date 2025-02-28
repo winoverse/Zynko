@@ -1150,7 +1150,7 @@
                         const userClass = userDoc.data().class;
 
                         if (userClass === '6') {
-                            // Fun confirmation for class 6 students
+                            // First confirmation dialog remains the same
                             const result = await Swal.fire({
                                 title: `Ready for ${subjectName} Adventure?`,
                                 html: `
@@ -1170,36 +1170,102 @@
                                 cancelButtonText: `<div style="font-size: 1.1em">Not Now</div>`,
                                 background: '#fff',
                                 customClass: {
-                                    popup: 'animated bounceIn',
-                                    title: 'custom-swal-title'
+                                    popup: 'animated bounceIn'
                                 },
                                 showClass: {
                                     popup: 'animate__animated animate__fadeInDown'
-                                },
-                                hideClass: {
-                                    popup: 'animate__animated animate__fadeOutUp'
                                 }
                             });
 
                             if (result.isConfirmed) {
-                                // Success animation before navigation
-                                await Swal.fire({
+                                // Show term selection dialog
+                                const termResult = await Swal.fire({
+                                    title: 'Choose Your Term',
                                     html: `
-                                        ${svgIcons.celebration}
-                                        <div style="font-size: 1.3em; font-weight: bold; color: #FF9B3F; margin: 15px 0;">
-                                            Awesome!
-                                        </div>
-                                        <div style="font-size: 1.1em; color: #333;">
-                                            Get ready for an amazing<br>
-                                            ${subjectName} journey!
+                                        <div style="display: flex; flex-direction: column; gap: 15px; margin: 20px 0;">
+                                            <button class="term-btn" style="
+                                                padding: 15px;
+                                                margin: 5px;
+                                                border: 2px solid #FF9B3F;
+                                                border-radius: 10px;
+                                                background: #fff;
+                                                color: #FF9B3F;
+                                                font-size: 1.1em;
+                                                cursor: pointer;
+                                                transition: all 0.3s ease;
+                                            " onmouseover="this.style.background='#FF9B3F'; this.style.color='#fff';" 
+                                            onmouseout="this.style.background='#fff'; this.style.color='#FF9B3F';">
+                                                Term 1
+                                            </button>
+                                            <button class="term-btn" style="
+                                                padding: 15px;
+                                                margin: 5px;
+                                                border: 2px solid #FF9B3F;
+                                                border-radius: 10px;
+                                                background: #fff;
+                                                color: #FF9B3F;
+                                                font-size: 1.1em;
+                                                cursor: pointer;
+                                                transition: all 0.3s ease;
+                                            " onmouseover="this.style.background='#FF9B3F'; this.style.color='#fff';" 
+                                            onmouseout="this.style.background='#fff'; this.style.color='#FF9B3F';">
+                                                Term 2
+                                            </button>
+                                            <button class="term-btn" style="
+                                                padding: 15px;
+                                                margin: 5px;
+                                                border: 2px solid #FF9B3F;
+                                                border-radius: 10px;
+                                                background: #fff;
+                                                color: #FF9B3F;
+                                                font-size: 1.1em;
+                                                cursor: pointer;
+                                                transition: all 0.3s ease;
+                                            " onmouseover="this.style.background='#FF9B3F'; this.style.color='#fff';" 
+                                            onmouseout="this.style.background='#fff'; this.style.color='#FF9B3F';">
+                                                Term 3
+                                            </button>
                                         </div>
                                     `,
-                                    background: '#fff',
+                                    showCancelButton: true,
                                     showConfirmButton: false,
-                                    timer: 2000,
-                                    timerProgressBar: true
+                                    background: '#fff',
+                                    customClass: {
+                                        popup: 'animated bounceIn'
+                                    },
+                                    showClass: {
+                                        popup: 'animate__animated animate__fadeInDown'
+                                    }
                                 });
-                                console.log(`Starting ${subjectName}`);
+
+                                // Handle term button clicks
+                                document.querySelectorAll('.term-btn').forEach(btn => {
+                                    btn.addEventListener('click', async () => {
+                                        const selectedTerm = btn.textContent.trim();
+                                        
+                                        // Show success message with selected term
+                                        await Swal.fire({
+                                            html: `
+                                                ${svgIcons.celebration}
+                                                <div style="font-size: 1.3em; font-weight: bold; color: #FF9B3F; margin: 15px 0;">
+                                                    Awesome!
+                                                </div>
+                                                <div style="font-size: 1.1em; color: #333;">
+                                                    Starting ${subjectName}<br>
+                                                    ${selectedTerm}
+                                                </div>
+                                            `,
+                                            background: '#fff',
+                                            showConfirmButton: false,
+                                            timer: 2000,
+                                            timerProgressBar: true
+                                        });
+
+                                        // Handle navigation based on selected term
+                                        console.log(`Starting ${subjectName} - ${selectedTerm}`);
+                                        // Add your navigation logic here
+                                    });
+                                });
                             }
                         } else {
                             // Playful "coming soon" message for other classes
