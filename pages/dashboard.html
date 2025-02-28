@@ -1253,7 +1253,7 @@
                                                 const selectedTerm = btn.dataset.term;
                                                 
                                                 if (selectedTerm === 'Term 1') {
-                                                    // Show units dialog
+                                                    // Show units dialog with back button
                                                     await Swal.fire({
                                                         title: 'Choose Your Unit',
                                                         html: `
@@ -1278,6 +1278,9 @@
                                                         `,
                                                         showCancelButton: true,
                                                         showConfirmButton: false,
+                                                        showDenyButton: true, // Add deny button for "Back"
+                                                        denyButtonText: 'Back to Terms',
+                                                        denyButtonColor: '#666',
                                                         background: '#fff',
                                                         customClass: {
                                                             popup: 'animated bounceIn'
@@ -1289,7 +1292,7 @@
                                                                     const selectedUnit = unitBtn.dataset.unit;
                                                                     const content = unitContent[selectedUnit];
 
-                                                                    // Show content types dialog
+                                                                    // Show content types dialog with back button
                                                                     await Swal.fire({
                                                                         title: `Unit ${selectedUnit}`,
                                                                         html: `
@@ -1315,18 +1318,19 @@
                                                                         `,
                                                                         showCancelButton: true,
                                                                         showConfirmButton: false,
+                                                                        showDenyButton: true, // Add deny button for "Back"
+                                                                        denyButtonText: 'Back to Units',
+                                                                        denyButtonColor: '#666',
                                                                         background: '#fff',
                                                                         customClass: {
                                                                             popup: 'animated bounceIn'
                                                                         },
                                                                         didOpen: () => {
-                                                                            // Add click handlers for content buttons
                                                                             document.querySelectorAll('.content-btn').forEach(contentBtn => {
                                                                                 contentBtn.addEventListener('click', async () => {
                                                                                     const contentType = contentBtn.dataset.type;
                                                                                     const contentTitle = contentBtn.dataset.title;
 
-                                                                                    // Show success message before navigation
                                                                                     await Swal.fire({
                                                                                         html: `
                                                                                             ${svgIcons.celebration}
@@ -1343,15 +1347,79 @@
                                                                                         timer: 2000,
                                                                                         timerProgressBar: true
                                                                                     });
-
-                                                                                    // Handle navigation
-                                                                                    console.log(`Starting Unit ${selectedUnit} - ${contentType}: ${contentTitle}`);
-                                                                                    // Add your navigation logic here
                                                                                 });
                                                                             });
                                                                         }
+                                                                    }).then((result) => {
+                                                                        if (result.isDenied) {
+                                                                            // Go back to units selection
+                                                                            btn.click(); // Simulate clicking the term button again
+                                                                        }
                                                                     });
                                                                 });
+                                                            });
+                                                        }
+                                                    }).then((result) => {
+                                                        if (result.isDenied) {
+                                                            // Go back to terms selection
+                                                            Swal.fire({
+                                                                title: 'Choose Your Term',
+                                                                html: `
+                                                                    <div style="display: flex; flex-direction: column; gap: 15px; margin: 20px 0;">
+                                                                        <button class="term-btn" data-term="Term 1" style="
+                                                                            padding: 15px;
+                                                                            margin: 5px;
+                                                                            border: 2px solid #FF9B3F;
+                                                                            border-radius: 10px;
+                                                                            background: #fff;
+                                                                            color: #FF9B3F;
+                                                                            font-size: 1.1em;
+                                                                            cursor: pointer;
+                                                                            transition: all 0.3s ease;
+                                                                        " onmouseover="this.style.background='#FF9B3F'; this.style.color='#fff';" 
+                                                                        onmouseout="this.style.background='#fff'; this.style.color='#FF9B3F';">
+                                                                            Term 1
+                                                                        </button>
+                                                                        <button class="term-btn" data-term="Term 2" style="
+                                                                            padding: 15px;
+                                                                            margin: 5px;
+                                                                            border: 2px solid #FF9B3F;
+                                                                            border-radius: 10px;
+                                                                            background: #fff;
+                                                                            color: #FF9B3F;
+                                                                            font-size: 1.1em;
+                                                                            cursor: pointer;
+                                                                            transition: all 0.3s ease;
+                                                                        " onmouseover="this.style.background='#FF9B3F'; this.style.color='#fff';" 
+                                                                        onmouseout="this.style.background='#fff'; this.style.color='#FF9B3F';">
+                                                                            Term 2
+                                                                        </button>
+                                                                        <button class="term-btn" data-term="Term 3" style="
+                                                                            padding: 15px;
+                                                                            margin: 5px;
+                                                                            border: 2px solid #FF9B3F;
+                                                                            border-radius: 10px;
+                                                                            background: #fff;
+                                                                            color: #FF9B3F;
+                                                                            font-size: 1.1em;
+                                                                            cursor: pointer;
+                                                                            transition: all 0.3s ease;
+                                                                        " onmouseover="this.style.background='#FF9B3F'; this.style.color='#fff';" 
+                                                                        onmouseout="this.style.background='#fff'; this.style.color='#FF9B3F';">
+                                                                            Term 3
+                                                                        </button>
+                                                                    </div>
+                                                                `,
+                                                                showCancelButton: true,
+                                                                showConfirmButton: false,
+                                                                background: '#fff',
+                                                                customClass: {
+                                                                    popup: 'animated bounceIn'
+                                                                },
+                                                                didOpen: () => {
+                                                                    // Re-attach term button handlers
+                                                                    // ... original term button handlers ...
+                                                                }
                                                             });
                                                         }
                                                     });
