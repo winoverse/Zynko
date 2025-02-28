@@ -1179,19 +1179,19 @@
                                         <div style="display: flex; flex-direction: column; gap: 15px; margin: 20px 0;">
                                             ${['Term 1', 'Term 2', 'Term 3'].map(term => `
                                                 <button class="term-btn" data-term="${term}" style="
-                                                    padding: 15px;
-                                                    margin: 5px;
-                                                    border: 2px solid #FF9B3F;
-                                                    border-radius: 10px;
-                                                    background: #fff;
-                                                    color: #FF9B3F;
-                                                    font-size: 1.1em;
-                                                    cursor: pointer;
-                                                    transition: all 0.3s ease;
-                                                " onmouseover="this.style.background='#FF9B3F'; this.style.color='#fff';" 
-                                                onmouseout="this.style.background='#fff'; this.style.color='#FF9B3F';">
+                                                padding: 15px;
+                                                margin: 5px;
+                                                border: 2px solid #FF9B3F;
+                                                border-radius: 10px;
+                                                background: #fff;
+                                                color: #FF9B3F;
+                                                font-size: 1.1em;
+                                                cursor: pointer;
+                                                transition: all 0.3s ease;
+                                            " onmouseover="this.style.background='#FF9B3F'; this.style.color='#fff';" 
+                                            onmouseout="this.style.background='#fff'; this.style.color='#FF9B3F';">
                                                     ${term}
-                                                </button>
+                                            </button>
                                             `).join('')}
                                         </div>
                                     `,
@@ -1234,19 +1234,19 @@
                                                             <div style="display: flex; flex-direction: column; gap: 15px; margin: 20px 0;">
                                                                 ${[1, 2, 3].map(unit => `
                                                                     <button class="unit-btn" data-unit="${unit}" style="
-                                                                        padding: 15px;
-                                                                        margin: 5px;
-                                                                        border: 2px solid #FF9B3F;
-                                                                        border-radius: 10px;
-                                                                        background: #fff;
-                                                                        color: #FF9B3F;
-                                                                        font-size: 1.1em;
-                                                                        cursor: pointer;
-                                                                        transition: all 0.3s ease;
-                                                                    " onmouseover="this.style.background='#FF9B3F'; this.style.color='#fff';" 
-                                                                    onmouseout="this.style.background='#fff'; this.style.color='#FF9B3F';">
+                                                padding: 15px;
+                                                margin: 5px;
+                                                border: 2px solid #FF9B3F;
+                                                border-radius: 10px;
+                                                background: #fff;
+                                                color: #FF9B3F;
+                                                font-size: 1.1em;
+                                                cursor: pointer;
+                                                transition: all 0.3s ease;
+                                            " onmouseover="this.style.background='#FF9B3F'; this.style.color='#fff';" 
+                                            onmouseout="this.style.background='#fff'; this.style.color='#FF9B3F';">
                                                                         Unit ${unit}
-                                                                    </button>
+                                            </button>
                                                                 `).join('')}
                                                             </div>
                                                         `,
@@ -1273,38 +1273,39 @@
                                                                             <div style="display: flex; flex-direction: column; gap: 15px; margin: 20px 0;">
                                                                                 ${Object.entries(content).map(([type, title]) => `
                                                                                     <button class="content-btn" data-type="${type}" data-title="${title}" style="
-                                                                                        padding: 15px;
-                                                                                        margin: 5px;
-                                                                                        border: 2px solid #FF9B3F;
-                                                                                        border-radius: 10px;
-                                                                                        background: #fff;
-                                                                                        color: #FF9B3F;
-                                                                                        font-size: 1.1em;
-                                                                                        cursor: pointer;
-                                                                                        transition: all 0.3s ease;
-                                                                                    " onmouseover="this.style.background='#FF9B3F'; this.style.color='#fff';" 
-                                                                                    onmouseout="this.style.background='#fff'; this.style.color='#FF9B3F';">
+                                                padding: 15px;
+                                                margin: 5px;
+                                                border: 2px solid #FF9B3F;
+                                                border-radius: 10px;
+                                                background: #fff;
+                                                color: #FF9B3F;
+                                                font-size: 1.1em;
+                                                cursor: pointer;
+                                                transition: all 0.3s ease;
+                                            " onmouseover="this.style.background='#FF9B3F'; this.style.color='#fff';" 
+                                            onmouseout="this.style.background='#fff'; this.style.color='#FF9B3F';">
                                                                                         <div style="font-weight: bold;">${type}</div>
                                                                                         <div style="font-size: 0.9em; color: #666; margin-top: 5px;">${title}</div>
-                                                                                    </button>
+                                            </button>
                                                                                 `).join('')}
-                                                                            </div>
-                                                                        `,
-                                                                        showCancelButton: true,
-                                                                        showConfirmButton: false,
+                                        </div>
+                                    `,
+                                    showCancelButton: true,
+                                    showConfirmButton: false,
                                                                         showDenyButton: true, // Add deny button for "Back"
                                                                         denyButtonText: 'Back to Units',
                                                                         denyButtonColor: '#666',
-                                                                        background: '#fff',
-                                                                        customClass: {
-                                                                            popup: 'animated bounceIn'
-                                                                        },
-                                                                        didOpen: () => {
+                                    background: '#fff',
+                                    customClass: {
+                                        popup: 'animated bounceIn'
+                                    },
+                                    didOpen: () => {
                                                                             document.querySelectorAll('.content-btn').forEach(contentBtn => {
                                                                                 contentBtn.addEventListener('click', async () => {
                                                                                     const contentType = contentBtn.dataset.type;
                                                                                     const contentTitle = contentBtn.dataset.title;
 
+                                                                                    // Show loading animation
                                                                                     await Swal.fire({
                                                                                         html: `
                                                                                             ${svgIcons.celebration}
@@ -1319,7 +1320,16 @@
                                                                                         background: '#fff',
                                                                                         showConfirmButton: false,
                                                                                         timer: 2000,
-                                                                                        timerProgressBar: true
+                                                                                        timerProgressBar: true,
+                                                                                        didClose: () => {
+                                                                                            // Store selected content info in localStorage
+                                                                                            localStorage.setItem('selectedUnit', selectedUnit);
+                                                                                            localStorage.setItem('contentType', contentType);
+                                                                                            localStorage.setItem('contentTitle', contentTitle);
+                                                                                            
+                                                                                            // Redirect to content page
+                                                                                            window.location.href = '/pages/content.html';
+                                                                                        }
                                                                                     });
                                                                                 });
                                                                             });
@@ -1338,51 +1348,51 @@
                                                             // Go back to terms selection
                                                             Swal.fire({
                                                                 title: 'Choose Your Term',
-                                                                html: `
-                                                                    <div style="display: flex; flex-direction: column; gap: 15px; margin: 20px 0;">
+                                                        html: `
+                                                            <div style="display: flex; flex-direction: column; gap: 15px; margin: 20px 0;">
                                                                         ${['Term 1', 'Term 2', 'Term 3'].map(term => `
                                                                             <button class="term-btn" data-term="${term}" style="
-                                                                                padding: 15px;
-                                                                                margin: 5px;
-                                                                                border: 2px solid #FF9B3F;
-                                                                                border-radius: 10px;
-                                                                                background: #fff;
-                                                                                color: #FF9B3F;
-                                                                                font-size: 1.1em;
-                                                                                cursor: pointer;
-                                                                                transition: all 0.3s ease;
-                                                                            " onmouseover="this.style.background='#FF9B3F'; this.style.color='#fff';" 
-                                                                            onmouseout="this.style.background='#fff'; this.style.color='#FF9B3F';">
+                                                                        padding: 15px;
+                                                                        margin: 5px;
+                                                                        border: 2px solid #FF9B3F;
+                                                                        border-radius: 10px;
+                                                                        background: #fff;
+                                                                        color: #FF9B3F;
+                                                                        font-size: 1.1em;
+                                                                        cursor: pointer;
+                                                                        transition: all 0.3s ease;
+                                                                    " onmouseover="this.style.background='#FF9B3F'; this.style.color='#fff';" 
+                                                                    onmouseout="this.style.background='#fff'; this.style.color='#FF9B3F';">
                                                                                 ${term}
-                                                                            </button>
-                                                                        `).join('')}
-                                                                    </div>
-                                                                `,
-                                                                showCancelButton: true,
-                                                                showConfirmButton: false,
-                                                                background: '#fff',
-                                                                customClass: {
-                                                                    popup: 'animated bounceIn'
+                                                                    </button>
+                                                                `).join('')}
+                                                            </div>
+                                                        `,
+                                                        showCancelButton: true,
+                                                        showConfirmButton: false,
+                                                        background: '#fff',
+                                                        customClass: {
+                                                            popup: 'animated bounceIn'
+                                                        },
+                                                        didOpen: () => {
+                                                            // Define unit content
+                                                            const unitContent = {
+                                                                1: {
+                                                                    'Prose': 'Sea Turtles',
+                                                                    'Poem': 'The Crocodile',
+                                                                    'Supplementary': 'The Friendship'
                                                                 },
-                                                                didOpen: () => {
-                                                                    // Define unit content
-                                                                    const unitContent = {
-                                                                        1: {
-                                                                            'Prose': 'Sea Turtles',
-                                                                            'Poem': 'The Crocodile',
-                                                                            'Supplementary': 'The Friendship'
-                                                                        },
-                                                                        2: {
-                                                                            'Prose': 'When the Trees Walked',
-                                                                            'Poem': 'Trees',
-                                                                            'Supplementary': 'The Apple Tree and the Farmer'
-                                                                        },
-                                                                        3: {
-                                                                            'Prose': 'A Visitor from Distant Lands',
-                                                                            'Poem': 'Dream of Spices',
-                                                                            'Supplementary': 'Stone Soup'
-                                                                        }
-                                                                    };
+                                                                2: {
+                                                                    'Prose': 'When the Trees Walked',
+                                                                    'Poem': 'Trees',
+                                                                    'Supplementary': 'The Apple Tree and the Farmer'
+                                                                },
+                                                                3: {
+                                                                    'Prose': 'A Visitor from Distant Lands',
+                                                                    'Poem': 'Dream of Spices',
+                                                                    'Supplementary': 'Stone Soup'
+                                                                }
+                                                            };
 
                                                                     // Re-attach term button handlers
                                                                     document.querySelectorAll('.term-btn').forEach(termBtn => {
@@ -1424,76 +1434,86 @@
                                                                                     },
                                                                                     didOpen: () => {
                                                                                         // Pass unitContent to the unit button handlers
-                                                                                        document.querySelectorAll('.unit-btn').forEach(unitBtn => {
-                                                                                            unitBtn.addEventListener('click', async () => {
-                                                                                                const selectedUnit = unitBtn.dataset.unit;
+                                                            document.querySelectorAll('.unit-btn').forEach(unitBtn => {
+                                                                unitBtn.addEventListener('click', async () => {
+                                                                    const selectedUnit = unitBtn.dataset.unit;
                                                                                                 const content = unitContent[selectedUnit]; // Now unitContent is accessible
 
                                                                                                 // Show content types dialog with back button
-                                                                                                await Swal.fire({
-                                                                                                    title: `Unit ${selectedUnit}`,
-                                                                                                    html: `
-                                                                                                        <div style="display: flex; flex-direction: column; gap: 15px; margin: 20px 0;">
-                                                                                                            ${Object.entries(content).map(([type, title]) => `
-                                                                                                                <button class="content-btn" data-type="${type}" data-title="${title}" style="
-                                                                                                                    padding: 15px;
-                                                                                                                    margin: 5px;
-                                                                                                                    border: 2px solid #FF9B3F;
-                                                                                                                    border-radius: 10px;
-                                                                                                                    background: #fff;
-                                                                                                                    color: #FF9B3F;
-                                                                                                                    font-size: 1.1em;
-                                                                                                                    cursor: pointer;
-                                                                                                                    transition: all 0.3s ease;
-                                                                                                                " onmouseover="this.style.background='#FF9B3F'; this.style.color='#fff';" 
-                                                                                                                onmouseout="this.style.background='#fff'; this.style.color='#FF9B3F';">
-                                                                                                                    <div style="font-weight: bold;">${type}</div>
-                                                                                                                    <div style="font-size: 0.9em; color: #666; margin-top: 5px;">${title}</div>
-                                                                                                                </button>
-                                                                                                            `).join('')}
-                                                                                                        </div>
-                                                                                                    `,
-                                                                                                    showCancelButton: true,
-                                                                                                    showConfirmButton: false,
+                                                                    await Swal.fire({
+                                                                        title: `Unit ${selectedUnit}`,
+                                                                        html: `
+                                                                            <div style="display: flex; flex-direction: column; gap: 15px; margin: 20px 0;">
+                                                                                ${Object.entries(content).map(([type, title]) => `
+                                                                                    <button class="content-btn" data-type="${type}" data-title="${title}" style="
+                                                                                        padding: 15px;
+                                                                                        margin: 5px;
+                                                                                        border: 2px solid #FF9B3F;
+                                                                                        border-radius: 10px;
+                                                                                        background: #fff;
+                                                                                        color: #FF9B3F;
+                                                                                        font-size: 1.1em;
+                                                                                        cursor: pointer;
+                                                                                        transition: all 0.3s ease;
+                                                                                    " onmouseover="this.style.background='#FF9B3F'; this.style.color='#fff';" 
+                                                                                    onmouseout="this.style.background='#fff'; this.style.color='#FF9B3F';">
+                                                                                        <div style="font-weight: bold;">${type}</div>
+                                                                                        <div style="font-size: 0.9em; color: #666; margin-top: 5px;">${title}</div>
+                                                                                    </button>
+                                                                                `).join('')}
+                                                                            </div>
+                                                                        `,
+                                                                        showCancelButton: true,
+                                                                        showConfirmButton: false,
                                                                                                     showDenyButton: true, // Add deny button for "Back"
                                                                                                     denyButtonText: 'Back to Units',
                                                                                                     denyButtonColor: '#666',
-                                                                                                    background: '#fff',
-                                                                                                    customClass: {
-                                                                                                        popup: 'animated bounceIn'
-                                                                                                    },
-                                                                                                    didOpen: () => {
-                                                                                                        document.querySelectorAll('.content-btn').forEach(contentBtn => {
-                                                                                                            contentBtn.addEventListener('click', async () => {
-                                                                                                                const contentType = contentBtn.dataset.type;
-                                                                                                                const contentTitle = contentBtn.dataset.title;
+                                                                        background: '#fff',
+                                                                        customClass: {
+                                                                            popup: 'animated bounceIn'
+                                                                        },
+                                                                        didOpen: () => {
+                                                                            document.querySelectorAll('.content-btn').forEach(contentBtn => {
+                                                                                contentBtn.addEventListener('click', async () => {
+                                                                                    const contentType = contentBtn.dataset.type;
+                                                                                    const contentTitle = contentBtn.dataset.title;
 
-                                                                                                                await Swal.fire({
-                                                                                                                    html: `
-                                                                                                                        ${svgIcons.celebration}
-                                                                                                                        <div style="font-size: 1.3em; font-weight: bold; color: #FF9B3F; margin: 15px 0;">
-                                                                                                                            Let's Start Learning!
-                                                                                                                        </div>
-                                                                                                                        <div style="font-size: 1.1em; color: #333;">
-                                                                                                                            Unit ${selectedUnit} - ${contentType}<br>
-                                                                                                                            <b style="color: #FF9B3F">${contentTitle}</b>
-                                                                                                                        </div>
-                                                                                                                    `,
-                                                                                                                    background: '#fff',
-                                                                                                                    showConfirmButton: false,
-                                                                                                                    timer: 2000,
-                                                                                                                    timerProgressBar: true
-                                                                                                                });
-                                                                                                            });
-                                                                                                        });
-                                                                                                    }
+                                                                                    // Show loading animation
+                                                                                    await Swal.fire({
+                                                                                        html: `
+                                                                                            ${svgIcons.celebration}
+                                                                                            <div style="font-size: 1.3em; font-weight: bold; color: #FF9B3F; margin: 15px 0;">
+                                                                                                Let's Start Learning!
+                                                                                            </div>
+                                                                                            <div style="font-size: 1.1em; color: #333;">
+                                                                                                Unit ${selectedUnit} - ${contentType}<br>
+                                                                                                <b style="color: #FF9B3F">${contentTitle}</b>
+                                                                                            </div>
+                                                                                        `,
+                                                                                        background: '#fff',
+                                                                                        showConfirmButton: false,
+                                                                                        timer: 2000,
+                                                                                        timerProgressBar: true,
+                                                                                        didClose: () => {
+                                                                                            // Store selected content info in localStorage
+                                                                                            localStorage.setItem('selectedUnit', selectedUnit);
+                                                                                            localStorage.setItem('contentType', contentType);
+                                                                                            localStorage.setItem('contentTitle', contentTitle);
+                                                                                            
+                                                                                            // Redirect to content page
+                                                                                            window.location.href = '/pages/content.html';
+                                                                                        }
+                                                                                    });
+                                                                                });
+                                                                            });
+                                                                        }
                                                                                                 }).then((result) => {
                                                                                                     if (result.isDenied) {
                                                                                                         // Go back to terms selection
                                                                                                         termBtn.click(); // This will trigger the term selection again
                                                                                                     }
-                                                                                                });
-                                                                                            });
+                                                                    });
+                                                                });
                                                                                         });
                                                                                     }
                                                                                 }).then((result) => {
@@ -1501,22 +1521,22 @@
                                                                                         // Go back to terms selection
                                                                                         termBtn.click(); // This will trigger the term selection again
                                                                                     }
-                                                                                });
-                                                                            } else {
+                                                            });
+                                                        } else {
                                                                                 // Handle other terms (Term 2 and Term 3)
-                                                                                await Swal.fire({
-                                                                                    title: 'Coming Soon!',
-                                                                                    html: `
-                                                                                        ${svgIcons.celebration}
-                                                                                        <div style="font-size: 1.1em; color: #333;">
-                                                                                            ${subjectName} - ${selectedTerm}<br>
-                                                                                            Will be available soon!
-                                                                                        </div>
-                                                                                    `,
-                                                                                    background: '#fff',
-                                                                                    showConfirmButton: false,
-                                                                                    timer: 2000,
-                                                                                    timerProgressBar: true
+                                                            await Swal.fire({
+                                                                title: 'Coming Soon!',
+                                                                html: `
+                                                                    ${svgIcons.celebration}
+                                                                    <div style="font-size: 1.1em; color: #333;">
+                                                                        ${subjectName} - ${selectedTerm}<br>
+                                                                        Will be available soon!
+                                                                    </div>
+                                                                `,
+                                                                background: '#fff',
+                                                                showConfirmButton: false,
+                                                                timer: 2000,
+                                                                timerProgressBar: true
                                                                                 });
                                                                             }
                                                                         });
