@@ -1,9 +1,9 @@
 import React, { createContext, useState } from 'react';
 
-export const SectionContext = createContext();
+const SectionContext = React.createContext();
 
-export const SectionProvider = ({ children }) => {
-    const [currentSection, setCurrentSection] = useState(1);
+function SectionProvider({ children, initialSection }) {
+    const [currentSection, setCurrentSection] = useState(initialSection || 1);
     const [progress, setProgress] = useState({
         1: { completed: false, score: 0 },
         2: { completed: false, score: 0 },
@@ -466,4 +466,10 @@ export const SectionProvider = ({ children }) => {
             {children}
         </SectionContext.Provider>
     );
+}
+
+// Expose to window
+window.SectionContext = {
+    SectionContext,
+    SectionProvider
 }; 
