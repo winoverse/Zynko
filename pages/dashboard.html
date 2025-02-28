@@ -1149,8 +1149,8 @@
                         const userDoc = await db.collection('students').doc(userId).get();
                         const userClass = userDoc.data().class;
 
-                        if (userClass === '6') {
-                            // First confirmation dialog remains the same
+                        if (userClass === '6' && subjectName === 'English') {
+                            // First confirmation dialog
                             const result = await Swal.fire({
                                 title: `Ready for ${subjectName} Adventure?`,
                                 html: `
@@ -1168,13 +1168,7 @@
                                 cancelButtonColor: '#666',
                                 confirmButtonText: `<div style="font-size: 1.1em">Let's Go!</div>`,
                                 cancelButtonText: `<div style="font-size: 1.1em">Not Now</div>`,
-                                background: '#fff',
-                                customClass: {
-                                    popup: 'animated bounceIn'
-                                },
-                                showClass: {
-                                    popup: 'animate__animated animate__fadeInDown'
-                                }
+                                background: '#fff'
                             });
 
                             if (result.isConfirmed) {
@@ -1234,72 +1228,100 @@
                                         popup: 'animated bounceIn'
                                     },
                                     didOpen: () => {
-                                        // Add click handlers after the dialog is opened
-                                        document.querySelectorAll('.term-btn').forEach(btn => {
-                                            btn.addEventListener('click', async () => {
-                                                const selectedTerm = btn.dataset.term;
-                                                
-                                                if (subjectName === 'English' && selectedTerm === 'Term 1') {
-                                                    // Show units dialog
-                                                    const unitResult = await Swal.fire({
-                                                        title: 'Choose Your Unit',
-                                                        html: `
-                                                            <div style="display: flex; flex-direction: column; gap: 15px; margin: 20px 0;">
-                                                                ${[1, 2, 3].map(unit => `
-                                                                    <button class="unit-btn" data-unit="${unit}" style="
-                                                                        padding: 15px;
-                                                                        margin: 5px;
-                                                                        border: 2px solid #FF9B3F;
-                                                                        border-radius: 10px;
-                                                                        background: #fff;
-                                                                        color: #FF9B3F;
-                                                                        font-size: 1.1em;
-                                                                        cursor: pointer;
-                                                                        transition: all 0.3s ease;
-                                                                    " onmouseover="this.style.background='#FF9B3F'; this.style.color='#fff';" 
-                                                                    onmouseout="this.style.background='#fff'; this.style.color='#FF9B3F';">
-                                                                        Unit ${unit}
-                                                                    </button>
-                                                                `).join('')}
-                                                            </div>
-                                                        `,
-                                                        showCancelButton: true,
-                                                        showConfirmButton: false,
-                                                        background: '#fff',
-                                                        customClass: {
-                                                            popup: 'animated bounceIn'
-                                                        },
-                                                        didOpen: () => {
-                                                            // Rest of your unit and content handling code...
-                                                            // (Keep the existing unit content and click handlers)
-                                                        }
-                                                    });
-                                                } else {
-                                                    // Handle other terms
-                                                    await Swal.fire({
-                                                        html: `
-                                                            ${svgIcons.celebration}
-                                                            <div style="font-size: 1.3em; font-weight: bold; color: #FF9B3F; margin: 15px 0;">
-                                                                Coming Soon!
-                                                            </div>
-                                                            <div style="font-size: 1.1em; color: #333;">
-                                                                ${subjectName} - ${selectedTerm}<br>
-                                                                Will be available soon!
-                                                            </div>
-                                                        `,
-                                                        background: '#fff',
-                                                        showConfirmButton: false,
-                                                        timer: 2000,
-                                                        timerProgressBar: true
-                                                    });
-                                                }
+                                        // Define unit content and add click handlers
+                                        const unitContent = {
+                                            1: {
+                                                'Prose': 'Sea Turtles',
+                                                'Poem': 'The Crocodile',
+                                                'Supplementary': 'The Friendship'
+                                            },
+                                            2: {
+                                                'Prose': 'When the Trees Walked',
+                                                'Poem': 'Trees',
+                                                'Supplementary': 'The Apple Tree and the Farmer'
+                                            },
+                                            3: {
+                                                'Prose': 'A Visitor from Distant Lands',
+                                                'Poem': 'Dream of Spices',
+                                                'Supplementary': 'Stone Soup'
+                                            }
+                                        };
+
+                                        // Add click handlers for unit buttons
+                                        document.querySelectorAll('.unit-btn').forEach(unitBtn => {
+                                            unitBtn.addEventListener('click', async () => {
+                                                const selectedUnit = unitBtn.dataset.unit;
+                                                const content = unitContent[selectedUnit];
+
+                                                // Show content types dialog
+                                                await Swal.fire({
+                                                    title: `Unit ${selectedUnit}`,
+                                                    html: `
+                                                        <div style="display: flex; flex-direction: column; gap: 15px; margin: 20px 0;">
+                                                            ${Object.entries(content).map(([type, title]) => `
+                                                                <button class="content-btn" data-type="${type}" data-title="${title}" style="
+                                                                    padding: 15px;
+                                                                    margin: 5px;
+                                                                    border: 2px solid #FF9B3F;
+                                                                    border-radius: 10px;
+                                                                    background: #fff;
+                                                                    color: #FF9B3F;
+                                                                    font-size: 1.1em;
+                                                                    cursor: pointer;
+                                                                    transition: all 0.3s ease;
+                                                                " onmouseover="this.style.background='#FF9B3F'; this.style.color='#fff';" 
+                                                                onmouseout="this.style.background='#fff'; this.style.color='#FF9B3F';">
+                                                                    <div style="font-weight: bold;">${type}</div>
+                                                                    <div style="font-size: 0.9em; color: #666; margin-top: 5px;">${title}</div>
+                                                                </button>
+                                                            `).join('')}
+                                                        </div>
+                                                    `,
+                                                    showCancelButton: true,
+                                                    showConfirmButton: false,
+                                                    background: '#fff',
+                                                    customClass: {
+                                                        popup: 'animated bounceIn'
+                                                    },
+                                                    didOpen: () => {
+                                                        // Add click handlers for content buttons
+                                                        document.querySelectorAll('.content-btn').forEach(contentBtn => {
+                                                            contentBtn.addEventListener('click', async () => {
+                                                                const contentType = contentBtn.dataset.type;
+                                                                const contentTitle = contentBtn.dataset.title;
+
+                                                                // Show success message before navigation
+                                                                await Swal.fire({
+                                                                    html: `
+                                                                        ${svgIcons.celebration}
+                                                                        <div style="font-size: 1.3em; font-weight: bold; color: #FF9B3F; margin: 15px 0;">
+                                                                            Let's Start Learning!
+                                                                        </div>
+                                                                        <div style="font-size: 1.1em; color: #333;">
+                                                                            Unit ${selectedUnit} - ${contentType}<br>
+                                                                            <b style="color: #FF9B3F">${contentTitle}</b>
+                                                                        </div>
+                                                                    `,
+                                                                    background: '#fff',
+                                                                    showConfirmButton: false,
+                                                                    timer: 2000,
+                                                                    timerProgressBar: true
+                                                                });
+
+                                                                // Handle navigation
+                                                                console.log(`Starting Unit ${selectedUnit} - ${contentType}: ${contentTitle}`);
+                                                                // Add your navigation logic here
+                                                            });
+                                                        });
+                                                    }
+                                                });
                                             });
                                         });
                                     }
                                 });
                             }
                         } else {
-                            // Playful "coming soon" message for other classes
+                            // Handle other subjects/classes
                             await Swal.fire({
                                 html: `
                                     ${svgIcons.star}
