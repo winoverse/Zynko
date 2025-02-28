@@ -1,11 +1,17 @@
 function SectionContent({ contentType, contentTitle }) {
-    const { currentSection } = React.useContext(window.SectionContext.SectionContext);
+    const { currentSection, sections } = React.useContext(window.SectionContext.SectionContext);
     const [isLoading, setIsLoading] = React.useState(true);
 
     React.useEffect(() => {
+        // Add console log for debugging
+        console.log('SectionContent mounted', { contentType, currentSection });
+        
         // Simulate content loading
         setIsLoading(true);
-        setTimeout(() => setIsLoading(false), 1000);
+        setTimeout(() => {
+            setIsLoading(false);
+            console.log('Content loaded');
+        }, 1000);
     }, [contentType, currentSection]);
 
     if (isLoading) {
