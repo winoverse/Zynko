@@ -2176,22 +2176,8 @@
             console.log('Clicked:', type, unit, title); // For debugging
             
             if (type === 'Prose' && unit === 1 && title === 'Sea Turtles') {
-                // Show loading overlay
-                const loadingOverlay = document.getElementById('loadingOverlay');
-                if (loadingOverlay) {
-                    loadingOverlay.style.display = 'flex';
-                }
-
-                try {
-                    // Use the correct path relative to your project structure
-                    window.location.href = 'pages/Engunit1prose1.html';
-                } catch (error) {
-                    console.error('Navigation error:', error);
-                    // Hide loading overlay if error occurs
-                    if (loadingOverlay) {
-                        loadingOverlay.style.display = 'none';
-                    }
-                }
+                // Direct navigation without any overlay or popup
+                window.location.href = 'Engunit1prose1.html';
             }
         }
 
