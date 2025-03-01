@@ -2134,6 +2134,26 @@
             };
         }
 
+        // Function to handle subject selection (English)
+        function handleSubjectClick(subject) {
+            if (subject === 'English') {
+                // Skip the "Ready for English Adventure" popup
+                displayTermSelection();
+            }
+        }
+
+        // Function to handle term selection
+        function handleTermClick(term) {
+            // Skip the term selection popup
+            displayUnitSelection(term);
+        }
+
+        // Function to handle unit selection
+        function handleUnitClick(unit) {
+            // Skip the unit selection popup
+            displayUnitContent(unit);
+        }
+
         // Define unit content
         const unitContent = {
             1: {
@@ -2141,7 +2161,6 @@
                 'Poem': 'The Crocodile',
                 'Supplementary': 'The Friendship'
             }
-            // Add other units as needed
         };
 
         function displayUnitContent(unit) {
@@ -2173,8 +2192,6 @@
         }
 
         function handleContentClick(type, unit, title) {
-            console.log('Clicked:', type, unit, title); // For debugging
-            
             if (type === 'Prose' && unit === 1 && title === 'Sea Turtles') {
                 // Direct navigation without any overlay or popup
                 window.location.href = 'Engunit1prose1.html';
@@ -2183,7 +2200,7 @@
 
         // Initialize the first unit content when page loads
         document.addEventListener('DOMContentLoaded', () => {
-            displayUnitContent(1); // Display Unit 1 content by default
+            displayUnitContent(1);
         });
 
         // Add this to preserve scroll position when returning
