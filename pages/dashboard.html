@@ -1004,6 +1004,55 @@
         .open-chat-btn:hover {
             background: #45a049;
         }
+
+        /* Loading overlay styles */
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.9);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+        }
+
+        .loading-container {
+            text-align: center;
+        }
+
+        .loading-spinner {
+            width: 50px;
+            height: 50px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #FF9B3F;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1rem;
+        }
+
+        .loading-text {
+            color: #FF9B3F;
+            font-size: 1.1rem;
+            font-weight: 500;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Page transition animation */
+        .page-transition {
+            animation: fadeOut 0.3s ease-out;
+        }
+
+        @keyframes fadeOut {
+            from { opacity: 1; }
+            to { opacity: 0; }
+        }
     </style>
     <!-- Update Firebase SDK imports -->
     <script src="https://www.gstatic.com/firebasejs/11.3.1/firebase-app-compat.js"></script>
@@ -2084,6 +2133,63 @@
                 timeout = setTimeout(later, wait);
             };
         }
+
+        // Define unit content
+        const unitContent = {
+            1: {
+                'Prose': 'Sea Turtles',
+                'Poem': 'The Crocodile',
+                'Supplementary': 'The Friendship'
+                // ... other content
+            }
+            // ... other units
+        };
+
+        // Add click handler for prose content
+        function handleProseClick(unit, title) {
+            if(unit === 1 && title === 'Sea Turtles') {
+                // Show loading overlay
+                const loadingOverlay = document.getElementById('loadingOverlay');
+                loadingOverlay.style.display = 'flex';
+                
+                // Add page transition effect
+                document.body.classList.add('page-transition');
+
+                // Simulate content preloading
+                setTimeout(() => {
+                    // Store current scroll position
+                    sessionStorage.setItem('scrollPosition', window.pageYOffset);
+                    
+                    // Navigate to prose page
+                    window.location.href = '/pages/Engunit1prose1.html';
+                }, 800); // Delay for smooth transition
+            }
+        }
+
+        // When displaying the content, add onclick event
+        function displayUnitContent(unit) {
+            // ... existing code ...
+            
+            // When creating prose element
+            const proseElement = document.createElement('div');
+            proseElement.className = 'content-item';
+            proseElement.innerHTML = `
+                <div class="content-title cursor-pointer hover:text-orange-500" 
+                     onclick="handleProseClick(${unit}, '${unitContent[unit].Prose}')">
+                    ${unitContent[unit].Prose}
+                </div>
+            `;
+            // ... rest of the code ...
+        }
+
+        // Add this to preserve scroll position when returning
+        window.addEventListener('load', () => {
+            const scrollPosition = sessionStorage.getItem('scrollPosition');
+            if (scrollPosition) {
+                window.scrollTo(0, parseInt(scrollPosition));
+                sessionStorage.removeItem('scrollPosition');
+            }
+        });
     </script>
 </head>
 <body>
@@ -2349,7 +2455,10 @@
 
     <!-- Add loading overlay to HTML -->
     <div class="loading-overlay" id="loadingOverlay">
-        <div class="spinner"></div>
+        <div class="loading-container">
+            <div class="loading-spinner"></div>
+            <div class="loading-text">Loading Sea Turtles...</div>
+        </div>
     </div>
 </body>
 </html> 
