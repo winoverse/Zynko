@@ -2179,12 +2179,11 @@
                     contentDiv.className = 'content-item p-4 bg-white rounded-lg shadow-sm mb-4';
                     contentDiv.innerHTML = `
                         <h3 class="text-lg font-medium text-gray-800 mb-2">${type}</h3>
-                        <button 
-                            class="content-title w-full text-left cursor-pointer hover:text-orange-500 transition-colors p-2 rounded" 
-                            onclick="handleContentClick('${type}', ${unit}, '${unitContent[unit][type]}')"
-                            style="background-color: #f8f9fa; border: 1px solid #e9ecef;">
+                        <a href="${type === 'Prose' && unit === 1 ? 'Engunit1prose1.html' : '#'}" 
+                            class="content-title block w-full text-left cursor-pointer hover:text-orange-500 transition-colors p-2 rounded"
+                            style="background-color: #f8f9fa; border: 1px solid #e9ecef; text-decoration: none;">
                             ${unitContent[unit][type]}
-                        </button>
+                        </a>
                     `;
                     contentContainer.appendChild(contentDiv);
                 }
@@ -2204,15 +2203,6 @@
                 });
             });
         });
-
-        // Update content click handler
-        function handleContentClick(type, unit, title) {
-            if (type === 'Prose' && unit === 1 && title === 'Sea Turtles') {
-                // Direct navigation
-                window.location.href = 'Engunit1prose1.html';
-                return false; // Prevent any other handlers from executing
-            }
-        }
 
         // Initialize the first unit content when page loads
         document.addEventListener('DOMContentLoaded', () => {
