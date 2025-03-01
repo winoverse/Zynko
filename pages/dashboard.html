@@ -2200,8 +2200,11 @@
 
             // Handle different content types
             if (type === 'Prose' && unit === 1 && title === 'Sea Turtles') {
+                // Store current scroll position
+                sessionStorage.setItem('scrollPosition', window.pageYOffset);
+                
                 setTimeout(() => {
-                    window.location.href = './Engunit1prose1.html';
+                    window.location.href = '/pages/Engunit1prose1.html';
                 }, 800);
             }
             // Add other content type handlers here
