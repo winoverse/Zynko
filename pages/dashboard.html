@@ -2193,8 +2193,12 @@
 
         function handleContentClick(type, unit, title) {
             if (type === 'Prose' && unit === 1 && title === 'Sea Turtles') {
-                // Direct navigation without any overlay or popup
-                window.location.href = 'Engunit1prose1.html';
+                // Prevent default SweetAlert behavior
+                event.preventDefault();
+                event.stopPropagation();
+                
+                // Force direct navigation
+                window.location.replace('Engunit1prose1.html');
             }
         }
 
@@ -2211,6 +2215,21 @@
                 sessionStorage.removeItem('scrollPosition');
             }
         });
+
+        // Override SweetAlert for content navigation
+        const originalSwal = window.Swal.fire;
+        window.Swal.fire = function(config) {
+            // If it's the "Let's Start Learning!" popup, skip it and navigate directly
+            if (config.title === "Let's Start Learning!" && 
+                config.html && 
+                config.html.includes("Unit 1 - Prose") && 
+                config.html.includes("Sea Turtles")) {
+                window.location.replace('Engunit1prose1.html');
+                return Promise.resolve();
+            }
+            // For all other alerts, use normal behavior
+            return originalSwal(config);
+        };
     </script>
 </head>
 <body>
