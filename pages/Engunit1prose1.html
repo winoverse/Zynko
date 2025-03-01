@@ -1,0 +1,941 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sea Turtles - Interactive Prose</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Lottie Animation -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.7.14/lottie.min.js"></script>
+    
+    <!-- Custom Styles -->
+    <style>
+        .highlight-word {
+            color: #FF9B3F;
+            cursor: pointer;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .highlight-word:hover {
+            background: #fff3e6;
+            padding: 0 4px;
+            border-radius: 4px;
+        }
+
+        .tooltip {
+            visibility: hidden;
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            background: white;
+            padding: 8px 12px;
+            border-radius: 6px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            font-size: 0.9em;
+            width: max-content;
+            max-width: 200px;
+            z-index: 100;
+            opacity: 0;
+            transition: all 0.3s ease;
+        }
+
+        .highlight-word:hover .tooltip {
+            visibility: visible;
+            opacity: 1;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 6px;
+            background: #f0f0f0;
+            border-radius: 3px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: #FF9B3F;
+            width: 0%;
+            transition: width 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.5s ease forwards;
+        }
+
+        .section-content {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        .section-content.visible {
+            animation: fadeIn 0.5s ease forwards;
+        }
+
+        @keyframes celebrate {
+            0% { transform: scale(0.8); opacity: 0; }
+            50% { transform: scale(1.2); }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        @keyframes slideIn {
+            from { transform: translateY(-20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .quiz-feedback {
+            animation: slideIn 0.5s ease forwards;
+        }
+
+        .score-display {
+            animation: celebrate 0.8s ease forwards;
+        }
+
+        .feedback-icon {
+            width: 100px;
+            height: 100px;
+            margin: 0 auto 20px;
+        }
+
+        .answer-feedback {
+            padding: 10px;
+            margin: 5px 0;
+            border-radius: 8px;
+            animation: slideIn 0.3s ease forwards;
+        }
+
+        .answer-feedback.correct {
+            background: rgba(34, 197, 94, 0.1);
+            border: 1px solid rgba(34, 197, 94, 0.2);
+        }
+
+        .answer-feedback.incorrect {
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid rgba(239, 68, 68, 0.2);
+        }
+
+        /* Loading overlay styles */
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.9);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            transition: opacity 0.3s ease-out;
+        }
+
+        .loading-container {
+            text-align: center;
+        }
+
+        .loading-spinner {
+            width: 50px;
+            height: 50px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #FF9B3F;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1rem;
+        }
+
+        .loading-progress {
+            width: 300px;
+            margin: 1rem auto;
+        }
+
+        .progress-bar-container {
+            width: 100%;
+            height: 4px;
+            background: rgba(255, 155, 63, 0.2);
+            border-radius: 2px;
+            overflow: hidden;
+            margin: 0.5rem 0;
+        }
+
+        .progress-bar-fill {
+            height: 100%;
+            background: #FF9B3F;
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        .loading-status {
+            font-size: 0.9rem;
+            color: #666;
+            margin-bottom: 0.5rem;
+        }
+
+        .loading-text {
+            color: #FF9B3F;
+            font-size: 1.1rem;
+            font-weight: 500;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Page transition animation */
+        .page-transition {
+            animation: fadeOut 0.3s ease-out;
+        }
+
+        @keyframes fadeOut {
+            from { opacity: 1; }
+            to { opacity: 0; }
+        }
+
+        main {
+            opacity: 0;
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- Update the loading overlay HTML -->
+    <div class="loading-overlay" id="initialLoadingOverlay" style="display: flex;">
+        <div class="loading-container">
+            <div class="loading-spinner"></div>
+            <div class="loading-progress">
+                <div class="progress-bar-container">
+                    <div class="progress-bar-fill" id="loadingProgressBar"></div>
+                </div>
+                <div class="loading-status" id="loadingStatus">Initializing...</div>
+            </div>
+            <div class="loading-text" id="loadingText">Preparing Sea Turtles...</div>
+        </div>
+    </div>
+
+    <!-- Navigation Bar -->
+    <nav class="bg-white shadow-md fixed w-full top-0 z-50">
+        <div class="container mx-auto px-6 py-3 flex justify-between items-center">
+            <div class="flex items-center gap-4">
+                <button onclick="window.history.back()" class="text-gray-600 hover:text-orange-500">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                    </svg>
+                </button>
+                <h1 class="text-xl font-semibold text-gray-800">Sea Turtles</h1>
+            </div>
+            <div class="flex items-center gap-4">
+                <button id="playAudioBtn" class="flex items-center gap-2 px-4 py-2 rounded-full bg-orange-500 text-white hover:bg-orange-600 transition-colors">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" />
+                    </svg>
+                    <span>Read Aloud</span>
+                </button>
+                <button id="toggleSound" class="flex items-center gap-2 px-4 py-2 rounded-full bg-gray-100 text-gray-600 hover:bg-gray-200 transition-colors">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" />
+                    </svg>
+                    <span>Sound: On</span>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="container mx-auto px-6 pt-24 pb-12">
+        <!-- Progress Bar -->
+        <div class="progress-bar mb-8">
+            <div class="progress-fill" id="progressBar"></div>
+        </div>
+
+        <!-- Content Sections -->
+        <div class="max-w-3xl mx-auto space-y-8">
+            <!-- Section 1 -->
+            <section class="section-content bg-white rounded-xl shadow-sm p-6">
+                <div class="flex items-start gap-6">
+                    <div class="prose prose-lg">
+                        <p class="text-gray-700 leading-relaxed">
+                            Most of us have seen a <span class="highlight-word">tortoise<span class="tooltip">A land-dwelling reptile with a hard shell</span></span> in a zoo or a reptile park. However, not many would have seen its <span class="highlight-word">marine<span class="tooltip">Found in or related to the sea</span></span> relative, the sea turtle. This is not surprising, since these reptiles spend almost their entire life in the sea.
+                        </p>
+                    </div>
+                    <div class="w-48 flex-shrink-0">
+                        <div id="turtleAnimation"></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Section 2 -->
+            <section class="section-content bg-white rounded-xl shadow-sm p-6">
+                <div class="prose prose-lg">
+                    <p class="text-gray-700 leading-relaxed">
+                        There are seven <span class="highlight-word">species<span class="tooltip">A group of animals with common features</span></span> of marine or sea turtles in the world. Of them, five are found in India's <span class="highlight-word">coastal<span class="tooltip">Land by the edge of a sea</span></span> waters: the Olive Ridley, the Hawksbill, the Green Sea Turtle, the Loggerhead and the Leatherback.
+                    </p>
+                </div>
+                <!-- Species Cards -->
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-6">
+                    <!-- Cards will be added dynamically via JavaScript -->
+                </div>
+            </section>
+
+            <!-- Section 3 -->
+            <section class="section-content bg-white rounded-xl shadow-sm p-6">
+                <div class="prose prose-lg">
+                    <p class="text-gray-700 leading-relaxed">
+                        Compared to most tortoises, sea turtles are huge. Even the smallest species, the Olive Ridley, weighs up to 35 kg when fully grown. The largest of them all, the Leatherback, grows to a length of 2.2m and each could weigh as much as 700 kg!
+                    </p>
+                </div>
+            </section>
+
+            <!-- Section 4 -->
+            <section class="section-content bg-white rounded-xl shadow-sm p-6">
+                <div class="prose prose-lg">
+                    <p class="text-gray-700 leading-relaxed">
+                        Sea turtles live their life entirely in the oceans. But they still have a connection with land – they must come ashore to lay eggs. Today, four of the sea turtle species mentioned above have become extremely rare in India. The Olive Ridleys, however, are still commonly seen nesting on sandy beaches all along our coasts.
+                    </p>
+                </div>
+            </section>
+
+            <!-- Quiz Section -->
+            <section class="section-content bg-white rounded-xl shadow-sm p-6">
+                <div class="quiz-container">
+                    <h2 class="text-2xl font-semibold text-gray-800 mb-6">Knowledge Check</h2>
+                    <div class="timer-container mb-4 flex items-center gap-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-orange-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        <span id="timer" class="font-medium text-gray-600">Time remaining: 2:00</span>
+                    </div>
+                    <div id="quizContent" class="space-y-6">
+                        <!-- Questions will be inserted here by JavaScript -->
+                    </div>
+                    <button id="submitQuiz" class="mt-6 px-6 py-3 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition-colors hidden">
+                        Submit Answers
+                    </button>
+                </div>
+            </section>
+
+            <!-- Glossary Section -->
+            <section class="section-content bg-white rounded-xl shadow-sm p-6">
+                <h2 class="text-2xl font-semibold text-gray-800 mb-6">Glossary</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4" id="glossaryContent">
+                    <!-- Glossary items will be added here by JavaScript -->
+                </div>
+            </section>
+
+            <!-- Did You Know Section -->
+            <section class="section-content bg-white rounded-xl shadow-sm p-6">
+                <div class="flex items-start gap-6">
+                    <div class="flex-grow">
+                        <h2 class="text-2xl font-semibold text-gray-800 mb-4 flex items-center gap-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-orange-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+                            </svg>
+                            Did You Know? - Arribada
+                        </h2>
+                        <div class="prose prose-lg">
+                            <p class="text-gray-700 leading-relaxed">
+                                In most parts of the world, Olive Ridleys come ashore alone to lay their eggs. However, Odisha is one of the only three places in the world where a phenomenon known as 'mass nesting' or Arribada takes place.
+                            </p>
+                            <p class="text-gray-700 leading-relaxed mt-4">
+                                On certain nights during the nesting season, thousands of female turtles come ashore simultaneously to lay their eggs on particular beaches.
+                            </p>
+                        </div>
+                        <div id="mapContainer" class="mt-6 h-64 rounded-lg overflow-hidden">
+                            <!-- Map will be added here -->
+                        </div>
+                    </div>
+                    <div class="w-48 flex-shrink-0">
+                        <div id="arribadaAnimation"></div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- Add this before the closing body tag -->
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+    <link href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" rel="stylesheet">
+
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
+
+    <script>
+        // Initialize Lottie Animation
+        const turtleAnimation = lottie.loadAnimation({
+            container: document.getElementById('turtleAnimation'),
+            renderer: 'svg',
+            loop: true,
+            autoplay: true,
+            path: 'https://assets5.lottiefiles.com/packages/lf20_beach_turtles.json'
+        });
+
+        // Text-to-Speech Implementation
+        const playAudioBtn = document.getElementById('playAudioBtn');
+        let isPlaying = false;
+        let utterance = null;
+
+        playAudioBtn.addEventListener('click', () => {
+            if (isPlaying) {
+                window.speechSynthesis.cancel();
+                isPlaying = false;
+                playAudioBtn.innerHTML = `
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" />
+                    </svg>
+                    <span>Read Aloud</span>
+                `;
+            } else {
+                const text = document.querySelector('.prose').textContent;
+                utterance = new SpeechSynthesisUtterance(text);
+                utterance.onend = () => {
+                    isPlaying = false;
+                    playAudioBtn.innerHTML = `
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" />
+                        </svg>
+                        <span>Read Aloud</span>
+                    `;
+                };
+                window.speechSynthesis.speak(utterance);
+                isPlaying = true;
+                playAudioBtn.innerHTML = `
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 10a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1h-4a1 1 0 01-1-1v-4z" />
+                    </svg>
+                    <span>Stop</span>
+                `;
+            }
+        });
+
+        // Progressive Content Reveal
+        const sections = document.querySelectorAll('.section-content');
+        let currentSection = 0;
+
+        function showNextSection() {
+            if (currentSection < sections.length) {
+                sections[currentSection].classList.add('visible');
+                updateProgress();
+                currentSection++;
+            }
+        }
+
+        function updateProgress() {
+            const progress = (currentSection + 1) / sections.length * 100;
+            document.getElementById('progressBar').style.width = `${progress}%`;
+        }
+
+        // Show first section immediately
+        showNextSection();
+
+        // Show subsequent sections on scroll
+        window.addEventListener('scroll', () => {
+            const scrollPosition = window.scrollY + window.innerHeight;
+            sections.forEach((section, index) => {
+                const sectionTop = section.offsetTop;
+                if (scrollPosition > sectionTop + 100 && !section.classList.contains('visible')) {
+                    showNextSection();
+                }
+            });
+        });
+
+        // Species Cards Data
+        const speciesData = [
+            {
+                name: 'Olive Ridley',
+                weight: '35 kg',
+                image: '/img/olive-ridley.jpg'
+            },
+            {
+                name: 'Hawksbill',
+                image: '/img/hawksbill.jpg'
+            },
+            {
+                name: 'Green Sea Turtle',
+                image: '/img/green-sea-turtle.jpg'
+            },
+            {
+                name: 'Loggerhead',
+                image: '/img/loggerhead.jpg'
+            },
+            {
+                name: 'Leatherback',
+                weight: '700 kg',
+                length: '2.2m',
+                image: '/img/leatherback.jpg'
+            }
+        ];
+
+        // Create Species Cards
+        const speciesContainer = document.querySelector('.grid');
+        speciesData.forEach(species => {
+            const card = document.createElement('div');
+            card.className = 'bg-gray-50 rounded-lg p-4 hover:shadow-md transition-shadow';
+            card.innerHTML = `
+                <img src="${species.image}" alt="${species.name}" class="w-full h-48 object-cover rounded-lg mb-4">
+                <h3 class="font-semibold text-lg text-gray-800">${species.name}</h3>
+                ${species.weight ? `<p class="text-gray-600">Weight: ${species.weight}</p>` : ''}
+                ${species.length ? `<p class="text-gray-600">Length: ${species.length}</p>` : ''}
+            `;
+            speciesContainer.appendChild(card);
+        });
+
+        // Quiz Implementation
+        const quizQuestions = [
+            {
+                text: "Turtles are different from tortoises.",
+                correct: true
+            },
+            {
+                text: "Turtles are sea animals.",
+                correct: true
+            },
+            {
+                text: "There are seven kinds of sea turtles in the world.",
+                correct: true
+            },
+            {
+                text: "Sea turtles are very small.",
+                correct: false
+            },
+            {
+                text: "Turtles come ashore to lay eggs.",
+                correct: true
+            },
+            {
+                text: "Sea turtles come to rest on land.",
+                correct: false
+            },
+            {
+                text: "Olive Ridleys are the only sea turtles seen on Indian shores.",
+                correct: false
+            }
+        ];
+
+        // Shuffle questions
+        const shuffledQuestions = [...quizQuestions].sort(() => Math.random() - 0.5);
+
+        // Create quiz elements
+        const quizContent = document.getElementById('quizContent');
+        shuffledQuestions.forEach((question, index) => {
+            const questionElement = document.createElement('div');
+            questionElement.className = 'question-item p-4 bg-gray-50 rounded-lg';
+            questionElement.innerHTML = `
+                <p class="text-gray-800 mb-3">${index + 1}. ${question.text}</p>
+                <div class="flex gap-4">
+                    <label class="flex items-center gap-2 cursor-pointer">
+                        <input type="radio" name="q${index}" value="true" class="text-orange-500 focus:ring-orange-500">
+                        <span>True</span>
+                    </label>
+                    <label class="flex items-center gap-2 cursor-pointer">
+                        <input type="radio" name="q${index}" value="false" class="text-orange-500 focus:ring-orange-500">
+                        <span>False</span>
+                    </label>
+                </div>
+            `;
+            quizContent.appendChild(questionElement);
+        });
+
+        // Show submit button
+        document.getElementById('submitQuiz').classList.remove('hidden');
+
+        // Quiz timer
+        let timeLeft = 120; // 2 minutes
+        const timerElement = document.getElementById('timer');
+        
+        const timerInterval = setInterval(() => {
+            timeLeft--;
+            const minutes = Math.floor(timeLeft / 60);
+            const seconds = timeLeft % 60;
+            timerElement.textContent = `Time remaining: ${minutes}:${seconds.toString().padStart(2, '0')}`;
+            
+            if (timeLeft <= 0) {
+                clearInterval(timerInterval);
+                submitQuiz();
+            }
+        }, 1000);
+
+        // Submit quiz handler
+        document.getElementById('submitQuiz').addEventListener('click', submitQuiz);
+
+        // Create audio elements with direct links to sound effects
+        const correctSound = new Audio('https://assets.mixkit.co/active_storage/sfx/2190/2190-preview.mp3'); // Short success ding
+        const incorrectSound = new Audio('https://assets.mixkit.co/active_storage/sfx/2205/2205-preview.mp3'); // Soft error tone
+        const successSound = new Audio('https://assets8.lottiefiles.com/packages/lf20_success_checkmark.json'); // Smooth checkmark with particle effects
+
+        // Set appropriate volumes
+        correctSound.volume = 0.4;
+        incorrectSound.volume = 0.3;
+        successSound.volume = 0.5;
+
+        // Preload all sounds
+        function preloadSounds() {
+            const sounds = [correctSound, incorrectSound, successSound];
+            sounds.forEach(sound => {
+                sound.load();
+                // Add error handling
+                sound.onerror = () => {
+                    console.error('Error loading sound:', sound.src);
+                    // Fallback to alternative sounds if primary fails
+                    sound.src = sound === correctSound ? 'https://assets.mixkit.co/active_storage/sfx/2186/2186-preview.mp3' : 
+                               sound === incorrectSound ? 'https://assets.mixkit.co/active_storage/sfx/2207/2207-preview.mp3' :
+                               'https://assets.mixkit.co/active_storage/sfx/1437/1437-preview.mp3';
+                };
+            });
+        }
+
+        // Call preload on window load
+        window.addEventListener('load', preloadSounds);
+
+        function submitQuiz() {
+            clearInterval(timerInterval);
+            let score = 0;
+            let feedbackHtml = '';
+            let soundPromises = [];
+            
+            // Collect answers and generate feedback
+            shuffledQuestions.forEach((question, index) => {
+                const selectedAnswer = document.querySelector(`input[name="q${index}"]:checked`)?.value === 'true';
+                const isCorrect = selectedAnswer === question.correct;
+                if (isCorrect) score++;
+                
+                // Create promise for playing sound
+                const soundPromise = new Promise((resolve) => {
+                    setTimeout(() => {
+                        if (isCorrect) {
+                            correctSound.currentTime = 0;
+                            correctSound.play();
+                        } else {
+                            incorrectSound.currentTime = 0;
+                            incorrectSound.play();
+                        }
+                        resolve();
+                    }, index * 400); // Stagger sound effects
+                });
+                soundPromises.push(soundPromise);
+                
+                feedbackHtml += `
+                    <div class="answer-feedback ${isCorrect ? 'correct' : 'incorrect'}" style="animation-delay: ${index * 0.1}s">
+                        <div class="flex items-center gap-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ${isCorrect ? 'text-green-500' : 'text-red-500'}" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="${isCorrect ? 'M5 13l4 4L19 7' : 'M6 18L18 6M6 6l12 12'}" />
+                            </svg>
+                            <span class="font-medium">${question.text}</span>
+                        </div>
+                        <p class="ml-7 text-sm text-gray-600 mt-1">
+                            ${isCorrect ? 'Correct!' : `Incorrect. The answer is ${question.correct ? 'True' : 'False'}`}
+                        </p>
+                    </div>
+                `;
+            });
+
+            // Calculate percentage and show results
+            const percentage = (score / shuffledQuestions.length) * 100;
+            let animationPath, celebrateLevel;
+
+            if (percentage === 100) {
+                animationPath = 'https://assets10.lottiefiles.com/packages/lf20_trophy_celebration.json';
+                celebrateLevel = 'perfect';
+            } else if (percentage >= 70) {
+                animationPath = 'https://assets9.lottiefiles.com/packages/lf20_jmihky5l.json';
+                celebrateLevel = 'good';
+            } else {
+                animationPath = 'https://assets9.lottiefiles.com/packages/lf20_4qhqm09f.json';
+                celebrateLevel = 'tryAgain';
+            }
+
+            // Play final success sound for good scores
+            if (percentage >= 70) {
+                setTimeout(() => {
+                    successSound.currentTime = 0;
+                    successSound.play();
+                }, soundPromises.length * 400);
+            }
+
+            // Show results with animation after sounds finish
+            Promise.all(soundPromises).then(() => {
+                Swal.fire({
+                    title: 'Quiz Complete!',
+                    html: `
+                        <div class="quiz-feedback">
+                            <div id="resultAnimation" class="feedback-icon"></div>
+                            <div class="score-display text-4xl font-bold text-orange-500 mb-4">
+                                ${score}/${shuffledQuestions.length}
+                                <div class="text-lg font-normal text-gray-600">
+                                    ${percentage}% Correct
+                                </div>
+                            </div>
+                            <div class="mt-6 space-y-3">
+                                ${feedbackHtml}
+                            </div>
+                        </div>
+                    `,
+                    showConfirmButton: true,
+                    confirmButtonColor: '#FF9B3F',
+                    confirmButtonText: 'Continue Learning',
+                    allowOutsideClick: false,
+                    didOpen: () => {
+                        // Initialize result animation
+                        lottie.loadAnimation({
+                            container: document.getElementById('resultAnimation'),
+                            renderer: 'svg',
+                            loop: true,
+                            autoplay: true,
+                            path: animationPath
+                        });
+
+                        // Trigger confetti based on score
+                        if (celebrateLevel === 'perfect') {
+                            triggerPerfectScoreConfetti();
+                        } else if (celebrateLevel === 'good') {
+                            triggerGoodScoreConfetti();
+                        }
+                    }
+                });
+            });
+
+            // Save score to Firebase
+            if (firebase.auth().currentUser) {
+                const userId = firebase.auth().currentUser.uid;
+                db.collection('quizScores').add({
+                    userId: userId,
+                    quiz: 'Sea Turtles Unit 1',
+                    score: score,
+                    total: shuffledQuestions.length,
+                    percentage: percentage,
+                    timestamp: firebase.firestore.FieldValue.serverTimestamp()
+                });
+            }
+        }
+
+        // Confetti animation functions
+        function triggerPerfectScoreConfetti() {
+            const duration = 3000;
+            const animationEnd = Date.now() + duration;
+
+            const interval = setInterval(function() {
+                const timeLeft = animationEnd - Date.now();
+
+                if (timeLeft <= 0) {
+                    return clearInterval(interval);
+                }
+
+                confetti({
+                    particleCount: 3,
+                    angle: 60,
+                    spread: 55,
+                    origin: { x: 0 },
+                    colors: ['#FF9B3F', '#FFB366', '#FFC080']
+                });
+                confetti({
+                    particleCount: 3,
+                    angle: 120,
+                    spread: 55,
+                    origin: { x: 1 },
+                    colors: ['#FF9B3F', '#FFB366', '#FFC080']
+                });
+            }, 50);
+        }
+
+        function triggerGoodScoreConfetti() {
+            confetti({
+                particleCount: 100,
+                spread: 70,
+                origin: { y: 0.6 },
+                colors: ['#FF9B3F', '#FFB366', '#FFC080']
+            });
+        }
+
+        // Glossary Implementation
+        const glossaryItems = [
+            {
+                word: 'The Olive Ridley',
+                definition: 'A species of sea turtle found in warm waters of the Pacific and Indian oceans',
+                example: 'The Olive Ridley is the smallest of all sea turtles.'
+            },
+            {
+                word: 'marine',
+                definition: 'Found in or related to the sea',
+                example: 'Sea turtles are marine animals that spend most of their life in water.'
+            },
+            {
+                word: 'species',
+                definition: 'A group of animals with common features',
+                example: 'There are seven species of sea turtles in the world.'
+            },
+            {
+                word: 'coastal',
+                definition: 'Land by the edge of a sea',
+                example: 'Sea turtles nest on coastal beaches.'
+            }
+        ];
+
+        const glossaryContent = document.getElementById('glossaryContent');
+        glossaryItems.forEach(item => {
+            const glossaryCard = document.createElement('div');
+            glossaryCard.className = 'bg-gray-50 rounded-lg p-4';
+            glossaryCard.innerHTML = `
+                <div class="flex items-center gap-2 mb-2">
+                    <h3 class="font-semibold text-gray-800">${item.word}</h3>
+                    <button onclick="speakWord('${item.word}')" class="text-orange-500 hover:text-orange-600">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" />
+                        </svg>
+                    </button>
+                </div>
+                <p class="text-gray-600 mb-2">${item.definition}</p>
+                <p class="text-gray-500 text-sm italic">${item.example}</p>
+            `;
+            glossaryContent.appendChild(glossaryCard);
+        });
+
+        function speakWord(word) {
+            const utterance = new SpeechSynthesisUtterance(word);
+            window.speechSynthesis.speak(utterance);
+        }
+
+        // Initialize map for Did You Know section
+        const map = L.map('mapContainer').setView([20.2961, 85.8245], 6);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+        L.marker([20.2961, 85.8245])
+            .addTo(map)
+            .bindPopup('Odisha - Famous for Arribada')
+            .openPopup();
+
+        // Initialize Arribada animation
+        const arribadaAnimation = lottie.loadAnimation({
+            container: document.getElementById('arribadaAnimation'),
+            renderer: 'svg',
+            loop: true,
+            autoplay: true,
+            path: 'https://assets5.lottiefiles.com/packages/lf20_beach_turtles.json'
+        });
+
+        // Add sound toggle functionality
+        const toggleSoundBtn = document.getElementById('toggleSound');
+        let soundEnabled = true;
+
+        toggleSoundBtn.addEventListener('click', () => {
+            soundEnabled = !soundEnabled;
+            [correctSound, incorrectSound, successSound].forEach(sound => {
+                sound.muted = !soundEnabled;
+            });
+            toggleSoundBtn.innerHTML = `
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="${soundEnabled ? 'M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z' : 'M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z M17 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2'}" />
+                </svg>
+                <span>Sound: ${soundEnabled ? 'On' : 'Off'}</span>
+            `;
+        });
+
+        // Loading states and progress handling
+        const loadingStates = [
+            { progress: 0, status: 'Initializing...', text: 'Preparing Sea Turtles...' },
+            { progress: 20, status: 'Loading animations...', text: 'Getting turtles ready...' },
+            { progress: 40, status: 'Loading content...', text: 'Reading stories...' },
+            { progress: 60, status: 'Preparing quiz...', text: 'Setting up questions...' },
+            { progress: 80, status: 'Loading media...', text: 'Almost there...' },
+            { progress: 100, status: 'Complete!', text: 'Ready to explore!' }
+        ];
+
+        let currentStateIndex = 0;
+        const progressBar = document.getElementById('loadingProgressBar');
+        const statusText = document.getElementById('loadingStatus');
+        const loadingText = document.getElementById('loadingText');
+
+        function updateLoadingProgress() {
+            if (currentStateIndex < loadingStates.length) {
+                const state = loadingStates[currentStateIndex];
+                progressBar.style.width = state.progress + '%';
+                statusText.textContent = state.status;
+                loadingText.textContent = state.text;
+                currentStateIndex++;
+                
+                // Simulate loading time for each state
+                setTimeout(updateLoadingProgress, 400);
+            } else {
+                // Fade out loading overlay when complete
+                const loadingOverlay = document.getElementById('initialLoadingOverlay');
+                setTimeout(() => {
+                    loadingOverlay.style.opacity = '0';
+                    setTimeout(() => {
+                        loadingOverlay.style.display = 'none';
+                    }, 300);
+                }, 200);
+            }
+        }
+
+        // Start loading sequence when document is ready
+        document.addEventListener('DOMContentLoaded', () => {
+            // Initialize loading sequence
+            setTimeout(updateLoadingProgress, 100);
+
+            // Add entrance animation for main content
+            const mainContent = document.querySelector('main');
+            mainContent.style.opacity = '0';
+            
+            // Show main content after loading completes
+            setTimeout(() => {
+                mainContent.style.transition = 'opacity 0.5s ease-in';
+                mainContent.style.opacity = '1';
+            }, 2500); // Adjust timing based on loading sequence duration
+        });
+
+        // Add resource loading tracking
+        const resources = {
+            animations: false,
+            images: false,
+            sounds: false,
+            content: false
+        };
+
+        // Track resource loading
+        function updateResourceStatus(resource) {
+            resources[resource] = true;
+            checkAllResourcesLoaded();
+        }
+
+        function checkAllResourcesLoaded() {
+            if (Object.values(resources).every(status => status)) {
+                currentStateIndex = loadingStates.length - 1;
+                updateLoadingProgress();
+            }
+        }
+
+        // Update loading status when resources load
+        window.addEventListener('load', () => {
+            updateResourceStatus('content');
+        });
+
+        // Track animation loading
+        lottie.addEventListener('complete', () => {
+            updateResourceStatus('animations');
+        });
+
+        // Track sound loading
+        window.addEventListener('load', () => {
+            preloadSounds().then(() => {
+                updateResourceStatus('sounds');
+            });
+        });
+
+        // Track image loading
+        Promise.all(Array.from(document.images).map(img => {
+            if (img.complete) return Promise.resolve();
+            return new Promise(resolve => {
+                img.addEventListener('load', resolve);
+                img.addEventListener('error', resolve); // Handle error case
+            });
+        })).then(() => {
+            updateResourceStatus('images');
+        });
+    </script>
+</body>
+</html> 
