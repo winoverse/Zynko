@@ -2140,9 +2140,8 @@
                 'Prose': 'Sea Turtles',
                 'Poem': 'The Crocodile',
                 'Supplementary': 'The Friendship'
-                // ... other content
             }
-            // ... other units
+            // Add other units as needed
         };
 
         // Add click handler for prose content
@@ -2168,19 +2167,50 @@
 
         // When displaying the content, add onclick event
         function displayUnitContent(unit) {
-            // ... existing code ...
+            const contentContainer = document.getElementById('unitContent');
+            contentContainer.innerHTML = ''; // Clear existing content
+
+            // Create container for different content types
+            const contentTypes = ['Prose', 'Poem', 'Supplementary'];
             
-            // When creating prose element
-            const proseElement = document.createElement('div');
-            proseElement.className = 'content-item';
-            proseElement.innerHTML = `
-                <div class="content-title cursor-pointer hover:text-orange-500" 
-                     onclick="handleProseClick(${unit}, '${unitContent[unit].Prose}')">
-                    ${unitContent[unit].Prose}
-                </div>
-            `;
-            // ... rest of the code ...
+            contentTypes.forEach(type => {
+                if (unitContent[unit][type]) {
+                    const contentDiv = document.createElement('div');
+                    contentDiv.className = 'content-item p-4 bg-white rounded-lg shadow-sm mb-4';
+                    contentDiv.innerHTML = `
+                        <h3 class="text-lg font-medium text-gray-800 mb-2">${type}</h3>
+                        <div class="content-title cursor-pointer hover:text-orange-500 transition-colors" 
+                             onclick="handleContentClick('${type}', ${unit}, '${unitContent[unit][type]}')">
+                            ${unitContent[unit][type]}
+                        </div>
+                    `;
+                    contentContainer.appendChild(contentDiv);
+                }
+            });
         }
+
+        // Update the click handler function
+        function handleContentClick(type, unit, title) {
+            // Show loading overlay
+            const loadingOverlay = document.getElementById('loadingOverlay');
+            loadingOverlay.style.display = 'flex';
+            
+            // Add page transition effect
+            document.body.classList.add('page-transition');
+
+            // Handle different content types
+            if (type === 'Prose' && unit === 1 && title === 'Sea Turtles') {
+                setTimeout(() => {
+                    window.location.href = './Engunit1prose1.html';
+                }, 800);
+            }
+            // Add other content type handlers here
+        }
+
+        // Initialize the first unit content when page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            displayUnitContent(1); // Display Unit 1 content by default
+        });
 
         // Add this to preserve scroll position when returning
         window.addEventListener('load', () => {
@@ -2440,6 +2470,11 @@
                     </button>
                 </form>
             </div>
+        </div>
+
+        <!-- Add this where you want to display the unit content -->
+        <div id="unitContent" class="mt-6 space-y-4">
+            <!-- Content will be dynamically inserted here -->
         </div>
     </main>
 
