@@ -2191,14 +2191,26 @@
             });
         }
 
+        // Add custom event listener for subject card clicks
+        document.addEventListener('DOMContentLoaded', () => {
+            // Handle subject card clicks
+            document.querySelectorAll('.subject-card').forEach(card => {
+                card.addEventListener('click', (e) => {
+                    const subject = e.currentTarget.dataset.subject;
+                    if (subject === 'English') {
+                        // Skip all popups and go directly to unit content
+                        displayUnitContent(1);
+                    }
+                });
+            });
+        });
+
+        // Update content click handler
         function handleContentClick(type, unit, title) {
             if (type === 'Prose' && unit === 1 && title === 'Sea Turtles') {
-                // Prevent default SweetAlert behavior
-                event.preventDefault();
-                event.stopPropagation();
-                
-                // Force direct navigation
-                window.location.replace('Engunit1prose1.html');
+                // Direct navigation
+                window.location.href = 'Engunit1prose1.html';
+                return false; // Prevent any other handlers from executing
             }
         }
 
@@ -2215,21 +2227,6 @@
                 sessionStorage.removeItem('scrollPosition');
             }
         });
-
-        // Override SweetAlert for content navigation
-        const originalSwal = window.Swal.fire;
-        window.Swal.fire = function(config) {
-            // If it's the "Let's Start Learning!" popup, skip it and navigate directly
-            if (config.title === "Let's Start Learning!" && 
-                config.html && 
-                config.html.includes("Unit 1 - Prose") && 
-                config.html.includes("Sea Turtles")) {
-                window.location.replace('Engunit1prose1.html');
-                return Promise.resolve();
-            }
-            // For all other alerts, use normal behavior
-            return originalSwal(config);
-        };
     </script>
 </head>
 <body>
@@ -2386,13 +2383,13 @@
         <section class="subjects-section">
             <h3>Subjects</h3>
             <div class="subjects-grid">
+                <div class="subject-card" data-subject="English">
+                    <img src="/img/english-icon.png" alt="English" class="subject-icon">
+                    <div class="subject-name">English</div>
+                </div>
                 <div class="subject-card">
                     <img src="/img/tamil-icon.png" alt="Tamil" class="subject-icon">
                     <div class="subject-name">Tamil</div>
-                </div>
-                <div class="subject-card">
-                    <img src="/img/english-icon.png" alt="English" class="subject-icon">
-                    <div class="subject-name">English</div>
                 </div>
                 <div class="subject-card">
                     <img src="/img/maths-icon.png" alt="Maths" class="subject-icon">
