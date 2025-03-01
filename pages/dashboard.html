@@ -2137,8 +2137,7 @@
         // Function to handle subject selection (English)
         function handleSubjectClick(subject) {
             if (subject === 'English') {
-                // Skip the "Ready for English Adventure" popup
-                displayTermSelection();
+                displayUnitContent(1);
             }
         }
 
@@ -2165,10 +2164,6 @@
 
         function displayUnitContent(unit) {
             const contentContainer = document.getElementById('unitContent');
-            if (!contentContainer) {
-                console.error('Content container not found!');
-                return;
-            }
             contentContainer.innerHTML = '';
 
             const contentTypes = ['Prose', 'Poem', 'Supplementary'];
@@ -2196,10 +2191,7 @@
             document.querySelectorAll('.subject-card').forEach(card => {
                 card.addEventListener('click', (e) => {
                     const subject = e.currentTarget.dataset.subject;
-                    if (subject === 'English') {
-                        // Skip all popups and go directly to unit content
-                        displayUnitContent(1);
-                    }
+                    handleSubjectClick(subject);
                 });
             });
         });
