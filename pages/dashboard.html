@@ -2191,6 +2191,7 @@
 
         // Update the click handler function
         function handleContentClick(type, unit, title) {
+            console.log('Clicked:', type, unit, title); // Add this for debugging
             // Show loading overlay
             const loadingOverlay = document.getElementById('loadingOverlay');
             loadingOverlay.style.display = 'flex';
@@ -2203,9 +2204,8 @@
                 // Store current scroll position
                 sessionStorage.setItem('scrollPosition', window.pageYOffset);
                 
-                setTimeout(() => {
-                    window.location.href = '/pages/Engunit1prose1.html';
-                }, 800);
+                // Navigate immediately
+                window.location.href = '/pages/Engunit1prose1.html';
             }
             // Add other content type handlers here
         }
