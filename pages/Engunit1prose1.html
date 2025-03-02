@@ -147,6 +147,8 @@
             margin: 40px auto;
             box-shadow: 0 4px 15px rgba(0,0,0,0.2);
             transform-style: preserve-3d;
+            cursor: pointer;
+            transition: all 0.3s ease;
         }
 
         .turtle::before {  /* Head */
@@ -260,7 +262,79 @@
             position: absolute;
             background: rgba(255,255,255,0.4);
             border-radius: 50%;
-            animation: rise 3s infinite;
+            animation: bubble-rise 3s ease-out infinite;
+        }
+
+        @keyframes bubble-rise {
+            0% { 
+                transform: translateY(0) scale(0.1); 
+                opacity: 0; 
+            }
+            20% { opacity: 0.8; }
+            100% { 
+                transform: translateY(-100px) scale(1.5); 
+                opacity: 0; 
+            }
+        }
+
+        /* Water Effect */
+        .water-container {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            border-radius: 10px;
+            background: linear-gradient(180deg, #a8e6ff 0%, #4db6e5 100%);
+        }
+
+        .ripple {
+            position: absolute;
+            border: 2px solid rgba(255, 255, 255, 0.4);
+            border-radius: 50%;
+            animation: ripple 3s linear infinite;
+            pointer-events: none;
+        }
+
+        @keyframes ripple {
+            0% { width: 0; height: 0; opacity: 0.8; }
+            100% { width: 100px; height: 100px; opacity: 0; }
+        }
+
+        /* Enhanced Turtle Animation */
+        .turtle.swimming-fast {
+            animation: swim-fast 1.5s ease-in-out infinite;
+        }
+
+        .turtle.diving {
+            animation: dive 2s ease-in-out;
+        }
+
+        @keyframes swim-fast {
+            0%, 100% { transform: translateX(0) rotate(0deg); }
+            25% { transform: translateX(10px) rotate(5deg); }
+            75% { transform: translateX(-10px) rotate(-5deg); }
+        }
+
+        @keyframes dive {
+            0% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(50px) rotate(45deg) scale(0.8); }
+            100% { transform: translateY(0) rotate(0deg); }
+        }
+
+        /* Water Surface */
+        .water-surface {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 20px;
+            background: linear-gradient(180deg, rgba(255,255,255,0.4) 0%, transparent 100%);
+            animation: surface-move 3s ease-in-out infinite;
+        }
+
+        @keyframes surface-move {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(5px); }
         }
     </style>
 </head>
@@ -303,24 +377,27 @@
                 </div>
 
     <script>
-        // Add this before the DOMContentLoaded event listener
+        // Update the turtleHTML constant
         const turtleHTML = `
-            <div class="turtle-container">
-                <div class="bubbles">
-                    ${Array.from({length: 5}, (_, i) => `
-                        <div class="bubble" style="
-                            width: ${Math.random() * 10 + 5}px;
-                            height: ${Math.random() * 10 + 5}px;
-                            left: ${Math.random() * 100}%;
-                            animation-delay: ${Math.random() * 2}s;
-                        "></div>
-                    `).join('')}
-                </div>
-                <div class="turtle">
-                    <div class="eye"></div>
-                    <div class="flipper flipper-front"></div>
-                    <div class="flipper flipper-back"></div>
-                    <div class="shell-pattern"></div>
+            <div class="water-container">
+                <div class="water-surface"></div>
+                <div class="turtle-container">
+                    <div class="bubbles">
+                        ${Array.from({length: 8}, (_, i) => `
+                            <div class="bubble" style="
+                                width: ${Math.random() * 10 + 5}px;
+                                height: ${Math.random() * 10 + 5}px;
+                                left: ${Math.random() * 100}%;
+                                animation-delay: ${Math.random() * 2}s;
+                            "></div>
+                        `).join('')}
+                    </div>
+                    <div class="turtle" id="interactiveTurtle">
+                        <div class="eye"></div>
+                        <div class="flipper flipper-front"></div>
+                        <div class="flipper flipper-back"></div>
+                        <div class="shell-pattern"></div>
+                    </div>
                 </div>
             </div>
         `;
@@ -334,7 +411,54 @@
             setTimeout(() => {
                 document.getElementById('contentArea').classList.add('visible');
             }, 500);
+
+            const turtle = document.getElementById('interactiveTurtle');
+            let isSwimmingFast = false;
+
+            // Click to dive
+            turtle.addEventListener('click', () => {
+                if (!turtle.classList.contains('diving')) {
+                    turtle.classList.add('diving');
+                    createRippleEffect(event);
+                    setTimeout(() => {
+                        turtle.classList.remove('diving');
+                    }, 2000);
+                }
+            });
+
+            // Double click to toggle fast swimming
+            turtle.addEventListener('dblclick', () => {
+                isSwimmingFast = !isSwimmingFast;
+                turtle.classList.toggle('swimming-fast');
+                updateBubbleSpeed(isSwimmingFast);
+            });
+
+            // Mouse move to create ripples
+            document.querySelector('.water-container').addEventListener('mousemove', (e) => {
+                if (e.target.classList.contains('water-container')) {
+                    createRippleEffect(e);
+                }
+            });
         });
+
+        function createRippleEffect(e) {
+            const ripple = document.createElement('div');
+            ripple.className = 'ripple';
+            ripple.style.left = `${e.offsetX}px`;
+            ripple.style.top = `${e.offsetY}px`;
+            e.target.appendChild(ripple);
+            
+            setTimeout(() => {
+                ripple.remove();
+            }, 3000);
+        }
+
+        function updateBubbleSpeed(isFast) {
+            const bubbles = document.querySelectorAll('.bubble');
+            bubbles.forEach(bubble => {
+                bubble.style.animationDuration = isFast ? '1.5s' : '3s';
+            });
+        }
 
         function completeLevel() {
             // Add completion animation
