@@ -1004,6 +1004,133 @@
         .open-chat-btn:hover {
             background: #45a049;
         }
+
+        /* Add these new styles in the <style> section */
+        .subject-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .subject-content {
+            background: white;
+            padding: 2rem;
+            border-radius: 20px;
+            max-width: 500px;
+            width: 90%;
+            text-align: center;
+            position: relative;
+            animation: bounceIn 0.5s ease;
+        }
+
+        @keyframes bounceIn {
+            0% { transform: scale(0.3); opacity: 0; }
+            50% { transform: scale(1.05); }
+            70% { transform: scale(0.9); }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        .subject-content h2 {
+            color: #FF9B3F;
+            margin-bottom: 1.5rem;
+            font-size: 1.8rem;
+        }
+
+        .subject-content p {
+            color: #666;
+            margin-bottom: 2rem;
+            font-size: 1.1rem;
+        }
+
+        .lets-go-btn {
+            background: #FF9B3F;
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 25px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .lets-go-btn:hover {
+            transform: scale(1.05);
+            background: #ff8c2f;
+        }
+
+        .term-grid, .unit-grid, .lesson-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+        }
+
+        .term-card, .unit-card, .lesson-card {
+            background: #f8f8f8;
+            padding: 1.5rem;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .term-card:hover, .unit-card:hover, .lesson-card:hover {
+            transform: translateY(-5px);
+            border-color: #FF9B3F;
+            background: white;
+        }
+
+        .term-card.locked, .unit-card.locked, .lesson-card.locked {
+            opacity: 0.7;
+            cursor: not-allowed;
+        }
+
+        .lock-icon {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            color: #666;
+        }
+
+        .back-btn {
+            background: #666;
+            color: white;
+            border: none;
+            padding: 8px 20px;
+            border-radius: 20px;
+            cursor: pointer;
+            margin-bottom: 1.5rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .back-btn:hover {
+            background: #555;
+        }
+
+        /* Add these animations */
+        @keyframes floatAnimation {
+            0% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0); }
+        }
+
+        .subject-icon {
+            animation: floatAnimation 3s ease-in-out infinite;
+        }
     </style>
     <!-- Update Firebase SDK imports -->
     <script src="https://www.gstatic.com/firebasejs/11.3.1/firebase-app-compat.js"></script>
@@ -1609,6 +1736,148 @@
                 clearTimeout(timeout);
                 timeout = setTimeout(later, wait);
             };
+        }
+
+        // Add this to the existing script section
+        document.addEventListener('DOMContentLoaded', () => {
+            const subjectCards = document.querySelectorAll('.subject-card');
+            
+            subjectCards.forEach(card => {
+                card.addEventListener('click', () => {
+                    const subjectName = card.querySelector('.subject-name').textContent;
+                    showSubjectModal(subjectName);
+                });
+            });
+        });
+
+        function showSubjectModal(subject) {
+            const modal = document.createElement('div');
+            modal.className = 'subject-modal';
+            
+            if (subject.toLowerCase() === 'english') {
+                modal.innerHTML = `
+                    <div class="subject-content">
+                        <h2>Welcome to English!</h2>
+                        <p>Ready to embark on an exciting journey of learning English?</p>
+                        <button class="lets-go-btn" onclick="showTerms()">
+                            Let's Go! 
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                <path d="M5 12h14M12 5l7 7-7 7"/>
+                            </svg>
+                        </button>
+                    </div>
+                `;
+            } else {
+                modal.innerHTML = `
+                    <div class="subject-content">
+                        <h2>${subject}</h2>
+                        <p>This subject is coming soon! Please wait for exciting content.</p>
+                        <button class="lets-go-btn" onclick="closeModal(this)">
+                            Got it!
+                        </button>
+                    </div>
+                `;
+            }
+            
+            document.body.appendChild(modal);
+            setTimeout(() => modal.style.display = 'flex', 50);
+        }
+
+        function closeModal(element) {
+            const modal = element.closest('.subject-modal');
+            modal.style.display = 'none';
+            modal.remove();
+        }
+
+        function showTerms() {
+            const modal = document.querySelector('.subject-modal');
+            modal.innerHTML = `
+                <div class="subject-content">
+                    <button class="back-btn" onclick="showSubjectModal('English')">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                            <path d="M19 12H5M12 19l-7-7 7-7"/>
+                        </svg>
+                        Back
+                    </button>
+                    <h2>Select Term</h2>
+                    <div class="term-grid">
+                        <div class="term-card" onclick="showUnits(1)">
+                            <h3>Term 1</h3>
+                            <p>Units 1-3</p>
+                        </div>
+                        <div class="term-card locked">
+                            <h3>Term 2</h3>
+                            <p>Coming Soon</p>
+                            <span class="lock-icon">🔒</span>
+                        </div>
+                        <div class="term-card locked">
+                            <h3>Term 3</h3>
+                            <p>Coming Soon</p>
+                            <span class="lock-icon">🔒</span>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function showUnits(term) {
+            const modal = document.querySelector('.subject-modal');
+            modal.innerHTML = `
+                <div class="subject-content">
+                    <button class="back-btn" onclick="showTerms()">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                            <path d="M19 12H5M12 19l-7-7 7-7"/>
+                        </svg>
+                        Back
+                    </button>
+                    <h2>Term ${term} Units</h2>
+                    <div class="unit-grid">
+                        <div class="unit-card" onclick="showLessons(1)">
+                            <h3>Unit 1</h3>
+                            <p>Sea Life Adventures</p>
+                        </div>
+                        <div class="unit-card locked">
+                            <h3>Unit 2</h3>
+                            <p>Coming Soon</p>
+                            <span class="lock-icon">🔒</span>
+                        </div>
+                        <div class="unit-card locked">
+                            <h3>Unit 3</h3>
+                            <p>Coming Soon</p>
+                            <span class="lock-icon">🔒</span>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function showLessons(unit) {
+            const modal = document.querySelector('.subject-modal');
+            modal.innerHTML = `
+                <div class="subject-content">
+                    <button class="back-btn" onclick="showUnits(1)">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                            <path d="M19 12H5M12 19l-7-7 7-7"/>
+                        </svg>
+                        Back
+                    </button>
+                    <h2>Unit ${unit} Lessons</h2>
+                    <div class="lesson-grid">
+                        <div class="lesson-card" onclick="location.href='/pages/engunit1prose1.html'">
+                            <h3>Prose</h3>
+                            <p>Sea Turtles</p>
+                        </div>
+                        <div class="lesson-card" onclick="location.href='/pages/engunit1poem1.html'">
+                            <h3>Poem</h3>
+                            <p>The Crocodile</p>
+                        </div>
+                        <div class="lesson-card" onclick="location.href='/pages/engunit1supp1.html'">
+                            <h3>Supplementary</h3>
+                            <p>The Friendship</p>
+                        </div>
+                    </div>
+                </div>
+            `;
         }
     </script>
 </head>
