@@ -598,15 +598,21 @@
         // Submit quiz handler
         document.getElementById('submitQuiz').addEventListener('click', submitQuiz);
 
-        // Create audio elements with direct links to sound effects
-        const correctSound = new Audio('https://assets.mixkit.co/sfx/preview/mixkit-correct-answer-tone-2870.mp3');
-        const incorrectSound = new Audio('https://assets.mixkit.co/sfx/preview/mixkit-wrong-answer-buzz-941.mp3');
-        const successSound = new Audio('https://assets.mixkit.co/sfx/preview/mixkit-achievement-bell-600.mp3');
+        // Update the audio URLs to more reliable sources
+        const correctSound = new Audio('/sounds/correct.mp3');  // Use local sound files
+        const incorrectSound = new Audio('/sounds/incorrect.mp3');
+        const successSound = new Audio('/sounds/success.mp3');
 
-        // Set appropriate volumes
-        correctSound.volume = 0.4;
-        incorrectSound.volume = 0.3;
-        successSound.volume = 0.5;
+        // Add fallback sounds in case local files fail
+        correctSound.onerror = () => {
+            correctSound.src = 'https://www.soundjay.com/button/button-1.mp3';
+        };
+        incorrectSound.onerror = () => {
+            incorrectSound.src = 'https://www.soundjay.com/button/button-2.mp3';
+        };
+        successSound.onerror = () => {
+            successSound.src = 'https://www.soundjay.com/button/button-3.mp3';
+        };
 
         // Fix the preloadSounds function
         function preloadSounds() {
