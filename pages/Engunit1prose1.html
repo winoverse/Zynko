@@ -237,6 +237,17 @@
                 </div>
 
     <script>
+        // Add this before the DOMContentLoaded event listener
+        const turtleHTML = `
+            <div class="turtle-container">
+                <div class="turtle">
+                    <div class="flipper flipper-front"></div>
+                    <div class="flipper flipper-back"></div>
+                    <div class="shell-pattern"></div>
+                </div>
+            </div>
+        `;
+
         // Initialize animations and interactions
         document.addEventListener('DOMContentLoaded', () => {
             // Replace the animation container content
