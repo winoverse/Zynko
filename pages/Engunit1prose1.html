@@ -205,6 +205,35 @@
             opacity: 0;
         }
     </style>
+
+    <!-- Add these in the <head> section, before your existing scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/11.3.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/11.3.1/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/11.3.1/firebase-auth-compat.js"></script>
+
+    <!-- Initialize Firebase -->
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyDQw162F-ABofLGvXoZdqT54dxhRNBlH68",
+            authDomain: "zynko-cd394.firebaseapp.com",
+            projectId: "zynko-cd394",
+            storageBucket: "zynko-cd394.firebasestorage.app",
+            messagingSenderId: "551662653914",
+            appId: "1:551662653914:web:501e9e792c7b471ada70e3",
+            measurementId: "G-KSN55XH26B"
+        };
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+        const auth = firebase.auth();
+    </script>
+
+    <!-- Add this in the <head> section -->
+    <link rel="icon" type="image/x-icon" href="/img/favicon.ico">
 </head>
 <body class="bg-gray-50">
     <!-- Update the loading overlay HTML -->
@@ -373,7 +402,11 @@
             renderer: 'svg',
             loop: true,
             autoplay: true,
-            path: 'https://assets5.lottiefiles.com/packages/lf20_beach_turtles.json'
+            path: 'https://assets2.lottiefiles.com/packages/lf20_sea_turtle.json'
+        });
+
+        turtleAnimation.addEventListener('complete', () => {
+            updateResourceStatus('animations');
         });
 
         // Text-to-Speech Implementation
@@ -566,9 +599,9 @@
         document.getElementById('submitQuiz').addEventListener('click', submitQuiz);
 
         // Create audio elements with direct links to sound effects
-        const correctSound = new Audio('https://assets.mixkit.co/active_storage/sfx/2190/2190-preview.mp3'); // Short success ding
-        const incorrectSound = new Audio('https://assets.mixkit.co/active_storage/sfx/2205/2205-preview.mp3'); // Soft error tone
-        const successSound = new Audio('https://assets8.lottiefiles.com/packages/lf20_success_checkmark.json'); // Smooth checkmark with particle effects
+        const correctSound = new Audio('https://assets.mixkit.co/sfx/preview/mixkit-correct-answer-tone-2870.mp3');
+        const incorrectSound = new Audio('https://assets.mixkit.co/sfx/preview/mixkit-wrong-answer-buzz-941.mp3');
+        const successSound = new Audio('https://assets.mixkit.co/sfx/preview/mixkit-achievement-bell-600.mp3');
 
         // Set appropriate volumes
         correctSound.volume = 0.4;
@@ -578,16 +611,23 @@
         // Preload all sounds
         function preloadSounds() {
             const sounds = [correctSound, incorrectSound, successSound];
+            let loadedCount = 0;
+
             sounds.forEach(sound => {
-                sound.load();
-                // Add error handling
-                sound.onerror = () => {
+                sound.addEventListener('canplaythrough', () => {
+                    loadedCount++;
+                    if (loadedCount === sounds.length) {
+                        resolve();
+                    }
+                });
+                sound.addEventListener('error', () => {
                     console.error('Error loading sound:', sound.src);
-                    // Fallback to alternative sounds if primary fails
-                    sound.src = sound === correctSound ? 'https://assets.mixkit.co/active_storage/sfx/2186/2186-preview.mp3' : 
-                               sound === incorrectSound ? 'https://assets.mixkit.co/active_storage/sfx/2207/2207-preview.mp3' :
-                               'https://assets.mixkit.co/active_storage/sfx/1437/1437-preview.mp3';
-                };
+                    loadedCount++;
+                    if (loadedCount === sounds.length) {
+                        resolve();
+                    }
+                });
+                sound.load();
             });
         }
 
@@ -896,45 +936,48 @@
             content: false
         };
 
-        // Track resource loading
         function updateResourceStatus(resource) {
             resources[resource] = true;
-            checkAllResourcesLoaded();
-        }
-
-        function checkAllResourcesLoaded() {
             if (Object.values(resources).every(status => status)) {
-                currentStateIndex = loadingStates.length - 1;
-                updateLoadingProgress();
+                const loadingOverlay = document.getElementById('initialLoadingOverlay');
+                loadingOverlay.style.opacity = '0';
+                setTimeout(() => {
+                    loadingOverlay.style.display = 'none';
+                    // Show main content
+                    const mainContent = document.querySelector('main');
+                    mainContent.style.transition = 'opacity 0.5s ease-in';
+                    mainContent.style.opacity = '1';
+                }, 300);
             }
         }
 
-        // Update loading status when resources load
-        window.addEventListener('load', () => {
+        // Initialize loading
+        document.addEventListener('DOMContentLoaded', () => {
+            // Track content loading
             updateResourceStatus('content');
-        });
+            
+            // Track image loading
+            Promise.all(
+                Array.from(document.images)
+                    .filter(img => !img.complete)
+                    .map(img => {
+                        return new Promise(resolve => {
+                            img.onload = img.onerror = resolve;
+                        });
+                    })
+            ).then(() => {
+                updateResourceStatus('images');
+            });
 
-        // Track animation loading
-        lottie.addEventListener('complete', () => {
-            updateResourceStatus('animations');
-        });
-
-        // Track sound loading
-        window.addEventListener('load', () => {
+            // Track sound loading
             preloadSounds().then(() => {
                 updateResourceStatus('sounds');
             });
         });
 
-        // Track image loading
-        Promise.all(Array.from(document.images).map(img => {
-            if (img.complete) return Promise.resolve();
-            return new Promise(resolve => {
-                img.addEventListener('load', resolve);
-                img.addEventListener('error', resolve); // Handle error case
-            });
-        })).then(() => {
-            updateResourceStatus('images');
+        // Track animation loading
+        turtleAnimation.addEventListener('DOMLoaded', () => {
+            updateResourceStatus('animations');
         });
     </script>
 </body>
