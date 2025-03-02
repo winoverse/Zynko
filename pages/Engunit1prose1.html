@@ -128,73 +128,139 @@
             height: 200px;
             position: relative;
             animation: float 3s ease-in-out infinite;
+            transform-style: preserve-3d;
+            perspective: 1000px;
         }
 
         @keyframes float {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-15px); }
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            25% { transform: translateY(-10px) rotate(2deg); }
+            75% { transform: translateY(5px) rotate(-2deg); }
         }
 
         .turtle {
-            width: 120px;
-            height: 80px;
-            background: #2E8B57;
-            border-radius: 50%;
+            width: 140px;
+            height: 90px;
+            background: linear-gradient(145deg, #2E8B57, #3CB371);
+            border-radius: 60% 60% 60% 60% / 70% 70% 50% 50%;
             position: relative;
             margin: 40px auto;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            transform-style: preserve-3d;
         }
 
         .turtle::before {  /* Head */
             content: '';
             position: absolute;
-            width: 30px;
-            height: 25px;
-            background: #2E8B57;
-            border-radius: 50%;
-            left: -15px;
-            top: 25px;
+            width: 35px;
+            height: 30px;
+            background: linear-gradient(145deg, #2E8B57, #3CB371);
+            border-radius: 60% 50% 50% 50%;
+            left: -20px;
+            top: 30px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .turtle::after {  /* Tail */
+            content: '';
+            position: absolute;
+            width: 25px;
+            height: 20px;
+            background: linear-gradient(145deg, #2E8B57, #3CB371);
+            border-radius: 50% 50% 50% 60%;
+            right: -15px;
+            top: 35px;
         }
 
         .flipper {
             position: absolute;
-            width: 40px;
-            height: 15px;
-            background: #2E8B57;
-            border-radius: 50%;
+            width: 50px;
+            height: 20px;
+            background: linear-gradient(145deg, #2E8B57, #3CB371);
+            border-radius: 60% 40% 40% 60%;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
         }
 
         .flipper-front {
-            left: 10px;
-            top: 15px;
+            left: 15px;
+            top: 20px;
             transform-origin: left center;
-            animation: swim-front 1.5s infinite;
+            animation: swim-front 2s ease-in-out infinite;
         }
 
         .flipper-back {
-            right: 10px;
-            top: 15px;
+            right: 15px;
+            top: 20px;
             transform-origin: right center;
-            animation: swim-back 1.5s infinite;
+            animation: swim-back 2s ease-in-out infinite;
         }
 
         @keyframes swim-front {
-            0%, 100% { transform: rotate(-20deg); }
-            50% { transform: rotate(20deg); }
+            0%, 100% { transform: rotate(-20deg) translateY(0); }
+            50% { transform: rotate(30deg) translateY(-5px); }
         }
 
         @keyframes swim-back {
-            0%, 100% { transform: rotate(20deg); }
-            50% { transform: rotate(-20deg); }
+            0%, 100% { transform: rotate(20deg) translateY(0); }
+            50% { transform: rotate(-30deg) translateY(-5px); }
         }
 
         .shell-pattern {
             position: absolute;
+            width: 100px;
+            height: 65px;
+            border: 3px solid rgba(255,255,255,0.2);
+            border-radius: 50%;
+            top: 12px;
+            left: 20px;
+            transform: rotate(-5deg);
+        }
+
+        .shell-pattern::before {
+            content: '';
+            position: absolute;
             width: 80px;
             height: 50px;
-            border: 2px solid rgba(0,0,0,0.1);
+            border: 2px solid rgba(255,255,255,0.15);
             border-radius: 50%;
-            top: 15px;
-            left: 20px;
+            top: 5px;
+            left: 8px;
+        }
+
+        .shell-pattern::after {
+            content: '';
+            position: absolute;
+            width: 60px;
+            height: 35px;
+            border: 2px solid rgba(255,255,255,0.1);
+            border-radius: 50%;
+            top: 12px;
+            left: 18px;
+        }
+
+        .eye {
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            background: #000;
+            border-radius: 50%;
+            left: -12px;
+            top: 35px;
+            box-shadow: 0 0 0 2px rgba(255,255,255,0.6);
+        }
+
+        .bubbles {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+
+        .bubble {
+            position: absolute;
+            background: rgba(255,255,255,0.4);
+            border-radius: 50%;
+            animation: rise 3s infinite;
         }
     </style>
 </head>
@@ -240,7 +306,18 @@
         // Add this before the DOMContentLoaded event listener
         const turtleHTML = `
             <div class="turtle-container">
+                <div class="bubbles">
+                    ${Array.from({length: 5}, (_, i) => `
+                        <div class="bubble" style="
+                            width: ${Math.random() * 10 + 5}px;
+                            height: ${Math.random() * 10 + 5}px;
+                            left: ${Math.random() * 100}%;
+                            animation-delay: ${Math.random() * 2}s;
+                        "></div>
+                    `).join('')}
+                </div>
                 <div class="turtle">
+                    <div class="eye"></div>
                     <div class="flipper flipper-front"></div>
                     <div class="flipper flipper-back"></div>
                     <div class="shell-pattern"></div>
