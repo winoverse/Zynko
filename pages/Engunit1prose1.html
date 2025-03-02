@@ -458,17 +458,34 @@
                 </div>
 
     <script>
-        // Add these sound effects
+        // Replace the sounds initialization with this error-handled version
         const sounds = {
-            splash: new Audio('/sounds/splash.mp3'),
-            bubble: new Audio('/sounds/bubble.mp3'),
-            swim: new Audio('/sounds/swim.mp3')
+            splash: null,
+            bubble: null,
+            swim: null
         };
 
-        // Initialize volume
-        Object.values(sounds).forEach(sound => {
-            sound.volume = 0.3;
-        });
+        // Try to load sounds with error handling
+        try {
+            sounds.splash = new Audio('/sounds/splash.mp3');
+            sounds.bubble = new Audio('/sounds/bubble.mp3');
+            sounds.swim = new Audio('/sounds/swim.mp3');
+            
+            // Initialize volume if sounds loaded successfully
+            Object.values(sounds).forEach(sound => {
+                if (sound) sound.volume = 0.3;
+            });
+        } catch (error) {
+            console.log('Sound effects not available');
+        }
+
+        // Update the sound playing functions to check if sound exists
+        function playSound(soundName) {
+            if (sounds[soundName]) {
+                sounds[soundName].currentTime = 0;
+                sounds[soundName].play().catch(err => console.log('Sound playback failed'));
+            }
+        }
 
         // Update the turtleHTML constant
         const turtleHTML = `
@@ -529,7 +546,7 @@
             // Click to dive with sound
             turtle.addEventListener('click', () => {
                 if (!turtle.classList.contains('diving')) {
-                    sounds.splash.play();
+                    playSound('splash');
                     turtle.classList.add('diving');
                     createRippleEffect(event);
                     setTimeout(() => {
@@ -547,7 +564,7 @@
                 currentPattern = (currentPattern + 1) % patterns.length;
                 turtle.classList.add(patterns[currentPattern]);
                 
-                sounds.swim.play();
+                playSound('swim');
                 updateBubbleSpeed(currentPattern === 1); // Fast bubbles for pattern 1
             });
 
@@ -556,8 +573,7 @@
                 if (Math.random() > 0.7) { // 30% chance to create bubble
                     createBubble(turtle.offsetLeft + turtle.offsetWidth / 2, 
                                 turtle.offsetTop + turtle.offsetHeight / 2);
-                    sounds.bubble.currentTime = 0;
-                    sounds.bubble.play();
+                    playSound('bubble');
                 }
             }, 1000);
         });
@@ -609,6 +625,81 @@
                 window.location.href = 'level2.html';
             }, 500);
         }
+
+        // Add this after the sounds initialization
+        class SpeechManager {
+            constructor() {
+                this.synth = window.speechSynthesis;
+                this.speaking = false;
+            }
+
+            speak(text) {
+                if (this.speaking) {
+                    this.synth.cancel();
+                    this.speaking = false;
+                    return;
+                }
+
+                const utterance = new SpeechSynthesisUtterance(text);
+                utterance.rate = 0.9;
+                utterance.pitch = 1;
+                utterance.onend = () => {
+                    this.speaking = false;
+                    document.querySelectorAll('.reading-highlight').forEach(el => {
+                        el.classList.remove('reading-highlight');
+                    });
+                };
+
+                this.speaking = true;
+                this.synth.speak(utterance);
+            }
+        }
+
+        // Add this to the turtleHTML constant after the water-container div
+        const controlsHTML = `
+            <div class="controls-panel">
+                <button class="control-btn" id="soundToggle" title="Toggle Sound">
+                    <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                            d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"/>
+                    </svg>
+                </button>
+                <button class="control-btn" id="readAloud" title="Read Aloud">
+                    <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                            d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0-11V3m0 0a7 7 0 017 7c0 1.462-.446 2.816-1.208 3.937"/>
+                    </svg>
+                </button>
+            </div>
+        `;
+
+        // Add these event listeners in the DOMContentLoaded section
+        document.addEventListener('DOMContentLoaded', () => {
+            // ... existing code ...
+
+            // Initialize speech and controls
+            const speechManager = new SpeechManager();
+            document.body.insertAdjacentHTML('beforeend', controlsHTML);
+
+            // Sound toggle button
+            const soundToggle = document.getElementById('soundToggle');
+            soundToggle.addEventListener('click', () => {
+                const isMuted = !sounds.splash?.muted;
+                Object.values(sounds).forEach(sound => {
+                    if (sound) sound.muted = isMuted;
+                });
+                soundToggle.classList.toggle('active', !isMuted);
+            });
+
+            // Read aloud button
+            const readAloud = document.getElementById('readAloud');
+            readAloud.addEventListener('click', () => {
+                const text = document.querySelector('.text-lg').textContent;
+                readAloud.classList.toggle('active');
+                document.querySelector('.text-lg').classList.toggle('reading-highlight');
+                speechManager.speak(text);
+            });
+        });
     </script>
 </body>
 </html> 
