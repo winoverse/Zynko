@@ -279,12 +279,13 @@
 
         /* Water Effect */
         .water-container {
-            position: absolute;
+            position: relative;
             width: 100%;
-            height: 100%;
+            height: 200px;
             overflow: hidden;
             border-radius: 10px;
             background: linear-gradient(180deg, #a8e6ff 0%, #4db6e5 100%);
+            margin-bottom: 20px;
         }
 
         .ripple {
@@ -377,6 +378,18 @@
                 </div>
 
     <script>
+        // Add these sound effects
+        const sounds = {
+            splash: new Audio('/sounds/splash.mp3'),
+            bubble: new Audio('/sounds/bubble.mp3'),
+            swim: new Audio('/sounds/swim.mp3')
+        };
+
+        // Initialize volume
+        Object.values(sounds).forEach(sound => {
+            sound.volume = 0.3;
+        });
+
         // Update the turtleHTML constant
         const turtleHTML = `
             <div class="water-container">
@@ -413,11 +426,30 @@
             }, 500);
 
             const turtle = document.getElementById('interactiveTurtle');
+            const container = document.querySelector('.water-container');
             let isSwimmingFast = false;
+            let currentPattern = 0;
+            const patterns = ['swimming-pattern-1', 'swimming-pattern-2', 'swimming-pattern-3'];
 
-            // Click to dive
+            // Cursor following
+            container.addEventListener('mousemove', (e) => {
+                const rect = container.getBoundingClientRect();
+                const x = e.clientX - rect.left - turtle.offsetWidth / 2;
+                const y = e.clientY - rect.top - turtle.offsetHeight / 2;
+
+                // Keep turtle within container bounds
+                const maxX = container.offsetWidth - turtle.offsetWidth;
+                const maxY = container.offsetHeight - turtle.offsetHeight;
+                const boundedX = Math.min(Math.max(0, x), maxX);
+                const boundedY = Math.min(Math.max(0, y), maxY);
+
+                turtle.style.transform = `translate(${boundedX}px, ${boundedY}px)`;
+            });
+
+            // Click to dive with sound
             turtle.addEventListener('click', () => {
                 if (!turtle.classList.contains('diving')) {
+                    sounds.splash.play();
                     turtle.classList.add('diving');
                     createRippleEffect(event);
                     setTimeout(() => {
@@ -426,31 +458,57 @@
                 }
             });
 
-            // Double click to toggle fast swimming
+            // Double click to change swimming pattern
             turtle.addEventListener('dblclick', () => {
-                isSwimmingFast = !isSwimmingFast;
-                turtle.classList.toggle('swimming-fast');
-                updateBubbleSpeed(isSwimmingFast);
+                // Remove current pattern
+                patterns.forEach(pattern => turtle.classList.remove(pattern));
+                
+                // Add next pattern
+                currentPattern = (currentPattern + 1) % patterns.length;
+                turtle.classList.add(patterns[currentPattern]);
+                
+                sounds.swim.play();
+                updateBubbleSpeed(currentPattern === 1); // Fast bubbles for pattern 1
             });
 
-            // Mouse move to create ripples
-            document.querySelector('.water-container').addEventListener('mousemove', (e) => {
-                if (e.target.classList.contains('water-container')) {
-                    createRippleEffect(e);
+            // Create bubbles periodically
+            setInterval(() => {
+                if (Math.random() > 0.7) { // 30% chance to create bubble
+                    createBubble(turtle.offsetLeft + turtle.offsetWidth / 2, 
+                                turtle.offsetTop + turtle.offsetHeight / 2);
+                    sounds.bubble.currentTime = 0;
+                    sounds.bubble.play();
                 }
-            });
+            }, 1000);
         });
+
+        function createBubble(x, y) {
+            const bubble = document.createElement('div');
+            bubble.className = 'bubble';
+            bubble.style.left = `${x}px`;
+            bubble.style.top = `${y}px`;
+            bubble.style.width = `${Math.random() * 10 + 5}px`;
+            bubble.style.height = bubble.style.width;
+            
+            document.querySelector('.bubbles').appendChild(bubble);
+            
+            // Remove bubble after animation
+            setTimeout(() => bubble.remove(), 3000);
+        }
 
         function createRippleEffect(e) {
             const ripple = document.createElement('div');
             ripple.className = 'ripple';
-            ripple.style.left = `${e.offsetX}px`;
-            ripple.style.top = `${e.offsetY}px`;
-            e.target.appendChild(ripple);
             
-            setTimeout(() => {
-                ripple.remove();
-            }, 3000);
+            const rect = e.target.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            
+            ripple.style.left = `${x}px`;
+            ripple.style.top = `${y}px`;
+            
+            e.target.appendChild(ripple);
+            setTimeout(() => ripple.remove(), 3000);
         }
 
         function updateBubbleSpeed(isFast) {
