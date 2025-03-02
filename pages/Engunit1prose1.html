@@ -122,6 +122,80 @@
             transform: translateY(-2px);
             box-shadow: 0 4px 12px rgba(255, 155, 63, 0.3);
         }
+
+        .turtle-container {
+            width: 200px;
+            height: 200px;
+            position: relative;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-15px); }
+        }
+
+        .turtle {
+            width: 120px;
+            height: 80px;
+            background: #2E8B57;
+            border-radius: 50%;
+            position: relative;
+            margin: 40px auto;
+        }
+
+        .turtle::before {  /* Head */
+            content: '';
+            position: absolute;
+            width: 30px;
+            height: 25px;
+            background: #2E8B57;
+            border-radius: 50%;
+            left: -15px;
+            top: 25px;
+        }
+
+        .flipper {
+            position: absolute;
+            width: 40px;
+            height: 15px;
+            background: #2E8B57;
+            border-radius: 50%;
+        }
+
+        .flipper-front {
+            left: 10px;
+            top: 15px;
+            transform-origin: left center;
+            animation: swim-front 1.5s infinite;
+        }
+
+        .flipper-back {
+            right: 10px;
+            top: 15px;
+            transform-origin: right center;
+            animation: swim-back 1.5s infinite;
+        }
+
+        @keyframes swim-front {
+            0%, 100% { transform: rotate(-20deg); }
+            50% { transform: rotate(20deg); }
+        }
+
+        @keyframes swim-back {
+            0%, 100% { transform: rotate(20deg); }
+            50% { transform: rotate(-20deg); }
+        }
+
+        .shell-pattern {
+            position: absolute;
+            width: 80px;
+            height: 50px;
+            border: 2px solid rgba(0,0,0,0.1);
+            border-radius: 50%;
+            top: 15px;
+            left: 20px;
+        }
     </style>
 </head>
 <body>
@@ -159,25 +233,19 @@
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/>
                         </svg>
                     </button>
-                </div>
+                    </div>
                 </div>
 
     <script>
         // Initialize animations and interactions
         document.addEventListener('DOMContentLoaded', () => {
-                // Show content with animation
-                setTimeout(() => {
+            // Replace the animation container content
+            document.getElementById('turtleAnimation').innerHTML = turtleHTML;
+
+            // Show content with animation
+            setTimeout(() => {
                 document.getElementById('contentArea').classList.add('visible');
             }, 500);
-
-            // Initialize turtle animation
-                lottie.loadAnimation({
-                container: document.getElementById('turtleAnimation'),
-                    renderer: 'svg',
-                    loop: true,
-                    autoplay: true,
-                    path: '/animations/turtle.json'
-                });
         });
 
         function completeLevel() {
