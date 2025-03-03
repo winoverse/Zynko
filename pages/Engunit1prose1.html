@@ -1105,6 +1105,9 @@
             const levelContainer = document.querySelector('.level-container');
             const currentLevel = parseInt(levelContainer.querySelector('.level-number').textContent);
             
+            // Clean up any existing animations
+            cleanupTurtleAnimations();
+            
             // Fade out current content
             contentArea.style.opacity = '0';
             contentArea.style.transform = 'translateY(-20px)';
@@ -1172,6 +1175,69 @@
                     newContent.classList.add('visible');
                 }, 100);
             }, 500);
+        }
+
+        // Add the turtle animation initialization function
+        function initializeTurtleAnimations() {
+            const turtle = document.getElementById('interactiveTurtle');
+            const container = document.querySelector('.water-container');
+            let currentPattern = 0;
+            const patterns = ['swimming-pattern-1', 'swimming-pattern-2', 'swimming-pattern-3'];
+
+            // Cursor following
+            container.addEventListener('mousemove', (e) => {
+                const rect = container.getBoundingClientRect();
+                const x = e.clientX - rect.left - turtle.offsetWidth / 2;
+                const y = e.clientY - rect.top - turtle.offsetHeight / 2;
+
+                const maxX = container.offsetWidth - turtle.offsetWidth;
+                const maxY = container.offsetHeight - turtle.offsetHeight;
+                const boundedX = Math.min(Math.max(0, x), maxX);
+                const boundedY = Math.min(Math.max(0, y), maxY);
+
+                turtle.style.transform = `translate(${boundedX}px, ${boundedY}px)`;
+            });
+
+            // Click to dive
+            turtle.addEventListener('click', () => {
+                if (!turtle.classList.contains('diving')) {
+                    playSound('splash');
+                    turtle.classList.add('diving');
+                    createRippleEffect(event);
+                    setTimeout(() => turtle.classList.remove('diving'), 2000);
+                }
+            });
+
+            // Double click to change pattern
+            turtle.addEventListener('dblclick', () => {
+                patterns.forEach(pattern => turtle.classList.remove(pattern));
+                currentPattern = (currentPattern + 1) % patterns.length;
+                turtle.classList.add(patterns[currentPattern]);
+                playSound('swim');
+                updateBubbleSpeed(currentPattern === 1);
+            });
+
+            // Create bubbles periodically
+            const bubbleInterval = setInterval(() => {
+                if (Math.random() > 0.7) {
+                    createBubble(
+                        turtle.offsetLeft + turtle.offsetWidth / 2,
+                        turtle.offsetTop + turtle.offsetHeight / 2
+                    );
+                    playSound('bubble');
+                }
+            }, 1000);
+
+            // Store interval ID on the container for cleanup
+            container.dataset.bubbleInterval = bubbleInterval;
+        }
+
+        // Add a cleanup function for when switching levels
+        function cleanupTurtleAnimations() {
+            const container = document.querySelector('.water-container');
+            if (container && container.dataset.bubbleInterval) {
+                clearInterval(parseInt(container.dataset.bubbleInterval));
+            }
         }
     </script>
 </body>
