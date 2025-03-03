@@ -1649,6 +1649,36 @@
 
             setTimeout(() => celebration.remove(), 3000);
         }
+
+        // Add this function before the completeLevel function
+        function initializeQuiz() {
+            const answerBtns = document.querySelectorAll('.answer-btn');
+            answerBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    // Remove selected class from sibling button
+                    const sibling = btn.parentElement.querySelector('.answer-btn.selected');
+                    if (sibling) sibling.classList.remove('selected');
+                    
+                    // Add selected class to clicked button
+                    btn.classList.add('selected');
+
+                    // Remove any existing correct/incorrect classes
+                    btn.classList.remove('correct', 'incorrect');
+                });
+            });
+
+            // Reset any previous quiz state
+            const resultBoard = document.querySelector('.result-board');
+            if (resultBoard) {
+                resultBoard.style.display = 'none';
+            }
+
+            // Initialize score display
+            const scoreDisplay = document.querySelector('.score-display');
+            if (scoreDisplay) {
+                scoreDisplay.style.display = 'none';
+            }
+        }
     </script>
 </body>
 </html> 
