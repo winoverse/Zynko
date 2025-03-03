@@ -675,41 +675,71 @@
                 const container = document.querySelector('.text-lg');
                 const originalHTML = container.innerHTML;
 
-                // Get clean text for speech (without HTML tags and class names)
-                const tempDiv = document.createElement('div');
-                tempDiv.innerHTML = originalHTML;
-                const textForSpeech = tempDiv.textContent.trim();
-
-                // Preserve the original structure while adding word spans
-                const words = textForSpeech.split(/\s+/);
-                const processedHTML = originalHTML.replace(
-                    />[^<]+</g,
-                    match => {
-                        return match.replace(/\S+/g, word => `<span class="word">${word}</span>`);
+                // Extract only readable text and create word mapping
+                const textNodes = [];
+                const words = [];
+                
+                function extractText(node) {
+                    if (node.nodeType === 3) { // Text node
+                        const nodeWords = node.textContent.trim().split(/\s+/);
+                        nodeWords.forEach(word => {
+                            if (word) {
+                                words.push(word);
+                                textNodes.push({
+                                    node: node,
+                                    word: word
+                                });
+                            }
+                        });
+                    } else if (node.nodeType === 1) { // Element node
+                        if (node.classList.contains('tooltip')) return; // Skip tooltips
+                        Array.from(node.childNodes).forEach(child => extractText(child));
                     }
-                );
+                }
 
-                container.innerHTML = processedHTML;
+                extractText(container);
 
-                const utterance = new SpeechSynthesisUtterance(textForSpeech);
+                // Create speech text
+                const speechText = words.join(' ');
+
+                // Create utterance
+                const utterance = new SpeechSynthesisUtterance(speechText);
                 utterance.rate = 0.9;
                 utterance.pitch = 1;
                 utterance.lang = 'en-US';
 
-                let wordIndex = 0;
-                const wordElements = container.querySelectorAll('.word');
+                let currentIndex = 0;
 
                 utterance.onboundary = (event) => {
                     if (event.name === 'word') {
-                        wordElements.forEach(word => word.classList.remove('current-word'));
-                        if (wordElements[wordIndex]) {
-                            wordElements[wordIndex].classList.add('current-word');
+                        // Remove previous highlights
+                        container.querySelectorAll('.current-word').forEach(el => {
+                            el.classList.remove('current-word');
+                        });
+
+                        // Add highlight to current word
+                        if (textNodes[currentIndex]) {
+                            const parentNode = textNodes[currentIndex].node.parentNode;
+                            const wordSpan = document.createElement('span');
+                            wordSpan.className = 'current-word';
+                            wordSpan.textContent = textNodes[currentIndex].word;
+                            
+                            if (parentNode.classList.contains('interactive-word')) {
+                                parentNode.style.color = 'white';
+                            }
+                            
+                            textNodes[currentIndex].node.parentNode.insertBefore(wordSpan, textNodes[currentIndex].node);
                         }
-                        wordIndex++;
+                        currentIndex++;
                     }
                 };
 
                 utterance.onend = () => {
+                    this.speaking = false;
+                    container.innerHTML = originalHTML;
+                };
+
+                utterance.onerror = () => {
                     this.speaking = false;
                     container.innerHTML = originalHTML;
                 };
