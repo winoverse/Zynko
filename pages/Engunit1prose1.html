@@ -841,6 +841,44 @@
             }, 500);
         }
 
+        // Add this before the level2Content definition
+        const level1Content = `
+            <div class="level-header">
+                <div class="level-number">1</div>
+                <div class="level-title">Introduction to Sea Turtles</div>
+            </div>
+
+            <div class="content-area" id="contentArea">
+                <div class="flex gap-8">
+                    <div class="flex-1">
+                        <p class="text-lg leading-relaxed mb-4">
+                            Most of us have seen a 
+                            <span class="interactive-word">
+                                tortoise
+                                <span class="tooltip">A land-dwelling reptile with a hard shell</span>
+                            </span>
+                            in a zoo or a reptile park. However, not many would have seen its 
+                            <span class="interactive-word">
+                                marine
+                                <span class="tooltip">Related to or found in the sea</span>
+                            </span>
+                            relative, the sea turtle. This is not surprising, since these reptiles spend almost their entire life in the sea.
+                        </p>
+                    </div>
+                    <div class="w-1/3">
+                        <div id="turtleAnimation"></div>
+                    </div>
+                </div>
+
+                <button class="nav-button" onclick="completeLevel()">
+                    Continue to Next Level
+                    <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/>
+                    </svg>
+                </button>
+            </div>
+        `;
+
         // Update the level2Content to include the continue button
         const level2Content = `
             <div class="level-header">
