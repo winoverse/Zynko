@@ -491,6 +491,36 @@
         .image-container:hover img {
             transform: scale(1.05);
         }
+
+        /* Add styles for the back button */
+        .nav-buttons {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 2rem;
+        }
+
+        .back-button {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 20px;
+            background: #6B7280;
+            color: white;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .back-button:hover {
+            background: #4B5563;
+            transform: translateX(-5px);
+        }
+
+        .nav-button {
+            margin: 0;  /* Reset margin since it's now in a flex container */
+        }
     </style>
 </head>
 <body>
@@ -846,12 +876,20 @@
                     </div>
                 </div>
 
-                <button class="nav-button" onclick="completeLevel()">
-                    Continue to Next Level
-                    <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/>
-                    </svg>
-                </button>
+                <div class="nav-buttons">
+                    <button class="back-button" onclick="goBack()">
+                        <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 17l-5-5m0 0l5-5m-5 5h12"/>
+                        </svg>
+                        Go Back
+                    </button>
+                    <button class="nav-button" onclick="completeLevel()">
+                        Continue to Next Level
+                        <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/>
+                        </svg>
+                    </button>
+                </div>
             </div>
         `;
 
@@ -888,6 +926,15 @@
                             />
                         </div>
                     </div>
+                </div>
+
+                <div class="nav-buttons">
+                    <button class="back-button" onclick="goBack()">
+                        <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 17l-5-5m0 0l5-5m-5 5h12"/>
+                        </svg>
+                        Go Back
+                    </button>
                 </div>
             </div>
         `;
@@ -1013,6 +1060,43 @@
                 </button>
             </div>
         `;
+
+        // Add the goBack function
+        function goBack() {
+            const contentArea = document.getElementById('contentArea');
+            const levelContainer = document.querySelector('.level-container');
+            const currentLevel = parseInt(levelContainer.querySelector('.level-number').textContent);
+            
+            // Fade out current content
+            contentArea.style.opacity = '0';
+            contentArea.style.transform = 'translateY(-20px)';
+            
+            // After fade out, update content based on current level
+            setTimeout(() => {
+                switch(currentLevel) {
+                    case 2:
+                        levelContainer.innerHTML = level1Content;
+                        // Reinitialize turtle animation for level 1
+                        document.getElementById('turtleAnimation').innerHTML = turtleHTML;
+                        initializeTurtleAnimations();
+                        break;
+                    case 3:
+                        levelContainer.innerHTML = level2Content;
+                        break;
+                    default:
+                        return;
+                }
+
+                const newContentArea = document.getElementById('contentArea');
+                
+                // Fade in new content
+                setTimeout(() => {
+                    newContentArea.style.opacity = '1';
+                    newContentArea.style.transform = 'translateY(0)';
+                    newContentArea.classList.add('visible');
+                }, 100);
+            }, 500);
+        }
     </script>
 </body>
 </html> 
