@@ -446,6 +446,23 @@
         .current-word {
             display: none;
         }
+
+        /* New styles */
+        .sound-on, .sound-off {
+            transition: all 0.3s ease;
+        }
+
+        .control-btn.muted .sound-on {
+            display: none;
+        }
+
+        .control-btn.muted .sound-off {
+            display: block;
+        }
+
+        .control-btn.muted {
+            background: #ff6b6b;
+        }
     </style>
 </head>
 <body>
@@ -755,13 +772,17 @@
             }
         }
 
-        // Add this to the turtleHTML constant after the water-container div
+        // Update the sound toggle button HTML with mute icon
         const controlsHTML = `
             <div class="controls-panel">
                 <button class="control-btn" id="soundToggle" title="Toggle Sound">
-                    <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg class="sound-on" width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
                             d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"/>
+                    </svg>
+                    <svg class="sound-off" width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="display: none;">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                            d="M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15zM17 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2"/>
                     </svg>
                 </button>
                 <button class="control-btn" id="readAloud" title="Read Aloud">
@@ -781,15 +802,47 @@
             const speechManager = new SpeechManager();
             document.body.insertAdjacentHTML('beforeend', controlsHTML);
 
-            // Sound toggle button
+            // Add the new styles
+            const styleSheet = document.createElement('style');
+            styleSheet.textContent = newStyles;
+            document.head.appendChild(styleSheet);
+
+            // Initialize sound state
+            let isMuted = false;
+
+            // Sound toggle button with improved functionality
             const soundToggle = document.getElementById('soundToggle');
             soundToggle.addEventListener('click', () => {
-                const isMuted = !sounds.splash?.muted;
+                isMuted = !isMuted;
+                
+                // Update button appearance
+                soundToggle.classList.toggle('muted', isMuted);
+                
+                // Update all audio elements
                 Object.values(sounds).forEach(sound => {
-                    if (sound) sound.muted = isMuted;
+                    if (sound) {
+                        sound.muted = isMuted;
+                    }
                 });
-                soundToggle.classList.toggle('active', !isMuted);
+
+                // Update speech synthesis
+                if (isMuted) {
+                    window.speechSynthesis.cancel();
+                }
+
+                // Store preference
+                localStorage.setItem('soundMuted', isMuted);
             });
+
+            // Load saved preference
+            const savedMuted = localStorage.getItem('soundMuted') === 'true';
+            if (savedMuted) {
+                isMuted = true;
+                soundToggle.classList.add('muted');
+                Object.values(sounds).forEach(sound => {
+                    if (sound) sound.muted = true;
+                });
+            }
 
             // Read aloud button
             const readAloud = document.getElementById('readAloud');
