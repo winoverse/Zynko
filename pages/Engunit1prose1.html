@@ -75,7 +75,7 @@
             position: relative;
             padding: 0 4px;
             transition: all 0.3s ease;
-            font-size: 1.75rem;
+            font-size: 1.75rem !important;
         }
 
         .interactive-word:hover {
@@ -422,7 +422,7 @@
         .text-lg {
             line-height: 1.6;
             position: relative;
-            font-size: 1.75rem;
+            font-size: 1.75rem !important;
             color: #333;
             margin-bottom: 1.5rem;
         }
@@ -611,6 +611,19 @@
 
         // Update the DOMContentLoaded event listener
         document.addEventListener('DOMContentLoaded', () => {
+            // Get the level 1 paragraph and update its style
+            const level1Text = document.querySelector('.text-lg');
+            if (level1Text) {
+                level1Text.style.fontSize = '1.75rem';
+                level1Text.style.lineHeight = '1.6';
+            }
+
+            // Update any interactive words in level 1
+            const interactiveWords = document.querySelectorAll('.interactive-word');
+            interactiveWords.forEach(word => {
+                word.style.fontSize = '1.75rem';
+            });
+
             // Initialize speech and controls
             const speechManager = new SpeechManager();
             document.body.insertAdjacentHTML('beforeend', controlsHTML);
