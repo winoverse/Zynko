@@ -75,6 +75,7 @@
             position: relative;
             padding: 0 2px;
             transition: all 0.3s ease;
+            font-size: 1.25rem;
         }
 
         .interactive-word:hover {
@@ -91,11 +92,12 @@
             padding: 8px 12px;
             border-radius: 6px;
             box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            font-size: 0.9em;
+            font-size: 1rem;
             white-space: nowrap;
             opacity: 0;
             visibility: hidden;
             transition: all 0.3s ease;
+            z-index: 100;
         }
 
         .interactive-word:hover .tooltip {
@@ -420,6 +422,8 @@
         .text-lg {
             line-height: 1.8;
             position: relative;
+            font-size: 1.25rem;
+            color: #333;
         }
 
         .word {
@@ -432,8 +436,9 @@
         .word.active {
             background: #FF9B3F;
             color: white;
-            padding: 2px 4px;
+            padding: 2px 6px;
             box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            border-radius: 4px;
         }
 
         /* Special handling for interactive words */
