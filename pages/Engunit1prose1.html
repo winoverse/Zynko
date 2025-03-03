@@ -671,6 +671,59 @@
             pointer-events: none;
             z-index: 1000;
         }
+
+        .progress-bar {
+            width: 100%;
+            height: 10px;
+            background: #eee;
+            border-radius: 5px;
+            margin-bottom: 2rem;
+            position: relative;
+        }
+
+        .progress {
+            height: 100%;
+            background: #FF9B3F;
+            border-radius: 5px;
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        .question-counter {
+            text-align: center;
+            margin-top: 0.5rem;
+            font-size: 1.1rem;
+            color: #666;
+        }
+
+        .feedback-overlay {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 4rem;
+            z-index: 1000;
+            animation: feedbackPop 1s ease-out;
+        }
+
+        @keyframes feedbackPop {
+            0% { transform: translate(-50%, -50%) scale(0); }
+            50% { transform: translate(-50%, -50%) scale(1.2); }
+            100% { transform: translate(-50%, -50%) scale(1); opacity: 0; }
+        }
+
+        .answer-summary {
+            margin: 1rem 0;
+            font-size: 1.2rem;
+        }
+
+        .correct-answers {
+            color: #2ECC71;
+        }
+
+        .incorrect-answers {
+            color: #E74C3C;
+        }
     </style>
 </head>
 <body>
@@ -1159,69 +1212,30 @@
 
             <div class="content-area" id="contentArea">
                 <div class="quiz-container">
-                    <p class="quiz-instruction mb-6" style="font-size: 1.5rem;">
-                        Put a (✓) for the correct and a (✗) for the incorrect statements.
-                    </p>
-                    
-                    <div class="quiz-items space-y-4">
-                        <div class="quiz-item" data-correct="true">
-                            <span class="statement">1. Turtles are different from tortoises.</span>
-                            <div class="answer-buttons">
-                                <button class="answer-btn" data-answer="true">✓</button>
-                                <button class="answer-btn" data-answer="false">✗</button>
-                            </div>
-                        </div>
-                        <div class="quiz-item" data-correct="true">
-                            <span class="statement">2. Turtles are sea animals.</span>
-                            <div class="answer-buttons">
-                                <button class="answer-btn" data-answer="true">✓</button>
-                                <button class="answer-btn" data-answer="false">✗</button>
-                            </div>
-                        </div>
-                        <div class="quiz-item" data-correct="true">
-                            <span class="statement">3. There are seven kinds of sea turtles in the world.</span>
-                            <div class="answer-buttons">
-                                <button class="answer-btn" data-answer="true">✓</button>
-                                <button class="answer-btn" data-answer="false">✗</button>
-                            </div>
-                        </div>
-                        <div class="quiz-item" data-correct="false">
-                            <span class="statement">4. Sea turtles are very small.</span>
-                            <div class="answer-buttons">
-                                <button class="answer-btn" data-answer="true">✓</button>
-                                <button class="answer-btn" data-answer="false">✗</button>
-                            </div>
-                        </div>
-                        <div class="quiz-item" data-correct="true">
-                            <span class="statement">5. Turtles come ashore to lay eggs.</span>
-                            <div class="answer-buttons">
-                                <button class="answer-btn" data-answer="true">✓</button>
-                                <button class="answer-btn" data-answer="false">✗</button>
-                            </div>
-                        </div>
-                        <div class="quiz-item" data-correct="false">
-                            <span class="statement">6. Sea turtles come to rest on land.</span>
-                            <div class="answer-buttons">
-                                <button class="answer-btn" data-answer="true">✓</button>
-                                <button class="answer-btn" data-answer="false">✗</button>
-                            </div>
-                        </div>
-                        <div class="quiz-item" data-correct="false">
-                            <span class="statement">7. Olive Ridleys are the only sea turtles seen on Indian shores.</span>
-                            <div class="answer-buttons">
-                                <button class="answer-btn" data-answer="true">✓</button>
-                                <button class="answer-btn" data-answer="false">✗</button>
-                            </div>
-                        </div>
+                    <div class="progress-bar">
+                        <div class="progress"></div>
+                        <div class="question-counter">Question <span id="currentQuestion">1</span>/7</div>
+                    </div>
+
+                    <div class="quiz-items">
+                        <!-- Questions will be inserted here one at a time -->
                     </div>
 
                     <div class="result-board" style="display: none;">
-                        <div class="result-animation"></div>
+                        <h2 class="result-title">Quiz Complete!</h2>
                         <div class="score-display">
-                            <h2 class="score-title">Your Score</h2>
                             <div class="score-number"><span id="score">0</span>/7</div>
-                            <div class="badges-container"></div>
+                            <div class="score-percentage">(<span id="percentage">0</span>%)</div>
                         </div>
+                        <div class="answer-summary">
+                            <div class="correct-answers">
+                                Correct Answers: <span id="correctCount">0</span>
+                            </div>
+                            <div class="incorrect-answers">
+                                Incorrect Answers: <span id="incorrectCount">0</span>
+                            </div>
+                        </div>
+                        <div class="badges-container"></div>
                         <div class="feedback-message"></div>
                         <button class="try-again-btn" onclick="resetQuiz()">Try Again</button>
                     </div>
@@ -1232,9 +1246,6 @@
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 17l-5-5m0 0l5-5m-5 5h12"/>
                             </svg>
                             Go Back
-                        </button>
-                        <button class="check-answers-btn" onclick="checkAnswers()">
-                            Check Answers
                         </button>
                     </div>
                 </div>
@@ -1518,74 +1529,129 @@
             }
         }
 
-        // Update the checkAnswers function
-        function checkAnswers() {
-            let score = 0;
-            const quizItems = document.querySelectorAll('.quiz-item');
-            const resultBoard = document.querySelector('.result-board');
-            const badgesContainer = document.querySelector('.badges-container');
-            const feedbackMessage = document.querySelector('.feedback-message');
+        // Quiz questions array
+        const quizQuestions = [
+            {
+                statement: "1. Turtles are different from tortoises.",
+                correct: true
+            },
+            {
+                statement: "2. Turtles are sea animals.",
+                correct: true
+            },
+            {
+                statement: "3. There are seven kinds of sea turtles in the world.",
+                correct: true
+            },
+            {
+                statement: "4. Sea turtles are very small.",
+                correct: false
+            },
+            {
+                statement: "5. Turtles come ashore to lay eggs.",
+                correct: true
+            },
+            {
+                statement: "6. Sea turtles come to rest on land.",
+                correct: false
+            },
+            {
+                statement: "7. Olive Ridleys are the only sea turtles seen on Indian shores.",
+                correct: false
+            }
+        ];
+
+        let currentQuestionIndex = 0;
+        let correctAnswers = 0;
+
+        function showQuestion(index) {
+            const quizItems = document.querySelector('.quiz-items');
+            const question = quizQuestions[index];
+            
+            quizItems.innerHTML = `
+                <div class="quiz-item" data-correct="${question.correct}">
+                    <span class="statement">${question.statement}</span>
+                    <div class="answer-buttons">
+                        <button class="answer-btn" onclick="checkAnswer(true)">✓</button>
+                        <button class="answer-btn" onclick="checkAnswer(false)">✗</button>
+                    </div>
+                </div>
+            `;
+
+            // Update progress bar
+            const progress = (index / quizQuestions.length) * 100;
+            document.querySelector('.progress').style.width = `${progress}%`;
+            document.getElementById('currentQuestion').textContent = index + 1;
+        }
+
+        function checkAnswer(userAnswer) {
+            const currentQuestion = quizQuestions[currentQuestionIndex];
+            const isCorrect = userAnswer === currentQuestion.correct;
             
             // Play sound effect
-            const successSound = new Audio('/sounds/success.mp3');
-            const failSound = new Audio('/sounds/fail.mp3');
-            
-            quizItems.forEach(item => {
-                const selectedBtn = item.querySelector('.answer-btn.selected');
-                if (selectedBtn) {
-                    const isCorrect = (selectedBtn.dataset.answer === 'true') === (item.dataset.correct === 'true');
-                    selectedBtn.classList.add(isCorrect ? 'correct' : 'incorrect');
-                    if (isCorrect) score++;
+            const sound = new Audio(isCorrect ? '/sounds/success.mp3' : '/sounds/fail.mp3');
+            sound.play();
+
+            // Show feedback
+            showFeedback(isCorrect);
+
+            if (isCorrect) correctAnswers++;
+
+            // Wait for feedback animation
+            setTimeout(() => {
+                currentQuestionIndex++;
+                
+                if (currentQuestionIndex < quizQuestions.length) {
+                    showQuestion(currentQuestionIndex);
+                } else {
+                    showFinalResults();
                 }
-            });
+            }, 1000);
+        }
 
-            // Calculate percentage
-            const percentage = (score / 7) * 100;
+        function showFeedback(isCorrect) {
+            const feedback = document.createElement('div');
+            feedback.className = 'feedback-overlay';
+            feedback.textContent = isCorrect ? '✓' : '✗';
+            feedback.style.color = isCorrect ? '#2ECC71' : '#E74C3C';
+            document.body.appendChild(feedback);
+            
+            setTimeout(() => feedback.remove(), 1000);
+        }
 
-            // Show result board with animation
+        function showFinalResults() {
+            const resultBoard = document.querySelector('.result-board');
+            const percentage = Math.round((correctAnswers / quizQuestions.length) * 100);
+            
+            document.getElementById('score').textContent = correctAnswers;
+            document.getElementById('percentage').textContent = percentage;
+            document.getElementById('correctCount').textContent = correctAnswers;
+            document.getElementById('incorrectCount').textContent = quizQuestions.length - correctAnswers;
+            
             resultBoard.style.display = 'block';
-            document.getElementById('score').textContent = score;
-
-            // Clear previous badges
-            badgesContainer.innerHTML = '';
-
-            // Add badges based on score
+            
             if (percentage === 100) {
-                badgesContainer.innerHTML = '<img src="/img/gold-badge.png" class="badge" alt="Gold Badge">';
-                feedbackMessage.textContent = 'Outstanding! Perfect score! 🌟';
-                successSound.play();
                 createCelebration();
-            } else if (percentage >= 80) {
-                badgesContainer.innerHTML = '<img src="/img/silver-badge.png" class="badge" alt="Silver Badge">';
-                feedbackMessage.textContent = 'Great job! Almost perfect! 🎉';
+                const successSound = new Audio('/sounds/success.mp3');
                 successSound.play();
-            } else if (percentage >= 60) {
-                badgesContainer.innerHTML = '<img src="/img/bronze-badge.png" class="badge" alt="Bronze Badge">';
-                feedbackMessage.textContent = 'Good effort! Keep practicing! 👍';
-                successSound.play();
-            } else {
-                badgesContainer.innerHTML = '<img src="/img/try-again-badge.png" class="badge" alt="Try Again Badge">';
-                feedbackMessage.textContent = 'Keep trying! You can do better! 💪';
-                failSound.play();
             }
         }
 
-        // Add function to reset quiz
-        function resetQuiz() {
-            const quizItems = document.querySelectorAll('.quiz-item');
+        function initializeQuiz() {
+            currentQuestionIndex = 0;
+            correctAnswers = 0;
+            showQuestion(0);
+            
             const resultBoard = document.querySelector('.result-board');
-            
-            quizItems.forEach(item => {
-                const selectedBtn = item.querySelector('.answer-btn.selected');
-                if (selectedBtn) {
-                    selectedBtn.classList.remove('selected', 'correct', 'incorrect');
-                }
-            });
-            
-            resultBoard.style.display = 'none';
+            if (resultBoard) {
+                resultBoard.style.display = 'none';
+            }
         }
 
-        // Update the createCelebration function
+        function resetQuiz() {
+            initializeQuiz();
+        }
+
         function createCelebration() {
             const celebration = document.createElement('div');
             celebration.className = 'celebration';
@@ -1648,36 +1714,6 @@
             }, 1000);
 
             setTimeout(() => celebration.remove(), 3000);
-        }
-
-        // Add this function before the completeLevel function
-        function initializeQuiz() {
-            const answerBtns = document.querySelectorAll('.answer-btn');
-            answerBtns.forEach(btn => {
-                btn.addEventListener('click', () => {
-                    // Remove selected class from sibling button
-                    const sibling = btn.parentElement.querySelector('.answer-btn.selected');
-                    if (sibling) sibling.classList.remove('selected');
-                    
-                    // Add selected class to clicked button
-                    btn.classList.add('selected');
-
-                    // Remove any existing correct/incorrect classes
-                    btn.classList.remove('correct', 'incorrect');
-                });
-            });
-
-            // Reset any previous quiz state
-            const resultBoard = document.querySelector('.result-board');
-            if (resultBoard) {
-                resultBoard.style.display = 'none';
-            }
-
-            // Initialize score display
-            const scoreDisplay = document.querySelector('.score-display');
-            if (scoreDisplay) {
-                scoreDisplay.style.display = 'none';
-            }
         }
     </script>
 </body>
