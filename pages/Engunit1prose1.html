@@ -658,6 +658,62 @@
             setTimeout(() => {
                 document.getElementById('contentArea').classList.add('visible');
             }, 500);
+
+            // Add turtle animations back
+            const turtle = document.getElementById('interactiveTurtle');
+            const container = document.querySelector('.water-container');
+            let isSwimmingFast = false;
+            let currentPattern = 0;
+            const patterns = ['swimming-pattern-1', 'swimming-pattern-2', 'swimming-pattern-3'];
+
+            // Cursor following
+            container.addEventListener('mousemove', (e) => {
+                const rect = container.getBoundingClientRect();
+                const x = e.clientX - rect.left - turtle.offsetWidth / 2;
+                const y = e.clientY - rect.top - turtle.offsetHeight / 2;
+
+                // Keep turtle within container bounds
+                const maxX = container.offsetWidth - turtle.offsetWidth;
+                const maxY = container.offsetHeight - turtle.offsetHeight;
+                const boundedX = Math.min(Math.max(0, x), maxX);
+                const boundedY = Math.min(Math.max(0, y), maxY);
+
+                turtle.style.transform = `translate(${boundedX}px, ${boundedY}px)`;
+            });
+
+            // Click to dive with sound
+            turtle.addEventListener('click', () => {
+                if (!turtle.classList.contains('diving')) {
+                    playSound('splash');
+                    turtle.classList.add('diving');
+                    createRippleEffect(event);
+                    setTimeout(() => {
+                        turtle.classList.remove('diving');
+                    }, 2000);
+                }
+            });
+
+            // Double click to change swimming pattern
+            turtle.addEventListener('dblclick', () => {
+                // Remove current pattern
+                patterns.forEach(pattern => turtle.classList.remove(pattern));
+                
+                // Add next pattern
+                currentPattern = (currentPattern + 1) % patterns.length;
+                turtle.classList.add(patterns[currentPattern]);
+                
+                playSound('swim');
+                updateBubbleSpeed(currentPattern === 1); // Fast bubbles for pattern 1
+            });
+
+            // Create bubbles periodically
+            setInterval(() => {
+                if (Math.random() > 0.7) { // 30% chance to create bubble
+                    createBubble(turtle.offsetLeft + turtle.offsetWidth / 2, 
+                                turtle.offsetTop + turtle.offsetHeight / 2);
+                    playSound('bubble');
+                }
+            }, 1000);
         });
 
         function createBubble(x, y) {
