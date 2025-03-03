@@ -521,6 +521,83 @@
         .nav-button {
             margin: 0;  /* Reset margin since it's now in a flex container */
         }
+
+        /* Add these styles to your existing CSS */
+        .quiz-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .quiz-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem;
+            background: #f8f9fa;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+        }
+
+        .statement {
+            font-size: 1.25rem;
+            color: #333;
+            flex: 1;
+        }
+
+        .answer-buttons {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .answer-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: 2px solid #FF9B3F;
+            background: white;
+            color: #FF9B3F;
+            font-size: 1.25rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .answer-btn:hover {
+            background: #FF9B3F;
+            color: white;
+        }
+
+        .answer-btn.selected {
+            background: #FF9B3F;
+            color: white;
+        }
+
+        .answer-btn.correct.selected {
+            background: #2ECC71;
+            border-color: #2ECC71;
+            color: white;
+        }
+
+        .answer-btn.incorrect.selected {
+            background: #E74C3C;
+            border-color: #E74C3C;
+            color: white;
+        }
+
+        .check-answers-btn {
+            background: #FF9B3F;
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 25px;
+            border: none;
+            cursor: pointer;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+        }
+
+        .check-answers-btn:hover {
+            background: #ff8921;
+            transform: translateY(-2px);
+        }
     </style>
 </head>
 <body>
@@ -838,7 +915,10 @@
                     case 2:
                         levelContainer.innerHTML = level3Content;
                         break;
-                    // Add more cases for additional levels
+                    case 3:
+                        levelContainer.innerHTML = level4Content;
+                        initializeQuiz();
+                        break;
                     default:
                         console.log('All levels completed!');
                         return;
@@ -986,6 +1066,96 @@
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 17l-5-5m0 0l5-5m-5 5h12"/>
                         </svg>
                         Go Back
+                    </button>
+                </div>
+            </div>
+        `;
+
+        // Add level 4 content with interactive quiz
+        const level4Content = `
+            <div class="level-header">
+                <div class="level-number">4</div>
+                <div class="level-title">Check Your Understanding</div>
+            </div>
+
+            <div class="content-area" id="contentArea">
+                <div class="quiz-container">
+                    <p class="quiz-instruction mb-6" style="font-size: 1.5rem;">
+                        Put a (✓) for the correct and a (✗) for the incorrect statements.
+                    </p>
+                    
+                    <div class="quiz-items space-y-4">
+                        <div class="quiz-item">
+                            <span class="statement">1. Turtles are different from tortoises.</span>
+                            <div class="answer-buttons">
+                                <button class="answer-btn correct" data-answer="true">✓</button>
+                                <button class="answer-btn" data-answer="false">✗</button>
+                            </div>
+                        </div>
+
+                        <div class="quiz-item">
+                            <span class="statement">2. Turtles are sea animals.</span>
+                            <div class="answer-buttons">
+                                <button class="answer-btn correct" data-answer="true">✓</button>
+                                <button class="answer-btn" data-answer="false">✗</button>
+                            </div>
+                        </div>
+
+                        <div class="quiz-item">
+                            <span class="statement">3. There are seven kinds of sea turtles in the world.</span>
+                            <div class="answer-buttons">
+                                <button class="answer-btn correct" data-answer="true">✓</button>
+                                <button class="answer-btn" data-answer="false">✗</button>
+                            </div>
+                        </div>
+
+                        <div class="quiz-item">
+                            <span class="statement">4. Sea turtles are very small.</span>
+                            <div class="answer-buttons">
+                                <button class="answer-btn" data-answer="true">✓</button>
+                                <button class="answer-btn correct" data-answer="false">✗</button>
+                            </div>
+                        </div>
+
+                        <div class="quiz-item">
+                            <span class="statement">5. Turtles come ashore to lay eggs.</span>
+                            <div class="answer-buttons">
+                                <button class="answer-btn correct" data-answer="true">✓</button>
+                                <button class="answer-btn" data-answer="false">✗</button>
+                            </div>
+                        </div>
+
+                        <div class="quiz-item">
+                            <span class="statement">6. Sea turtles come to rest on land.</span>
+                            <div class="answer-buttons">
+                                <button class="answer-btn" data-answer="true">✓</button>
+                                <button class="answer-btn correct" data-answer="false">✗</button>
+                            </div>
+                        </div>
+
+                        <div class="quiz-item">
+                            <span class="statement">7. Olive Ridleys are the only sea turtles seen on Indian shores.</span>
+                            <div class="answer-buttons">
+                                <button class="answer-btn" data-answer="true">✓</button>
+                                <button class="answer-btn correct" data-answer="false">✗</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="score-display mt-6" style="display: none;">
+                        <p class="text-xl">Your Score: <span id="score">0</span>/7</p>
+                    </div>
+                </div>
+
+                <div class="nav-buttons mt-8">
+                    <button class="back-button" onclick="goBack()">
+                        <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 17l-5-5m0 0l5-5m-5 5h12"/>
+                        </svg>
+                        Go Back
+                    </button>
+                    <button class="check-answers-btn" onclick="checkAnswers()">
+                        Check Answers
                     </button>
                 </div>
             </div>
@@ -1151,6 +1321,19 @@
                             }, 50);
                         }
                         break;
+                    case 4:
+                        levelContainer.innerHTML = level3Content;
+                        // Initialize level 3 content
+                        const newContentArea2 = document.getElementById('contentArea');
+                        if (newContentArea2) {
+                            newContentArea2.style.opacity = '0';
+                            setTimeout(() => {
+                                newContentArea2.style.opacity = '1';
+                                newContentArea2.style.transform = 'translateY(0)';
+                                newContentArea2.classList.add('visible');
+                            }, 50);
+                        }
+                        break;
                     default:
                         return;
                 }
@@ -1253,6 +1436,42 @@
             if (container && container.dataset.bubbleInterval) {
                 clearInterval(parseInt(container.dataset.bubbleInterval));
             }
+        }
+
+        // Add this function to handle answer checking
+        function checkAnswers() {
+            let score = 0;
+            const quizItems = document.querySelectorAll('.quiz-item');
+            
+            quizItems.forEach(item => {
+                const selectedBtn = item.querySelector('.answer-btn.selected');
+                if (selectedBtn) {
+                    const isCorrect = selectedBtn.classList.contains('correct');
+                    selectedBtn.classList.add(isCorrect ? 'correct' : 'incorrect');
+                    if (isCorrect) score++;
+                }
+            });
+
+            // Show score
+            const scoreDisplay = document.querySelector('.score-display');
+            const scoreElement = document.getElementById('score');
+            scoreDisplay.style.display = 'block';
+            scoreElement.textContent = score;
+        }
+
+        // Add this function to initialize the quiz
+        function initializeQuiz() {
+            const answerBtns = document.querySelectorAll('.answer-btn');
+            answerBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    // Remove selected class from sibling button
+                    const sibling = btn.parentElement.querySelector('.answer-btn.selected');
+                    if (sibling) sibling.classList.remove('selected');
+                    
+                    // Add selected class to clicked button
+                    btn.classList.add('selected');
+                });
+            });
         }
     </script>
 </body>
