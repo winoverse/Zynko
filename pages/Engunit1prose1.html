@@ -463,6 +463,10 @@
         .control-btn.muted {
             background: #ff6b6b;
         }
+
+        .control-btn.active {
+            background: #2E8B57;
+        }
     </style>
 </head>
 <body>
@@ -558,8 +562,95 @@
             </div>
         `;
 
-        // Initialize animations and interactions
+        // Add this before the DOMContentLoaded event listener
+        const newStyles = `
+            .sound-on, .sound-off {
+                transition: all 0.3s ease;
+            }
+
+            .control-btn.muted .sound-on {
+                display: none;
+            }
+
+            .control-btn.muted .sound-off {
+                display: block;
+            }
+
+            .control-btn.muted {
+                background: #ff6b6b;
+            }
+
+            .control-btn.active {
+                background: #2E8B57;
+            }
+        `;
+
+        // Update the DOMContentLoaded event listener
         document.addEventListener('DOMContentLoaded', () => {
+            // Initialize speech and controls
+            const speechManager = new SpeechManager();
+            document.body.insertAdjacentHTML('beforeend', controlsHTML);
+
+            // Add the new styles
+            const styleSheet = document.createElement('style');
+            styleSheet.textContent = newStyles;
+            document.head.appendChild(styleSheet);
+
+            // Initialize sound state
+            let isMuted = false;
+
+            // Sound toggle button with improved functionality
+            const soundToggle = document.getElementById('soundToggle');
+            soundToggle.addEventListener('click', () => {
+                isMuted = !isMuted;
+                
+                // Update button appearance
+                soundToggle.classList.toggle('muted', isMuted);
+                
+                // Update all audio elements
+                Object.values(sounds).forEach(sound => {
+                    if (sound) {
+                        sound.muted = isMuted;
+                    }
+                });
+
+                // Update speech synthesis
+                if (isMuted) {
+                    window.speechSynthesis.cancel();
+                }
+
+                // Store preference
+                localStorage.setItem('soundMuted', isMuted);
+            });
+
+            // Load saved preference
+            const savedMuted = localStorage.getItem('soundMuted') === 'true';
+            if (savedMuted) {
+                isMuted = true;
+                soundToggle.classList.add('muted');
+                Object.values(sounds).forEach(sound => {
+                    if (sound) sound.muted = true;
+                });
+            }
+
+            // Read aloud button
+            const readAloud = document.getElementById('readAloud');
+            readAloud.addEventListener('click', () => {
+                readAloud.classList.toggle('active');
+                document.querySelector('.text-lg').classList.toggle('reading-highlight');
+                
+                // If already speaking, this will stop it
+                if (speechManager.speaking) {
+                    readAloud.classList.remove('active');
+                    document.querySelector('.text-lg').classList.remove('reading-highlight');
+                    window.speechSynthesis.cancel();
+                    speechManager.speaking = false;
+                    return;
+                }
+                
+                speechManager.speak();
+            });
+
             // Replace the animation container content
             document.getElementById('turtleAnimation').innerHTML = turtleHTML;
 
@@ -567,61 +658,6 @@
             setTimeout(() => {
                 document.getElementById('contentArea').classList.add('visible');
             }, 500);
-
-            const turtle = document.getElementById('interactiveTurtle');
-            const container = document.querySelector('.water-container');
-            let isSwimmingFast = false;
-            let currentPattern = 0;
-            const patterns = ['swimming-pattern-1', 'swimming-pattern-2', 'swimming-pattern-3'];
-
-            // Cursor following
-            container.addEventListener('mousemove', (e) => {
-                const rect = container.getBoundingClientRect();
-                const x = e.clientX - rect.left - turtle.offsetWidth / 2;
-                const y = e.clientY - rect.top - turtle.offsetHeight / 2;
-
-                // Keep turtle within container bounds
-                const maxX = container.offsetWidth - turtle.offsetWidth;
-                const maxY = container.offsetHeight - turtle.offsetHeight;
-                const boundedX = Math.min(Math.max(0, x), maxX);
-                const boundedY = Math.min(Math.max(0, y), maxY);
-
-                turtle.style.transform = `translate(${boundedX}px, ${boundedY}px)`;
-            });
-
-            // Click to dive with sound
-            turtle.addEventListener('click', () => {
-                if (!turtle.classList.contains('diving')) {
-                    playSound('splash');
-                    turtle.classList.add('diving');
-                    createRippleEffect(event);
-                    setTimeout(() => {
-                        turtle.classList.remove('diving');
-                    }, 2000);
-                }
-            });
-
-            // Double click to change swimming pattern
-            turtle.addEventListener('dblclick', () => {
-                // Remove current pattern
-                patterns.forEach(pattern => turtle.classList.remove(pattern));
-                
-                // Add next pattern
-                currentPattern = (currentPattern + 1) % patterns.length;
-                turtle.classList.add(patterns[currentPattern]);
-                
-                playSound('swim');
-                updateBubbleSpeed(currentPattern === 1); // Fast bubbles for pattern 1
-            });
-
-            // Create bubbles periodically
-            setInterval(() => {
-                if (Math.random() > 0.7) { // 30% chance to create bubble
-                    createBubble(turtle.offsetLeft + turtle.offsetWidth / 2, 
-                                turtle.offsetTop + turtle.offsetHeight / 2);
-                    playSound('bubble');
-                }
-            }, 1000);
         });
 
         function createBubble(x, y) {
@@ -793,73 +829,6 @@
                 </button>
             </div>
         `;
-
-        // Add these event listeners in the DOMContentLoaded section
-        document.addEventListener('DOMContentLoaded', () => {
-            // ... existing code ...
-
-            // Initialize speech and controls
-            const speechManager = new SpeechManager();
-            document.body.insertAdjacentHTML('beforeend', controlsHTML);
-
-            // Add the new styles
-            const styleSheet = document.createElement('style');
-            styleSheet.textContent = newStyles;
-            document.head.appendChild(styleSheet);
-
-            // Initialize sound state
-            let isMuted = false;
-
-            // Sound toggle button with improved functionality
-            const soundToggle = document.getElementById('soundToggle');
-            soundToggle.addEventListener('click', () => {
-                isMuted = !isMuted;
-                
-                // Update button appearance
-                soundToggle.classList.toggle('muted', isMuted);
-                
-                // Update all audio elements
-                Object.values(sounds).forEach(sound => {
-                    if (sound) {
-                        sound.muted = isMuted;
-                    }
-                });
-
-                // Update speech synthesis
-                if (isMuted) {
-                    window.speechSynthesis.cancel();
-                }
-
-                // Store preference
-                localStorage.setItem('soundMuted', isMuted);
-            });
-
-            // Load saved preference
-            const savedMuted = localStorage.getItem('soundMuted') === 'true';
-            if (savedMuted) {
-                isMuted = true;
-                soundToggle.classList.add('muted');
-                Object.values(sounds).forEach(sound => {
-                    if (sound) sound.muted = true;
-                });
-            }
-
-            // Read aloud button
-            const readAloud = document.getElementById('readAloud');
-            readAloud.addEventListener('click', () => {
-                const text = document.querySelector('.text-lg').textContent;
-                readAloud.classList.toggle('active');
-                document.querySelector('.text-lg').classList.toggle('reading-highlight');
-                
-                // If already speaking, this will stop it
-                if (speechManager.speaking) {
-                    readAloud.classList.remove('active');
-                    document.querySelector('.text-lg').classList.remove('reading-highlight');
-                }
-                
-                speechManager.speak(text);
-            });
-        });
     </script>
 </body>
 </html> 
