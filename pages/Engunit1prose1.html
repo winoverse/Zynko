@@ -449,6 +449,21 @@
             opacity: 1;
             background: rgba(255, 155, 63, 0.2);
         }
+
+        /* Update the highlighting styles */
+        .highlight-word {
+            background-color: #FF9B3F;
+            color: white;
+            padding: 2px 4px;
+            border-radius: 3px;
+            display: inline;
+            margin: 0 1px;
+            transition: all 0.3s ease;
+        }
+
+        .interactive-word .highlight-word {
+            background-color: #2E8B57;
+        }
     </style>
 </head>
 <body>
@@ -675,32 +690,45 @@
                 const container = document.querySelector('.text-lg');
                 const originalHTML = container.innerHTML;
 
-                // Extract only readable text and create word mapping
-                const textNodes = [];
-                const words = [];
+                // Create a temporary container to work with the text
+                const tempContainer = container.cloneNode(true);
                 
-                function extractText(node) {
-                    if (node.nodeType === 3) { // Text node
-                        const nodeWords = node.textContent.trim().split(/\s+/);
-                        nodeWords.forEach(word => {
-                            if (word) {
-                                words.push(word);
-                                textNodes.push({
-                                    node: node,
-                                    word: word
-                                });
-                            }
+                // Remove tooltips from the clone
+                tempContainer.querySelectorAll('.tooltip').forEach(tooltip => tooltip.remove());
+
+                // Get the clean text for speech
+                const speechText = tempContainer.textContent.trim();
+
+                // Prepare the text for highlighting while preserving interactive words
+                const words = [];
+                const processTextNode = (node) => {
+                    const text = node.textContent.trim();
+                    if (!text) return;
+
+                    const parent = node.parentElement;
+                    if (parent.classList.contains('tooltip')) return;
+
+                    const wordArray = text.split(/\s+/);
+                    wordArray.forEach(word => {
+                        if (word) words.push({
+                            text: word,
+                            isInteractive: parent.classList.contains('interactive-word')
                         });
-                    } else if (node.nodeType === 1) { // Element node
-                        if (node.classList.contains('tooltip')) return; // Skip tooltips
-                        Array.from(node.childNodes).forEach(child => extractText(child));
-                    }
+                    });
+                };
+
+                // Process all text nodes
+                const walker = document.createTreeWalker(
+                    container,
+                    NodeFilter.SHOW_TEXT,
+                    null,
+                    false
+                );
+
+                let node;
+                while (node = walker.nextNode()) {
+                    processTextNode(node);
                 }
-
-                extractText(container);
-
-                // Create speech text
-                const speechText = words.join(' ');
 
                 // Create utterance
                 const utterance = new SpeechSynthesisUtterance(speechText);
@@ -711,25 +739,31 @@
                 let currentIndex = 0;
 
                 utterance.onboundary = (event) => {
-                    if (event.name === 'word') {
+                    if (event.name === 'word' && words[currentIndex]) {
                         // Remove previous highlights
-                        container.querySelectorAll('.current-word').forEach(el => {
-                            el.classList.remove('current-word');
+                        container.querySelectorAll('.highlight-word').forEach(el => {
+                            el.classList.remove('highlight-word');
                         });
 
-                        // Add highlight to current word
-                        if (textNodes[currentIndex]) {
-                            const parentNode = textNodes[currentIndex].node.parentNode;
-                            const wordSpan = document.createElement('span');
-                            wordSpan.className = 'current-word';
-                            wordSpan.textContent = textNodes[currentIndex].word;
-                            
-                            if (parentNode.classList.contains('interactive-word')) {
-                                parentNode.style.color = 'white';
+                        const word = words[currentIndex];
+                        const textNodes = Array.from(container.childNodes);
+                        
+                        // Find and highlight the current word
+                        textNodes.forEach(node => {
+                            if (node.nodeType === Node.TEXT_NODE) {
+                                const text = node.textContent;
+                                if (text.includes(word.text)) {
+                                    const span = document.createElement('span');
+                                    span.className = 'highlight-word';
+                                    span.textContent = word.text;
+                                    node.parentNode.insertBefore(span, node);
+                                    
+                                    // Update the text node to remove the highlighted word
+                                    node.textContent = text.replace(word.text, '');
+                                }
                             }
-                            
-                            textNodes[currentIndex].node.parentNode.insertBefore(wordSpan, textNodes[currentIndex].node);
-                        }
+                        });
+
                         currentIndex++;
                     }
                 };
