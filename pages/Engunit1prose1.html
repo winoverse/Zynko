@@ -424,45 +424,27 @@
 
         .word {
             display: inline;
-            padding: 2px 1px;
+            padding: 2px;
             border-radius: 3px;
             transition: all 0.3s ease;
-            position: relative;
         }
 
-        .current-word {
+        .word.active {
             background: #FF9B3F;
             color: white;
             padding: 2px 4px;
-            display: inline;
-            position: relative;
-            transform: none;
-            box-shadow: 0 0 0 2px #FF9B3F;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
         }
 
-        .reading-highlight .word {
-            opacity: 0.7;
-            transition: all 0.3s ease;
+        /* Special handling for interactive words */
+        .interactive-word .word.active {
+            background: #2E8B57;
         }
 
-        .reading-highlight .current-word {
-            opacity: 1;
-            background: rgba(255, 155, 63, 0.2);
-        }
-
-        /* Update the highlighting styles */
-        .highlight-word {
-            background-color: #FF9B3F;
-            color: white;
-            padding: 2px 4px;
-            border-radius: 3px;
-            display: inline;
-            margin: 0 1px;
-            transition: all 0.3s ease;
-        }
-
-        .interactive-word .highlight-word {
-            background-color: #2E8B57;
+        /* Remove old styles that might conflict */
+        .highlight-word,
+        .current-word {
+            display: none;
         }
     </style>
 </head>
@@ -690,47 +672,51 @@
                 const container = document.querySelector('.text-lg');
                 const originalHTML = container.innerHTML;
 
-                // Create a temporary container to work with the text
-                const tempContainer = container.cloneNode(true);
-                
-                // Remove tooltips from the clone
-                tempContainer.querySelectorAll('.tooltip').forEach(tooltip => tooltip.remove());
+                // First, wrap all words in spans while preserving interactive elements
+                const wrapWords = (node) => {
+                    if (node.nodeType === Node.TEXT_NODE) {
+                        const words = node.textContent.trim().split(/\s+/);
+                        if (words.length === 0) return node;
 
-                // Get the clean text for speech
-                const speechText = tempContainer.textContent.trim();
-
-                // Prepare the text for highlighting while preserving interactive words
-                const words = [];
-                const processTextNode = (node) => {
-                    const text = node.textContent.trim();
-                    if (!text) return;
-
-                    const parent = node.parentElement;
-                    if (parent.classList.contains('tooltip')) return;
-
-                    const wordArray = text.split(/\s+/);
-                    wordArray.forEach(word => {
-                        if (word) words.push({
-                            text: word,
-                            isInteractive: parent.classList.contains('interactive-word')
+                        const fragment = document.createDocumentFragment();
+                        words.forEach((word, i) => {
+                            if (word) {
+                                const span = document.createElement('span');
+                                span.className = 'word';
+                                span.textContent = word;
+                                fragment.appendChild(span);
+                                if (i < words.length - 1) {
+                                    fragment.appendChild(document.createTextNode(' '));
+                                }
+                            }
                         });
-                    });
+                        return fragment;
+                    }
+
+                    if (node.nodeType === Node.ELEMENT_NODE) {
+                        if (node.classList.contains('tooltip')) return node;
+                        
+                        const clone = node.cloneNode(false);
+                        Array.from(node.childNodes).forEach(child => {
+                            clone.appendChild(wrapWords(child));
+                        });
+                        return clone;
+                    }
+
+                    return node;
                 };
 
-                // Process all text nodes
-                const walker = document.createTreeWalker(
-                    container,
-                    NodeFilter.SHOW_TEXT,
-                    null,
-                    false
-                );
+                // Process the content
+                const processedContainer = container.cloneNode(false);
+                Array.from(container.childNodes).forEach(child => {
+                    processedContainer.appendChild(wrapWords(child));
+                });
+                container.replaceWith(processedContainer);
 
-                let node;
-                while (node = walker.nextNode()) {
-                    processTextNode(node);
-                }
+                // Get clean text for speech
+                const speechText = processedContainer.textContent.trim();
+                const words = Array.from(processedContainer.querySelectorAll('.word'));
 
-                // Create utterance
                 const utterance = new SpeechSynthesisUtterance(speechText);
                 utterance.rate = 0.9;
                 utterance.pitch = 1;
@@ -740,41 +726,24 @@
 
                 utterance.onboundary = (event) => {
                     if (event.name === 'word' && words[currentIndex]) {
-                        // Remove previous highlights
-                        container.querySelectorAll('.highlight-word').forEach(el => {
-                            el.classList.remove('highlight-word');
-                        });
-
-                        const word = words[currentIndex];
-                        const textNodes = Array.from(container.childNodes);
+                        // Remove previous highlight
+                        words.forEach(word => word.classList.remove('active'));
                         
-                        // Find and highlight the current word
-                        textNodes.forEach(node => {
-                            if (node.nodeType === Node.TEXT_NODE) {
-                                const text = node.textContent;
-                                if (text.includes(word.text)) {
-                                    const span = document.createElement('span');
-                                    span.className = 'highlight-word';
-                                    span.textContent = word.text;
-                                    node.parentNode.insertBefore(span, node);
-                                    
-                                    // Update the text node to remove the highlighted word
-                                    node.textContent = text.replace(word.text, '');
-                                }
-                            }
-                        });
-
+                        // Add highlight to current word
+                        words[currentIndex].classList.add('active');
                         currentIndex++;
                     }
                 };
 
                 utterance.onend = () => {
                     this.speaking = false;
+                    processedContainer.replaceWith(container);
                     container.innerHTML = originalHTML;
                 };
 
                 utterance.onerror = () => {
                     this.speaking = false;
+                    processedContainer.replaceWith(container);
                     container.innerHTML = originalHTML;
                 };
 
