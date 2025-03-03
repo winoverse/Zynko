@@ -675,19 +675,21 @@
                 const container = document.querySelector('.text-lg');
                 const originalHTML = container.innerHTML;
 
+                // Get clean text for speech (without HTML tags and class names)
+                const tempDiv = document.createElement('div');
+                tempDiv.innerHTML = originalHTML;
+                const textForSpeech = tempDiv.textContent.trim();
+
                 // Preserve the original structure while adding word spans
+                const words = textForSpeech.split(/\s+/);
                 const processedHTML = originalHTML.replace(
-                    /(<span class="interactive-word">.*?<\/span>)|(\S+)/g,
-                    (match, interactive, word) => {
-                        if (interactive) return interactive; // Keep interactive words intact
-                        if (word) return `<span class="word">${word}</span>`; // Wrap other words
+                    />[^<]+</g,
+                    match => {
+                        return match.replace(/\S+/g, word => `<span class="word">${word}</span>`);
                     }
                 );
 
                 container.innerHTML = processedHTML;
-
-                // Get clean text for speech
-                const textForSpeech = container.textContent.trim();
 
                 const utterance = new SpeechSynthesisUtterance(textForSpeech);
                 utterance.rate = 0.9;
@@ -695,13 +697,13 @@
                 utterance.lang = 'en-US';
 
                 let wordIndex = 0;
-                const words = container.querySelectorAll('.word');
+                const wordElements = container.querySelectorAll('.word');
 
                 utterance.onboundary = (event) => {
                     if (event.name === 'word') {
-                        words.forEach(word => word.classList.remove('current-word'));
-                        if (words[wordIndex]) {
-                            words[wordIndex].classList.add('current-word');
+                        wordElements.forEach(word => word.classList.remove('current-word'));
+                        if (wordElements[wordIndex]) {
+                            wordElements[wordIndex].classList.add('current-word');
                         }
                         wordIndex++;
                     }
