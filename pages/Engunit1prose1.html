@@ -672,7 +672,13 @@
                 const container = document.querySelector('.text-lg');
                 const originalHTML = container.innerHTML;
 
-                // First, wrap all words in spans while preserving interactive elements
+                // First, remove tooltips from speech text
+                const tempDiv = document.createElement('div');
+                tempDiv.innerHTML = originalHTML;
+                tempDiv.querySelectorAll('.tooltip').forEach(tooltip => tooltip.remove());
+                const cleanText = tempDiv.textContent.trim();
+
+                // Wrap words in spans while preserving interactive elements
                 const wrapWords = (node) => {
                     if (node.nodeType === Node.TEXT_NODE) {
                         const words = node.textContent.trim().split(/\s+/);
@@ -694,11 +700,13 @@
                     }
 
                     if (node.nodeType === Node.ELEMENT_NODE) {
-                        if (node.classList.contains('tooltip')) return node;
+                        // Skip tooltip elements entirely
+                        if (node.classList.contains('tooltip')) return null;
                         
                         const clone = node.cloneNode(false);
                         Array.from(node.childNodes).forEach(child => {
-                            clone.appendChild(wrapWords(child));
+                            const processed = wrapWords(child);
+                            if (processed) clone.appendChild(processed);
                         });
                         return clone;
                     }
@@ -709,27 +717,22 @@
                 // Process the content
                 const processedContainer = container.cloneNode(false);
                 Array.from(container.childNodes).forEach(child => {
-                    processedContainer.appendChild(wrapWords(child));
+                    const processed = wrapWords(child);
+                    if (processed) processedContainer.appendChild(processed);
                 });
                 container.replaceWith(processedContainer);
 
-                // Get clean text for speech
-                const speechText = processedContainer.textContent.trim();
-                const words = Array.from(processedContainer.querySelectorAll('.word'));
-
-                const utterance = new SpeechSynthesisUtterance(speechText);
+                const utterance = new SpeechSynthesisUtterance(cleanText);
                 utterance.rate = 0.9;
                 utterance.pitch = 1;
                 utterance.lang = 'en-US';
 
+                const words = Array.from(processedContainer.querySelectorAll('.word'));
                 let currentIndex = 0;
 
                 utterance.onboundary = (event) => {
                     if (event.name === 'word' && words[currentIndex]) {
-                        // Remove previous highlight
                         words.forEach(word => word.classList.remove('active'));
-                        
-                        // Add highlight to current word
                         words[currentIndex].classList.add('active');
                         currentIndex++;
                     }
