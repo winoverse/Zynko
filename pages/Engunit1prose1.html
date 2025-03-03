@@ -641,6 +641,13 @@
 
         // Update the DOMContentLoaded event listener
         document.addEventListener('DOMContentLoaded', () => {
+            // Initialize turtle animation for level 1
+            const turtleContainer = document.getElementById('turtleAnimation');
+            if (turtleContainer) {
+                turtleContainer.innerHTML = turtleHTML;
+                initializeTurtleAnimations();
+            }
+
             // Initialize speech and controls
             const speechManager = new SpeechManager();
             document.body.insertAdjacentHTML('beforeend', controlsHTML);
@@ -704,9 +711,6 @@
                 
                 speechManager.speak();
             });
-
-            // Replace the animation container content
-            document.getElementById('turtleAnimation').innerHTML = turtleHTML;
 
             // Show content with animation
             setTimeout(() => {
@@ -773,6 +777,13 @@
         function createBubble(x, y) {
             const container = document.querySelector('.water-container');
             if (!container) return; // Guard clause if container doesn't exist
+            
+            const bubbles = container.querySelector('.bubbles');
+            if (!bubbles) {
+                const bubblesDiv = document.createElement('div');
+                bubblesDiv.className = 'bubbles';
+                container.appendChild(bubblesDiv);
+            }
 
             const bubble = document.createElement('div');
             bubble.className = 'bubble';
@@ -782,34 +793,7 @@
             bubble.style.height = bubble.style.width;
             bubble.style.animationDuration = '3s';
             
-            // Add bubble animation styles if not already present
-            if (!document.querySelector('#bubbleStyles')) {
-                const style = document.createElement('style');
-                style.id = 'bubbleStyles';
-                style.textContent = `
-                    .bubble {
-                        position: absolute;
-                        background: rgba(255, 255, 255, 0.6);
-                        border-radius: 50%;
-                        pointer-events: none;
-                        animation: float 3s ease-in forwards;
-                    }
-                    
-                    @keyframes float {
-                        0% {
-                            transform: translateY(0) scale(1);
-                            opacity: 0.8;
-                        }
-                        100% {
-                            transform: translateY(-100px) scale(1.5);
-                            opacity: 0;
-                        }
-                    }
-                `;
-                document.head.appendChild(style);
-            }
-
-            container.appendChild(bubble);
+            (bubbles || container.querySelector('.bubbles')).appendChild(bubble);
             setTimeout(() => bubble.remove(), 3000);
         }
 
@@ -1211,7 +1195,15 @@
             const turtle = document.getElementById('interactiveTurtle');
             const container = document.querySelector('.water-container');
             
-            if (!turtle || !container) return; // Guard clause if elements don't exist
+            if (!turtle || !container) {
+                console.log('Turtle animation elements not found');
+                return;
+            }
+
+            // Ensure the turtle is visible and properly positioned
+            turtle.style.display = 'block';
+            turtle.style.position = 'absolute';
+            turtle.style.transform = 'translate(0, 0)';
 
             let currentPattern = 0;
             const patterns = ['swimming-pattern-1', 'swimming-pattern-2', 'swimming-pattern-3'];
