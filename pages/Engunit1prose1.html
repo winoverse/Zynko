@@ -75,7 +75,7 @@
             position: relative;
             padding: 0 4px;
             transition: all 0.3s ease;
-            font-size: 1.75rem !important;
+            font-size: 1.75rem;
         }
 
         .interactive-word:hover {
@@ -422,7 +422,7 @@
         .text-lg {
             line-height: 1.6;
             position: relative;
-            font-size: 1.75rem !important;
+            font-size: 1.75rem;
             color: #333;
             margin-bottom: 1.5rem;
         }
@@ -497,8 +497,8 @@
     <div class="level-container">
         <div class="level-header">
             <div class="level-number">1</div>
-            <div class="level-title">Story Time: Sea Turtles</div>
-    </div>
+            <div class="level-title">Introduction to Sea Turtles</div>
+        </div>
 
         <div class="content-area" id="contentArea">
             <div class="flex gap-8">
@@ -508,28 +508,28 @@
                         <span class="interactive-word">
                             tortoise
                             <span class="tooltip">A land-dwelling reptile with a hard shell</span>
-                        </span> 
+                        </span>
                         in a zoo or a reptile park. However, not many would have seen its 
                         <span class="interactive-word">
                             marine
-                            <span class="tooltip">Found in or related to the sea</span>
-                        </span> 
-                        relative, the sea turtle.
-                        </p>
-                    </div>
-                <div class="w-1/3">
-                        <div id="turtleAnimation"></div>
-                    </div>
+                            <span class="tooltip">Related to or found in the sea</span>
+                        </span>
+                        relative, the sea turtle. This is not surprising, since these reptiles spend almost their entire life in the sea.
+                    </p>
                 </div>
+                <div class="w-1/3">
+                    <div id="turtleAnimation"></div>
+                </div>
+            </div>
 
             <button class="nav-button" onclick="completeLevel()">
                 I'm Ready to Learn More!
                 <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/>
-                        </svg>
-                    </button>
-                    </div>
-                </div>
+                </svg>
+            </button>
+        </div>
+    </div>
 
     <script>
         // Replace the sounds initialization with this error-handled version
@@ -611,19 +611,6 @@
 
         // Update the DOMContentLoaded event listener
         document.addEventListener('DOMContentLoaded', () => {
-            // Get the level 1 paragraph and update its style
-            const level1Text = document.querySelector('.text-lg');
-            if (level1Text) {
-                level1Text.style.fontSize = '1.75rem';
-                level1Text.style.lineHeight = '1.6';
-            }
-
-            // Update any interactive words in level 1
-            const interactiveWords = document.querySelectorAll('.interactive-word');
-            interactiveWords.forEach(word => {
-                word.style.fontSize = '1.75rem';
-            });
-
             // Initialize speech and controls
             const speechManager = new SpeechManager();
             document.body.insertAdjacentHTML('beforeend', controlsHTML);
@@ -792,14 +779,27 @@
         function completeLevel() {
             const contentArea = document.getElementById('contentArea');
             const levelContainer = document.querySelector('.level-container');
+            const currentLevel = parseInt(levelContainer.querySelector('.level-number').textContent);
             
             // Fade out current content
             contentArea.style.opacity = '0';
             contentArea.style.transform = 'translateY(-20px)';
             
-            // After fade out, update content
+            // After fade out, update content based on current level
             setTimeout(() => {
-                levelContainer.innerHTML = level2Content;
+                switch(currentLevel) {
+                    case 1:
+                        levelContainer.innerHTML = level2Content;
+                        break;
+                    case 2:
+                        levelContainer.innerHTML = level3Content;
+                        break;
+                    // Add more cases for additional levels
+                    default:
+                        console.log('All levels completed!');
+                        return;
+                }
+
                 const newContentArea = document.getElementById('contentArea');
                 
                 // Fade in new content
@@ -815,44 +815,73 @@
         const level2Content = `
             <div class="level-header">
                 <div class="level-number">2</div>
+                <div class="level-title">Sea Turtle Species</div>
+            </div>
+
+            <div class="content-area" id="contentArea">
+                <div class="flex gap-8">
+                    <div class="flex-1">
+                        <p class="text-lg leading-relaxed mb-4">
+                            There are seven species of marine or sea turtles in the world. Of them, five are found in India's coastal waters: the 
+                            <span class="interactive-word">
+                                Olive Ridley
+                                <span class="tooltip">The smallest species of sea turtle</span>
+                            </span>
+                            , the Hawksbill, the Green Sea Turtle, the Loggerhead and the 
+                            <span class="interactive-word">
+                                Leatherback
+                                <span class="tooltip">The largest species of sea turtle</span>
+                            </span>
+                            . Compared to most tortoises, sea turtles are huge. Even the smallest species, the Olive Ridley, weighs up to 35 kg when fully grown. The largest of them all, the Leatherback, grows to a length of 2.2m and each could weigh as much as 700 kg!
+                        </p>
+                    </div>
+                    <div class="w-1/3">
+                        <div class="image-container">
+                            <img 
+                                src="/img/sea-turtle-species.png" 
+                                alt="Different Species of Sea Turtles"
+                                class="rounded-lg shadow-lg hover:scale-105 transition-transform duration-300"
+                            />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+
+        // Add level 3 content
+        const level3Content = `
+            <div class="level-header">
+                <div class="level-number">3</div>
                 <div class="level-title">Sea Turtle Habitats</div>
             </div>
 
             <div class="content-area" id="contentArea">
                 <div class="flex gap-8">
                     <div class="flex-1">
-                        <p class="text-lg leading-relaxed mb-4" style="font-size: 1.75rem;">
-                            Sea turtles live in the 
+                        <p class="text-lg leading-relaxed mb-4">
+                            Sea turtles live their life entirely in the 
                             <span class="interactive-word">
-                                ocean
-                                <span class="tooltip">A large body of saltwater that covers most of Earth's surface</span>
+                                oceans
+                                <span class="tooltip">Large bodies of saltwater that cover most of Earth's surface</span>
                             </span>
-                            and come to the 
+                            . But they still have a connection with land – they must come ashore to lay eggs. Today, four of the sea turtle species mentioned above have become extremely rare in India. The Olive Ridleys, however, are still commonly seen 
                             <span class="interactive-word">
-                                shore
-                                <span class="tooltip">The land along the edge of a sea or ocean</span>
+                                nesting
+                                <span class="tooltip">Building nests and laying eggs</span>
                             </span>
-                            only to lay their eggs. These amazing creatures spend most of their lives swimming in warm tropical waters, diving deep to find food and surfacing to breathe.
+                            on sandy beaches all along our coasts.
                         </p>
                     </div>
                     <div class="w-1/3">
                         <div class="image-container">
                             <img 
-                                src="/img/sea-turtle-habitat.png" 
-                                alt="Sea Turtle in Ocean Habitat"
+                                src="/img/sea-turtle-nesting.png" 
+                                alt="Sea Turtle Nesting on Beach"
                                 class="rounded-lg shadow-lg hover:scale-105 transition-transform duration-300"
-                                style="width: 100%; height: auto;"
                             />
                         </div>
                     </div>
                 </div>
-
-                <button class="nav-button" onclick="completeLevel()">
-                    Continue to Next Level
-                    <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/>
-                    </svg>
-                </button>
             </div>
         `;
 
