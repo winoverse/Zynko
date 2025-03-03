@@ -753,15 +753,82 @@
         }
 
         function completeLevel() {
-            // Add completion animation
             const contentArea = document.getElementById('contentArea');
+            const levelContainer = document.querySelector('.level-container');
+            
+            // Fade out current content
             contentArea.style.opacity = '0';
             contentArea.style.transform = 'translateY(-20px)';
             
-            // Proceed to next level
-                    setTimeout(() => {
-                window.location.href = 'level2.html';
+            // After fade out, update content
+            setTimeout(() => {
+                levelContainer.innerHTML = level2Content;
+                const newContentArea = document.getElementById('contentArea');
+                
+                // Initialize turtle animation for level 2
+                document.getElementById('turtleAnimation').innerHTML = turtleHTML;
+                initializeTurtleAnimations();
+                
+                // Fade in new content
+                setTimeout(() => {
+                    newContentArea.style.opacity = '1';
+                    newContentArea.style.transform = 'translateY(0)';
+                    newContentArea.classList.add('visible');
+                }, 100);
             }, 500);
+        }
+
+        // Add this function to initialize turtle animations
+        function initializeTurtleAnimations() {
+            const turtle = document.getElementById('interactiveTurtle');
+            const container = document.querySelector('.water-container');
+            let isSwimmingFast = false;
+            let currentPattern = 0;
+            const patterns = ['swimming-pattern-1', 'swimming-pattern-2', 'swimming-pattern-3'];
+
+            // Cursor following
+            container.addEventListener('mousemove', (e) => {
+                const rect = container.getBoundingClientRect();
+                const x = e.clientX - rect.left - turtle.offsetWidth / 2;
+                const y = e.clientY - rect.top - turtle.offsetHeight / 2;
+
+                const maxX = container.offsetWidth - turtle.offsetWidth;
+                const maxY = container.offsetHeight - turtle.offsetHeight;
+                const boundedX = Math.min(Math.max(0, x), maxX);
+                const boundedY = Math.min(Math.max(0, y), maxY);
+
+                turtle.style.transform = `translate(${boundedX}px, ${boundedY}px)`;
+            });
+
+            // Click to dive
+            turtle.addEventListener('click', () => {
+                if (!turtle.classList.contains('diving')) {
+                    playSound('splash');
+                    turtle.classList.add('diving');
+                    createRippleEffect(event);
+                    setTimeout(() => turtle.classList.remove('diving'), 2000);
+                }
+            });
+
+            // Double click to change pattern
+            turtle.addEventListener('dblclick', () => {
+                patterns.forEach(pattern => turtle.classList.remove(pattern));
+                currentPattern = (currentPattern + 1) % patterns.length;
+                turtle.classList.add(patterns[currentPattern]);
+                playSound('swim');
+                updateBubbleSpeed(currentPattern === 1);
+            });
+
+            // Create bubbles
+            setInterval(() => {
+                if (Math.random() > 0.7) {
+                    createBubble(
+                        turtle.offsetLeft + turtle.offsetWidth / 2,
+                        turtle.offsetTop + turtle.offsetHeight / 2
+                    );
+                    playSound('bubble');
+                }
+            }, 1000);
         }
 
         // Update the SpeechManager class
@@ -881,6 +948,44 @@
                     <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
                             d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0-11V3m0 0a7 7 0 017 7c0 1.462-.446 2.816-1.208 3.937"/>
+                    </svg>
+                </button>
+            </div>
+        `;
+
+        // Add this after your existing content
+        const level2Content = `
+            <div class="level-header">
+                <div class="level-number">2</div>
+                <div class="level-title">Sea Turtle Habitats</div>
+            </div>
+
+            <div class="content-area" id="contentArea">
+                <div class="flex gap-8">
+                    <div class="flex-1">
+                        <p class="text-lg leading-relaxed mb-4">
+                            Sea turtles live in the 
+                            <span class="interactive-word">
+                                ocean
+                                <span class="tooltip">A large body of saltwater that covers most of Earth's surface</span>
+                            </span>
+                            and come to the 
+                            <span class="interactive-word">
+                                shore
+                                <span class="tooltip">The land along the edge of a sea or ocean</span>
+                            </span>
+                            only to lay their eggs.
+                        </p>
+                    </div>
+                    <div class="w-1/3">
+                        <div id="turtleAnimation"></div>
+                    </div>
+                </div>
+
+                <button class="nav-button" onclick="completeLevel()">
+                    Continue to Next Level
+                    <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/>
                     </svg>
                 </button>
             </div>
