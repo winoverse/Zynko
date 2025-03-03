@@ -385,8 +385,7 @@
 
         /* Read Aloud Highlight */
         .reading-highlight {
-            background: rgba(255, 155, 63, 0.2);
-            border-radius: 3px;
+            background: none;
         }
 
         /* Mobile Improvements */
@@ -418,33 +417,37 @@
         }
         
         /* Update these styles */
+        .text-lg {
+            line-height: 1.8;
+            position: relative;
+        }
+
         .word {
             display: inline;
-            padding: 0 2px;
+            padding: 2px 1px;
             border-radius: 3px;
-            transition: all 0.2s ease;
-            white-space: normal;
+            transition: all 0.3s ease;
+            position: relative;
         }
 
         .current-word {
             background: #FF9B3F;
             color: white;
-            transform: scale(1.1);
-            display: inline-block;
+            padding: 2px 4px;
+            display: inline;
+            position: relative;
+            transform: none;
+            box-shadow: 0 0 0 2px #FF9B3F;
         }
 
-        /* Add this to preserve text formatting */
-        .text-lg {
-            line-height: 1.8;
-        }
-
-        /* Update the existing reading-highlight class */
         .reading-highlight .word {
             opacity: 0.7;
+            transition: all 0.3s ease;
         }
 
         .reading-highlight .current-word {
             opacity: 1;
+            background: rgba(255, 155, 63, 0.2);
         }
     </style>
 </head>
@@ -669,41 +672,38 @@
                     return;
                 }
 
-                // Get the container and preserve interactive words
                 const container = document.querySelector('.text-lg');
                 const originalHTML = container.innerHTML;
 
-                // Get text without tooltips
-                const textWithoutTooltips = container.cloneNode(true);
-                textWithoutTooltips.querySelectorAll('.tooltip').forEach(tooltip => tooltip.remove());
-                const cleanText = textWithoutTooltips.textContent.trim();
-
-                // Split text and wrap words while preserving interactive words
-                const words = cleanText.split(' ').map((word, index) => {
-                    if (word.includes('interactive-word')) {
-                        return word; // Keep interactive words intact
+                // Preserve the original structure while adding word spans
+                const processedHTML = originalHTML.replace(
+                    /(<span class="interactive-word">.*?<\/span>)|(\S+)/g,
+                    (match, interactive, word) => {
+                        if (interactive) return interactive; // Keep interactive words intact
+                        if (word) return `<span class="word">${word}</span>`; // Wrap other words
                     }
-                    return `<span class="word" data-word-index="${index}">${word}</span>`;
-                }).join(' ');
+                );
 
-                container.innerHTML = words;
+                container.innerHTML = processedHTML;
 
-                const utterance = new SpeechSynthesisUtterance(cleanText);
+                // Get clean text for speech
+                const textForSpeech = container.textContent.trim();
+
+                const utterance = new SpeechSynthesisUtterance(textForSpeech);
                 utterance.rate = 0.9;
                 utterance.pitch = 1;
                 utterance.lang = 'en-US';
 
-                // Add word boundary event
+                let wordIndex = 0;
+                const words = container.querySelectorAll('.word');
+
                 utterance.onboundary = (event) => {
                     if (event.name === 'word') {
-                        document.querySelectorAll('.word').forEach(span => 
-                            span.classList.remove('current-word'));
-                        
-                        const wordIndex = Math.floor(event.charIndex / 4);
-                        const currentWord = document.querySelector(`[data-word-index="${wordIndex}"]`);
-                        if (currentWord) {
-                            currentWord.classList.add('current-word');
+                        words.forEach(word => word.classList.remove('current-word'));
+                        if (words[wordIndex]) {
+                            words[wordIndex].classList.add('current-word');
                         }
+                        wordIndex++;
                     }
                 };
 
