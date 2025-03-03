@@ -1099,7 +1099,7 @@
             </div>
         `;
 
-        // Add the goBack function
+        // Update the goBack function
         function goBack() {
             const contentArea = document.getElementById('contentArea');
             const levelContainer = document.querySelector('.level-container');
@@ -1114,24 +1114,62 @@
                 switch(currentLevel) {
                     case 2:
                         levelContainer.innerHTML = level1Content;
-                        // Reinitialize turtle animation for level 1
-                        document.getElementById('turtleAnimation').innerHTML = turtleHTML;
-                        initializeTurtleAnimations();
+                        // Initialize turtle animation for level 1
+                        const turtleContainer = document.getElementById('turtleAnimation');
+                        if (turtleContainer) {
+                            turtleContainer.innerHTML = turtleHTML;
+                            initializeTurtleAnimations();
+                        }
                         break;
                     case 3:
                         levelContainer.innerHTML = level2Content;
+                        // Initialize level 2 content
+                        const newContentArea = document.getElementById('contentArea');
+                        if (newContentArea) {
+                            newContentArea.style.opacity = '0';
+                            setTimeout(() => {
+                                newContentArea.style.opacity = '1';
+                                newContentArea.style.transform = 'translateY(0)';
+                                newContentArea.classList.add('visible');
+                            }, 50);
+                        }
                         break;
                     default:
                         return;
                 }
 
-                const newContentArea = document.getElementById('contentArea');
-                
-                // Fade in new content
+                // Initialize speech and controls for the new content
+                const speechManager = new SpeechManager();
+                document.body.insertAdjacentHTML('beforeend', controlsHTML);
+
+                // Initialize sound toggle
+                const soundToggle = document.getElementById('soundToggle');
+                if (soundToggle) {
+                    soundToggle.addEventListener('click', () => {
+                        const isMuted = !sounds.splash?.muted;
+                        Object.values(sounds).forEach(sound => {
+                            if (sound) sound.muted = isMuted;
+                        });
+                        soundToggle.classList.toggle('active', !isMuted);
+                    });
+                }
+
+                // Initialize read aloud button
+                const readAloud = document.getElementById('readAloud');
+                if (readAloud) {
+                    readAloud.addEventListener('click', () => {
+                        readAloud.classList.toggle('active');
+                        document.querySelector('.text-lg').classList.toggle('reading-highlight');
+                        speechManager.speak();
+                    });
+                }
+
+                // Show content with animation
+                const newContent = document.getElementById('contentArea');
                 setTimeout(() => {
-                    newContentArea.style.opacity = '1';
-                    newContentArea.style.transform = 'translateY(0)';
-                    newContentArea.classList.add('visible');
+                    newContent.style.opacity = '1';
+                    newContent.style.transform = 'translateY(0)';
+                    newContent.classList.add('visible');
                 }, 100);
             }, 500);
         }
