@@ -598,6 +598,76 @@
             background: #ff8921;
             transform: translateY(-2px);
         }
+
+        /* Add these styles for the result board */
+        .result-board {
+            text-align: center;
+            padding: 2rem;
+            margin-top: 2rem;
+            background: #fff;
+            border-radius: 1rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .score-title {
+            font-size: 1.5rem;
+            color: #333;
+            margin-bottom: 1rem;
+        }
+
+        .score-number {
+            font-size: 3rem;
+            font-weight: bold;
+            color: #FF9B3F;
+            margin-bottom: 1rem;
+        }
+
+        .badges-container {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin: 1rem 0;
+        }
+
+        .badge {
+            width: 60px;
+            height: 60px;
+            animation: popIn 0.5s ease-out;
+        }
+
+        .feedback-message {
+            font-size: 1.25rem;
+            margin: 1rem 0;
+            color: #333;
+        }
+
+        .try-again-btn {
+            background: #FF9B3F;
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 25px;
+            border: none;
+            cursor: pointer;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+            margin-top: 1rem;
+        }
+
+        @keyframes popIn {
+            0% { transform: scale(0); }
+            70% { transform: scale(1.2); }
+            100% { transform: scale(1); }
+        }
+
+        .celebration {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1000;
+        }
     </style>
 </head>
 <body>
@@ -1077,7 +1147,7 @@
             </div>
         `;
 
-        // Add level 4 content with interactive quiz
+        // Update the quiz buttons in level4Content
         const level4Content = `
             <div class="level-header">
                 <div class="level-number">4</div>
@@ -1091,78 +1161,79 @@
                     </p>
                     
                     <div class="quiz-items space-y-4">
-                        <div class="quiz-item">
+                        <div class="quiz-item" data-correct="true">
                             <span class="statement">1. Turtles are different from tortoises.</span>
                             <div class="answer-buttons">
-                                <button class="answer-btn correct" data-answer="true">✓</button>
+                                <button class="answer-btn" data-answer="true">✓</button>
                                 <button class="answer-btn" data-answer="false">✗</button>
                             </div>
                         </div>
-
-                        <div class="quiz-item">
+                        <div class="quiz-item" data-correct="true">
                             <span class="statement">2. Turtles are sea animals.</span>
                             <div class="answer-buttons">
-                                <button class="answer-btn correct" data-answer="true">✓</button>
+                                <button class="answer-btn" data-answer="true">✓</button>
                                 <button class="answer-btn" data-answer="false">✗</button>
                             </div>
                         </div>
-
-                        <div class="quiz-item">
+                        <div class="quiz-item" data-correct="true">
                             <span class="statement">3. There are seven kinds of sea turtles in the world.</span>
                             <div class="answer-buttons">
-                                <button class="answer-btn correct" data-answer="true">✓</button>
+                                <button class="answer-btn" data-answer="true">✓</button>
                                 <button class="answer-btn" data-answer="false">✗</button>
                             </div>
                         </div>
-
-                        <div class="quiz-item">
+                        <div class="quiz-item" data-correct="false">
                             <span class="statement">4. Sea turtles are very small.</span>
                             <div class="answer-buttons">
                                 <button class="answer-btn" data-answer="true">✓</button>
-                                <button class="answer-btn correct" data-answer="false">✗</button>
-                            </div>
-                        </div>
-
-                        <div class="quiz-item">
-                            <span class="statement">5. Turtles come ashore to lay eggs.</span>
-                            <div class="answer-buttons">
-                                <button class="answer-btn correct" data-answer="true">✓</button>
                                 <button class="answer-btn" data-answer="false">✗</button>
                             </div>
                         </div>
-
-                        <div class="quiz-item">
+                        <div class="quiz-item" data-correct="true">
+                            <span class="statement">5. Turtles come ashore to lay eggs.</span>
+                            <div class="answer-buttons">
+                                <button class="answer-btn" data-answer="true">✓</button>
+                                <button class="answer-btn" data-answer="false">✗</button>
+                            </div>
+                        </div>
+                        <div class="quiz-item" data-correct="false">
                             <span class="statement">6. Sea turtles come to rest on land.</span>
                             <div class="answer-buttons">
                                 <button class="answer-btn" data-answer="true">✓</button>
-                                <button class="answer-btn correct" data-answer="false">✗</button>
+                                <button class="answer-btn" data-answer="false">✗</button>
                             </div>
                         </div>
-
-                        <div class="quiz-item">
+                        <div class="quiz-item" data-correct="false">
                             <span class="statement">7. Olive Ridleys are the only sea turtles seen on Indian shores.</span>
                             <div class="answer-buttons">
                                 <button class="answer-btn" data-answer="true">✓</button>
-                                <button class="answer-btn correct" data-answer="false">✗</button>
+                                <button class="answer-btn" data-answer="false">✗</button>
                             </div>
                         </div>
                     </div>
 
-                    <div class="score-display mt-6" style="display: none;">
-                        <p class="text-xl">Your Score: <span id="score">0</span>/7</p>
+                    <div class="result-board" style="display: none;">
+                        <div class="result-animation"></div>
+                        <div class="score-display">
+                            <h2 class="score-title">Your Score</h2>
+                            <div class="score-number"><span id="score">0</span>/7</div>
+                            <div class="badges-container"></div>
+                        </div>
+                        <div class="feedback-message"></div>
+                        <button class="try-again-btn" onclick="resetQuiz()">Try Again</button>
                     </div>
-                </div>
 
-                <div class="nav-buttons mt-8">
-                    <button class="back-button" onclick="goBack()">
-                        <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 17l-5-5m0 0l5-5m-5 5h12"/>
-                        </svg>
-                        Go Back
-                    </button>
-                    <button class="check-answers-btn" onclick="checkAnswers()">
-                        Check Answers
-                    </button>
+                    <div class="nav-buttons mt-8">
+                        <button class="back-button" onclick="goBack()">
+                            <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 17l-5-5m0 0l5-5m-5 5h12"/>
+                            </svg>
+                            Go Back
+                        </button>
+                        <button class="check-answers-btn" onclick="checkAnswers()">
+                            Check Answers
+                        </button>
+                    </div>
                 </div>
             </div>
         `;
@@ -1444,40 +1515,88 @@
             }
         }
 
-        // Add this function to handle answer checking
+        // Update the checkAnswers function
         function checkAnswers() {
             let score = 0;
             const quizItems = document.querySelectorAll('.quiz-item');
+            const resultBoard = document.querySelector('.result-board');
+            const badgesContainer = document.querySelector('.badges-container');
+            const feedbackMessage = document.querySelector('.feedback-message');
+            
+            // Play sound effect
+            const successSound = new Audio('/sounds/success.mp3');
+            const failSound = new Audio('/sounds/fail.mp3');
             
             quizItems.forEach(item => {
                 const selectedBtn = item.querySelector('.answer-btn.selected');
                 if (selectedBtn) {
-                    const isCorrect = selectedBtn.classList.contains('correct');
+                    const isCorrect = (selectedBtn.dataset.answer === 'true') === (item.dataset.correct === 'true');
                     selectedBtn.classList.add(isCorrect ? 'correct' : 'incorrect');
                     if (isCorrect) score++;
                 }
             });
 
-            // Show score
-            const scoreDisplay = document.querySelector('.score-display');
-            const scoreElement = document.getElementById('score');
-            scoreDisplay.style.display = 'block';
-            scoreElement.textContent = score;
+            // Calculate percentage
+            const percentage = (score / 7) * 100;
+
+            // Show result board with animation
+            resultBoard.style.display = 'block';
+            document.getElementById('score').textContent = score;
+
+            // Clear previous badges
+            badgesContainer.innerHTML = '';
+
+            // Add badges based on score
+            if (percentage === 100) {
+                badgesContainer.innerHTML = '<img src="/img/gold-badge.png" class="badge" alt="Gold Badge">';
+                feedbackMessage.textContent = 'Outstanding! Perfect score! 🌟';
+                successSound.play();
+                createCelebration();
+            } else if (percentage >= 80) {
+                badgesContainer.innerHTML = '<img src="/img/silver-badge.png" class="badge" alt="Silver Badge">';
+                feedbackMessage.textContent = 'Great job! Almost perfect! 🎉';
+                successSound.play();
+            } else if (percentage >= 60) {
+                badgesContainer.innerHTML = '<img src="/img/bronze-badge.png" class="badge" alt="Bronze Badge">';
+                feedbackMessage.textContent = 'Good effort! Keep practicing! 👍';
+                successSound.play();
+            } else {
+                badgesContainer.innerHTML = '<img src="/img/try-again-badge.png" class="badge" alt="Try Again Badge">';
+                feedbackMessage.textContent = 'Keep trying! You can do better! 💪';
+                failSound.play();
+            }
         }
 
-        // Add this function to initialize the quiz
-        function initializeQuiz() {
-            const answerBtns = document.querySelectorAll('.answer-btn');
-            answerBtns.forEach(btn => {
-                btn.addEventListener('click', () => {
-                    // Remove selected class from sibling button
-                    const sibling = btn.parentElement.querySelector('.answer-btn.selected');
-                    if (sibling) sibling.classList.remove('selected');
-                    
-                    // Add selected class to clicked button
-                    btn.classList.add('selected');
-                });
+        // Add function to reset quiz
+        function resetQuiz() {
+            const quizItems = document.querySelectorAll('.quiz-item');
+            const resultBoard = document.querySelector('.result-board');
+            
+            quizItems.forEach(item => {
+                const selectedBtn = item.querySelector('.answer-btn.selected');
+                if (selectedBtn) {
+                    selectedBtn.classList.remove('selected', 'correct', 'incorrect');
+                }
             });
+            
+            resultBoard.style.display = 'none';
+        }
+
+        // Add celebration effect
+        function createCelebration() {
+            const celebration = document.createElement('div');
+            celebration.className = 'celebration';
+            document.body.appendChild(celebration);
+            
+            // Add confetti effect using a library like canvas-confetti
+            // You'll need to include the library in your HTML
+            confetti({
+                particleCount: 100,
+                spread: 70,
+                origin: { y: 0.6 }
+            });
+            
+            setTimeout(() => celebration.remove(), 3000);
         }
     </script>
 </body>
