@@ -438,7 +438,8 @@
         }
 
         .word.active {
-            background-color: rgba(255, 215, 0, 0.5);  /* Semi-transparent gold */
+            background: #FF9B3F;
+            color: white;
             padding: 2px 6px;
             box-shadow: 0 1px 3px rgba(0,0,0,0.1);
             border-radius: 4px;
@@ -1001,11 +1002,7 @@
             background: linear-gradient(180deg, #87CEEB 0%, #1E90FF 100%),
                         url('/img/underwater-bg.png');
             background-blend-mode: soft-light;
-            background-size: cover;  /* Makes image cover the container */
-            background-position: center;  /* Centers the background image */
-            background-repeat: no-repeat;  /* Prevents image from repeating */
             padding: 3rem;
-            min-height: 600px;  /* Ensures container has enough height to show background */
         }
 
         .glossary-instructions {
@@ -1077,8 +1074,6 @@
             animation: feedbackPop 0.8s cubic-bezier(0.36, 0, 0.66, -0.56);
             pointer-events: none;
         }
-
-        
     </style>
 </head>
 <body>
@@ -1608,11 +1603,11 @@
                     <button class="back-button" onclick="goBack()">
                         <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 17l-5-5m0 0l5-5m-5 5h12"/>
-                            </svg>
+                        </svg>
                         Go Back
                     </button>
-                        </div>
-                        </div>
+                </div>
+            </div>
         `;
 
         // Add level 5 content with drag-drop matching game
@@ -1620,7 +1615,7 @@
             <div class="level-header">
                 <div class="level-number">5</div>
                 <div class="level-title">Sea Turtle Glossary Challenge</div>
-                    </div>
+            </div>
 
             <div class="content-area" id="contentArea">
                 <div class="glossary-container">
@@ -1633,12 +1628,12 @@
                             <div class="word" draggable="true" data-word="marine">marine</div>
                             <div class="word" draggable="true" data-word="species">species</div>
                             <div class="word" draggable="true" data-word="coastal">coastal</div>
-                </div>
+                        </div>
                         
                         <div class="definitions-container">
                             <div class="definition" data-definition="marine">
                                 <div class="definition-box">found in the sea</div>
-        </div>
+                            </div>
                             <div class="definition" data-definition="species">
                                 <div class="definition-box">group of animals with common features</div>
                             </div>
@@ -1660,29 +1655,11 @@
             </div>
         `;
 
-        // Update the SpeechManager class with highlighting functionality
+        // Update the SpeechManager class
         class SpeechManager {
             constructor() {
                 this.synth = window.speechSynthesis;
                 this.speaking = false;
-
-                // Add speech styles only once when SpeechManager is initialized
-                if (!document.getElementById('speechStyles')) {
-                    const style = document.createElement('style');
-                    style.id = 'speechStyles';
-                    style.textContent = `
-                        .word {
-                            display: inline;
-                            transition: background-color 0.2s ease;
-                        }
-                        .word.active {
-                            background-color: rgba(255, 215, 0, 0.3);
-                            border-radius: 4px;
-                            padding: 0 2px;
-                        }
-                    `;
-                    document.head.appendChild(style);
-                }
             }
 
             speak(text) {
@@ -1723,6 +1700,7 @@
                     }
 
                     if (node.nodeType === Node.ELEMENT_NODE) {
+                        // Skip tooltip elements entirely
                         if (node.classList.contains('tooltip')) return null;
                         
                         const clone = node.cloneNode(false);
@@ -1736,6 +1714,7 @@
                     return node;
                 };
 
+                // Process the content
                 const processedContainer = container.cloneNode(false);
                 Array.from(container.childNodes).forEach(child => {
                     const processed = wrapWords(child);
@@ -2380,33 +2359,6 @@
                         def.classList.add('incorrect');
                         setTimeout(() => def.classList.remove('incorrect'), 1000);
                     }
-                });
-            });
-        }
-
-        // Update the interactive word click handler
-        function makeWordsInteractive() {
-            const interactiveWords = document.querySelectorAll('.interactive-word');
-            const speechManager = new SpeechManager();
-
-            interactiveWords.forEach(word => {
-                word.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    speechManager.speak(word.textContent);
-                });
-            });
-        }
-
-        // Update the paragraph click handler
-        function makeParagraphsInteractive() {
-            const paragraphs = document.querySelectorAll('.content-paragraph');
-            const speechManager = new SpeechManager();
-
-            paragraphs.forEach(paragraph => {
-                paragraph.style.cursor = 'pointer';
-                paragraph.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    speechManager.speak(paragraph.textContent);
                 });
             });
         }
