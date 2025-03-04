@@ -1659,19 +1659,120 @@
             </div>
         `;
 
-        // Update the SpeechManager class
+        // Update the SpeechManager class with highlighting functionality
         class SpeechManager {
             constructor() {
                 this.synth = window.speechSynthesis;
+                this.speaking = false;
             }
 
             speak(text) {
-                // Cancel any ongoing speech
-                this.synth.cancel();
+                if (this.speaking) {
+                    this.synth.cancel();
+                    this.speaking = false;
+                    return;
+                }
 
-                const utterance = new SpeechSynthesisUtterance(text);
+                const container = document.querySelector('.text-lg');
+                const originalHTML = container.innerHTML;
+
+                // First, remove tooltips from speech text
+                const tempDiv = document.createElement('div');
+                tempDiv.innerHTML = originalHTML;
+                tempDiv.querySelectorAll('.tooltip').forEach(tooltip => tooltip.remove());
+                const cleanText = tempDiv.textContent.trim();
+
+                // Wrap words in spans while preserving interactive elements
+                const wrapWords = (node) => {
+                    if (node.nodeType === Node.TEXT_NODE) {
+                        const words = node.textContent.trim().split(/\s+/);
+                        if (words.length === 0) return node;
+
+                        const fragment = document.createDocumentFragment();
+                        words.forEach((word, i) => {
+                            if (word) {
+                                const span = document.createElement('span');
+                                span.className = 'word';
+                                span.textContent = word;
+                                fragment.appendChild(span);
+                                if (i < words.length - 1) {
+                                    fragment.appendChild(document.createTextNode(' '));
+                                }
+                            }
+                        });
+                        return fragment;
+                    }
+
+                    if (node.nodeType === Node.ELEMENT_NODE) {
+                        // Skip tooltip elements entirely
+                        if (node.classList.contains('tooltip')) return null;
+                        
+                        const clone = node.cloneNode(false);
+                        Array.from(node.childNodes).forEach(child => {
+                            const processed = wrapWords(child);
+                            if (processed) clone.appendChild(processed);
+                        });
+                        return clone;
+                    }
+
+                    return node;
+                };
+
+                // Process the content
+                const processedContainer = container.cloneNode(false);
+                Array.from(container.childNodes).forEach(child => {
+                    const processed = wrapWords(child);
+                    if (processed) processedContainer.appendChild(processed);
+                });
+                container.replaceWith(processedContainer);
+
+                // Add styles for word highlighting if not present
+                if (!document.getElementById('speechStyles')) {
+                    const style = document.createElement('style');
+                    style.id = 'speechStyles';
+                    style.textContent = `
+                        .word {
+                            display: inline-block;
+                            transition: all 0.2s ease;
+                        }
+                        .word.active {
+                            background-color: #FFD700;
+                            border-radius: 4px;
+                            padding: 0 2px;
+                        }
+                    `;
+                    document.head.appendChild(style);
+                }
+
+                const utterance = new SpeechSynthesisUtterance(cleanText);
                 utterance.rate = 0.9;
                 utterance.pitch = 1;
+                utterance.lang = 'en-US';
+
+                const words = Array.from(processedContainer.querySelectorAll('.word'));
+                let currentIndex = 0;
+
+                utterance.onboundary = (event) => {
+                    if (event.name === 'word' && words[currentIndex]) {
+                        words.forEach(word => word.classList.remove('active'));
+                        words[currentIndex].classList.add('active');
+                        currentIndex++;
+                    }
+                };
+
+                utterance.onend = () => {
+                    this.speaking = false;
+                    processedContainer.replaceWith(container);
+                    container.innerHTML = originalHTML;
+                };
+
+                utterance.onerror = () => {
+                    this.speaking = false;
+                    processedContainer.replaceWith(container);
+                    container.innerHTML = originalHTML;
+                };
+
+                this.speaking = true;
                 this.synth.speak(utterance);
             }
         }
