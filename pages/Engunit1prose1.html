@@ -996,6 +996,84 @@
             background: rgba(255,255,255,0.1);
             border-style: solid;
         }
+
+        /* Add these styles for improved Level 5 feedback and appearance */
+        .glossary-container {
+            background: linear-gradient(180deg, #87CEEB 0%, #1E90FF 100%),
+                        url('/img/underwater-bg.png');
+            background-blend-mode: soft-light;
+            padding: 3rem;
+        }
+
+        .glossary-instructions {
+            font-size: 1.8rem;
+            color: white;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 1rem;
+            border-radius: 15px;
+            backdrop-filter: blur(5px);
+        }
+
+        .word {
+            background: linear-gradient(135deg, #fff 0%, #f0f0f0 100%);
+            transform-style: preserve-3d;
+            transition: all 0.3s ease;
+        }
+
+        .word:hover {
+            transform: translateY(-5px) rotateX(10deg);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+        }
+
+        .definition {
+            transition: all 0.3s ease;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(5px);
+        }
+
+        .definition.hover {
+            transform: scale(1.02);
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
+        }
+
+        .definition.correct {
+            animation: correctMatch 0.5s ease-out;
+            border-color: #2ECC71;
+            background: rgba(46, 204, 113, 0.1);
+        }
+
+        .definition.incorrect {
+            animation: incorrectMatch 0.5s ease-out;
+            border-color: #E74C3C;
+            background: rgba(231, 76, 60, 0.1);
+        }
+
+        @keyframes correctMatch {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        @keyframes incorrectMatch {
+            0% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            75% { transform: translateX(10px); }
+            100% { transform: translateX(0); }
+        }
+
+        /* Feedback overlay for glossary */
+        .glossary-feedback {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 6rem;
+            z-index: 1000;
+            text-shadow: 0 0 20px rgba(255,255,255,0.5);
+            animation: feedbackPop 0.8s cubic-bezier(0.36, 0, 0.66, -0.56);
+            pointer-events: none;
+        }
     </style>
 </head>
 <body>
@@ -2164,6 +2242,24 @@
             const definitions = document.querySelectorAll('.definition');
             let correctMatches = 0;
 
+            // Add the enhanced styles
+            if (!document.getElementById('glossaryStyles')) {
+                const style = document.createElement('style');
+                style.id = 'glossaryStyles';
+                style.textContent = glossaryStyles;
+                document.head.appendChild(style);
+            }
+
+            function showFeedback(isCorrect) {
+                const feedback = document.createElement('div');
+                feedback.className = 'glossary-feedback';
+                feedback.textContent = isCorrect ? '✓' : '✗';
+                feedback.style.color = isCorrect ? '#2ECC71' : '#E74C3C';
+                document.body.appendChild(feedback);
+                
+                setTimeout(() => feedback.remove(), 800);
+            }
+
             words.forEach(word => {
                 word.addEventListener('dragstart', (e) => {
                     word.classList.add('dragging');
@@ -2193,7 +2289,11 @@
                     if (word === def.dataset.definition) {
                         def.classList.add('correct');
                         correctMatches++;
-                        playSound('success');
+                        
+                        // Play success sound and show feedback
+                        const successSound = new Audio('/sounds/success.mp3');
+                        successSound.play();
+                        showFeedback(true);
                         
                         // Move the word into the definition
                         const draggedWord = document.querySelector(`[data-word="${word}"]`);
@@ -2201,14 +2301,18 @@
                         draggedWord.setAttribute('draggable', 'false');
                         
                         if (correctMatches === definitions.length) {
-                setTimeout(() => {
+                            setTimeout(() => {
                                 createCelebration();
                                 const successSound = new Audio('/sounds/success.mp3');
                                 successSound.play();
                             }, 500);
                         }
                     } else {
-                        playSound('fail');
+                        // Play fail sound and show feedback
+                        const failSound = new Audio('/sounds/fail.mp3');
+                        failSound.play();
+                        showFeedback(false);
+                        
                         def.classList.add('incorrect');
                         setTimeout(() => def.classList.remove('incorrect'), 1000);
                     }
