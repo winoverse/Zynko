@@ -1569,7 +1569,7 @@
                         <button class="back-button" onclick="goBack()">
                             <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 17l-5-5m0 0l5-5m-5 5h12"/>
-                            </svg>
+                    </svg>
                             Go Back
                         </button>
                     </div>
@@ -2005,8 +2005,16 @@
                 <div class="badge-container">
                     <img src="${badgeImg}" class="badge" alt="Achievement Badge">
                     <div class="badge-glow"></div>
-                        </div>
+                </div>
                 <p class="badge-message">${message}</p>
+                
+                <!-- Add continue button -->
+                <button class="nav-button mt-6" onclick="completeLevel()">
+                    Continue to Glossary
+                    <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/>
+                    </svg>
+                </button>
             `;
             
             // Add these styles if not already present
@@ -2193,7 +2201,7 @@
                         draggedWord.setAttribute('draggable', 'false');
                         
                         if (correctMatches === definitions.length) {
-                            setTimeout(() => {
+                setTimeout(() => {
                                 createCelebration();
                                 const successSound = new Audio('/sounds/success.mp3');
                                 successSound.play();
