@@ -1074,6 +1074,132 @@
             animation: feedbackPop 0.8s cubic-bezier(0.36, 0, 0.66, -0.56);
             pointer-events: none;
         }
+
+        /* Add Level 6 content with interactive Arribada story */
+        .arribada-container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: linear-gradient(180deg, #1a1a2e 0%, #162447 100%);
+            padding: 2rem;
+            border-radius: 20px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+            color: white;
+        }
+
+        .arribada-title {
+            font-size: 2.5rem;
+            text-align: center;
+            margin-bottom: 2rem;
+            color: #FFD700;
+            text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+        }
+
+        .arribada-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            padding: 1rem;
+        }
+
+        .info-card {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 1.5rem;
+            backdrop-filter: blur(5px);
+            transition: transform 0.3s ease;
+        }
+
+        .info-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .highlight-word {
+            color: #FFD700;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        .highlight-word:hover {
+            text-shadow: 0 0 10px rgba(255, 215, 0, 0.8);
+        }
+
+        .arribada-text {
+            font-size: 1.2rem;
+            line-height: 1.6;
+            margin-top: 1rem;
+        }
+
+        .beach-scene {
+            height: 200px;
+            position: relative;
+            overflow: hidden;
+            border-radius: 10px;
+        }
+
+        .moon {
+            width: 50px;
+            height: 50px;
+            background: #FFD700;
+            border-radius: 50%;
+            position: absolute;
+            top: 20px;
+            right: 40px;
+            box-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
+        }
+
+        .ocean {
+            height: 60%;
+            background: linear-gradient(180deg, #1E3F66 0%, #2E5984 100%);
+            position: absolute;
+            bottom: 40%;
+            width: 100%;
+            animation: waveMove 3s ease-in-out infinite;
+        }
+
+        .sand {
+            height: 40%;
+            background: #C2B280;
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+        }
+
+        .turtle-container {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            height: 40%;
+        }
+
+        .simulate-btn {
+            background: #FFD700;
+            color: #1a1a2e;
+            padding: 0.8rem 1.5rem;
+            border-radius: 25px;
+            border: none;
+            font-size: 1.1rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin: 1rem auto;
+            transition: all 0.3s ease;
+        }
+
+        .simulate-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 15px rgba(255, 215, 0, 0.5);
+        }
+
+        .turtle-emoji {
+            font-size: 1.4rem;
+        }
+
+        @keyframes waveMove {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
     </style>
 </head>
 <body>
@@ -1399,6 +1525,10 @@
                         levelContainer.innerHTML = level5Content;
                         initializeGlossary();
                         break;
+                    case 5:
+                        levelContainer.innerHTML = level6Content;
+                        initializeArribada();
+                        break;
                     default:
                         console.log('All levels completed!');
                         return;
@@ -1654,6 +1784,231 @@
                 </div>
             </div>
         `;
+
+        // Add Level 6 content with interactive Arribada story
+        const level6Content = `
+            <div class="level-header">
+                <div class="level-number">6</div>
+                <div class="level-title">The Amazing Arribada</div>
+            </div>
+
+            <div class="content-area" id="contentArea">
+                <div class="arribada-container">
+                    <div class="story-section">
+                        <h2 class="arribada-title">Did You Know?</h2>
+                        <div class="arribada-content">
+                            <div class="info-card">
+                                <div class="turtle-animation-container">
+                                    <img src="/img/turtle-group.png" class="turtle-group" alt="Group of turtles">
+                                </div>
+                                <p class="arribada-text">
+                                    <span class="highlight-word" onclick="speakWord('Arribada')">Arribada</span> is a special event where thousands of 
+                                    <span class="highlight-word">Olive Ridley</span> turtles come together!
+                                </p>
+                            </div>
+
+                            <div class="info-card">
+                                <div class="map-container">
+                                    <img src="/img/odisha-map.png" class="odisha-map" alt="Map of Odisha">
+                                    <div class="map-marker"></div>
+                                </div>
+                                <p class="arribada-text">
+                                    <span class="highlight-word">Odisha</span> is one of only three places in the world where you can see this amazing sight!
+                                </p>
+                            </div>
+
+                            <div class="info-card interactive-beach">
+                                <div class="beach-scene">
+                                    <div class="moon"></div>
+                                    <div class="ocean"></div>
+                                    <div class="sand"></div>
+                                    <div class="turtle-container"></div>
+                                </div>
+                                <p class="arribada-text">
+                                    On special nights, thousands of mother turtles come to the beach to lay their eggs!
+                                </p>
+                                <button class="simulate-btn" onclick="simulateArribada()">
+                                    Watch Arribada
+                                    <span class="turtle-emoji">🐢</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="nav-buttons mt-8">
+                        <button class="back-button" onclick="goBack()">
+                            <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 17l-5-5m0 0l5-5m-5 5h12"/>
+                            </svg>
+                            Go Back
+                        </button>
+                    </div>
+                </div>
+            </div>
+        `;
+
+        // Add these styles
+        const arribadaStyles = `
+            .arribada-container {
+                max-width: 900px;
+                margin: 0 auto;
+                background: linear-gradient(180deg, #1a1a2e 0%, #162447 100%);
+                padding: 2rem;
+                border-radius: 20px;
+                box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+                color: white;
+            }
+
+            .arribada-title {
+                font-size: 2.5rem;
+                text-align: center;
+                margin-bottom: 2rem;
+                color: #FFD700;
+                text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+            }
+
+            .arribada-content {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+                gap: 2rem;
+                padding: 1rem;
+            }
+
+            .info-card {
+                background: rgba(255, 255, 255, 0.1);
+                border-radius: 15px;
+                padding: 1.5rem;
+                backdrop-filter: blur(5px);
+                transition: transform 0.3s ease;
+            }
+
+            .info-card:hover {
+                transform: translateY(-5px);
+            }
+
+            .highlight-word {
+                color: #FFD700;
+                cursor: pointer;
+                font-weight: bold;
+                transition: all 0.3s ease;
+            }
+
+            .highlight-word:hover {
+                text-shadow: 0 0 10px rgba(255, 215, 0, 0.8);
+            }
+
+            .arribada-text {
+                font-size: 1.2rem;
+                line-height: 1.6;
+                margin-top: 1rem;
+            }
+
+            .beach-scene {
+                height: 200px;
+                position: relative;
+                overflow: hidden;
+                border-radius: 10px;
+            }
+
+            .moon {
+                width: 50px;
+                height: 50px;
+                background: #FFD700;
+                border-radius: 50%;
+                position: absolute;
+                top: 20px;
+                right: 40px;
+                box-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
+            }
+
+            .ocean {
+                height: 60%;
+                background: linear-gradient(180deg, #1E3F66 0%, #2E5984 100%);
+                position: absolute;
+                bottom: 40%;
+                width: 100%;
+                animation: waveMove 3s ease-in-out infinite;
+            }
+
+            .sand {
+                height: 40%;
+                background: #C2B280;
+                position: absolute;
+                bottom: 0;
+                width: 100%;
+            }
+
+            .turtle-container {
+                position: absolute;
+                bottom: 0;
+                width: 100%;
+                height: 40%;
+            }
+
+            .simulate-btn {
+                background: #FFD700;
+                color: #1a1a2e;
+                padding: 0.8rem 1.5rem;
+                border-radius: 25px;
+                border: none;
+                font-size: 1.1rem;
+                cursor: pointer;
+                display: flex;
+                align-items: center;
+                gap: 0.5rem;
+                margin: 1rem auto;
+                transition: all 0.3s ease;
+            }
+
+            .simulate-btn:hover {
+                transform: scale(1.05);
+                box-shadow: 0 0 15px rgba(255, 215, 0, 0.5);
+            }
+
+            .turtle-emoji {
+                font-size: 1.4rem;
+            }
+
+            @keyframes waveMove {
+                0%, 100% { transform: translateY(0); }
+                50% { transform: translateY(-10px); }
+            }
+        `;
+
+        // Add initialization function for Arribada level
+        function initializeArribada() {
+            // Add styles
+            if (!document.getElementById('arribadaStyles')) {
+                const style = document.createElement('style');
+                style.id = 'arribadaStyles';
+                style.textContent = arribadaStyles;
+                document.head.appendChild(style);
+            }
+        }
+
+        // Add simulation function
+        function simulateArribada() {
+            const container = document.querySelector('.turtle-container');
+            const turtleCount = 20;
+            
+            for (let i = 0; i < turtleCount; i++) {
+                setTimeout(() => {
+                    const turtle = document.createElement('div');
+                    turtle.className = 'arriving-turtle';
+                    turtle.style.left = `${Math.random() * 90}%`;
+                    turtle.style.animationDelay = `${Math.random() * 2}s`;
+                    container.appendChild(turtle);
+
+                    // Remove turtle after animation
+                    setTimeout(() => turtle.remove(), 8000);
+                }, i * 300);
+            }
+
+            // Play ambient ocean sound
+            const oceanSound = new Audio('/sounds/ocean-waves.mp3');
+            oceanSound.volume = 0.3;
+            oceanSound.play();
+        }
 
         // Update the SpeechManager class
         class SpeechManager {
