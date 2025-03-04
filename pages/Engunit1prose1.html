@@ -724,6 +724,197 @@
         .incorrect-answers {
             color: #E74C3C;
         }
+
+        /* Ocean background */
+        .quiz-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: linear-gradient(180deg, #87CEEB 0%, #1E90FF 100%);
+            padding: 2rem;
+            border-radius: 20px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Animated waves */
+        .quiz-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 10px;
+            background: url('data:image/svg+xml,<svg viewBox="0 0 1200 120" xmlns="http://www.w3.org/2000/svg"><path d="M0,0V46.29c47.79,22.2,103.59,32.17,158,28,70.36-5.37,136.33-33.31,206.8-37.5C438.64,32.43,512.34,53.67,583,72.05c69.27,18,138.3,24.88,209.4,13.08,36.15-6,69.85-17.84,104.45-29.34C989.49,25,1113-14.29,1200,52.47V0Z" fill="%23ffffff" opacity=".25"/></svg>') repeat-x;
+            animation: wave 15s linear infinite;
+        }
+
+        @keyframes wave {
+            0% { background-position-x: 0; }
+            100% { background-position-x: 1200px; }
+        }
+
+        /* Progress bar styling */
+        .progress-bar {
+            background: rgba(255,255,255,0.3);
+            height: 15px;
+            border-radius: 10px;
+            overflow: hidden;
+            border: 2px solid rgba(255,255,255,0.5);
+        }
+
+        .progress {
+            background: linear-gradient(90deg, #FFD700, #FFA500);
+            box-shadow: 0 0 10px rgba(255,165,0,0.5);
+        }
+
+        /* Question counter */
+        .question-counter {
+            color: white;
+            font-size: 1.3rem;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
+            font-weight: bold;
+        }
+
+        /* Question styling */
+        .quiz-item {
+            background: rgba(255,255,255,0.9);
+            border-radius: 15px;
+            padding: 1.5rem;
+            margin: 1rem 0;
+            transform: translateY(0);
+            transition: all 0.3s ease;
+            border: 3px solid rgba(255,255,255,0.8);
+        }
+
+        .quiz-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .statement {
+            font-size: 1.4rem;
+            color: #2C3E50;
+            font-weight: 500;
+        }
+
+        /* Answer buttons */
+        .answer-buttons {
+            gap: 1.5rem;
+        }
+
+        .answer-btn {
+            width: 50px;
+            height: 50px;
+            font-size: 1.5rem;
+            border: 3px solid #FF9B3F;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            transform: translateY(0);
+            transition: all 0.2s ease;
+        }
+
+        .answer-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+        }
+
+        /* Feedback overlay */
+        .feedback-overlay {
+            font-size: 6rem;
+            text-shadow: 0 0 20px rgba(255,255,255,0.5);
+            animation: feedbackPop 1.2s cubic-bezier(0.36, 0, 0.66, -0.56);
+        }
+
+        /* Result board styling */
+        .result-board {
+            background: rgba(255,255,255,0.95);
+            border-radius: 20px;
+            padding: 3rem;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .score-number {
+            font-size: 4rem;
+            background: linear-gradient(45deg, #FFD700, #FFA500);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+
+        /* Decorative elements */
+        .sea-turtle-icon {
+            position: absolute;
+            width: 80px;
+            height: 80px;
+            opacity: 0.2;
+        }
+
+        .sea-turtle-icon.top-right {
+            top: 20px;
+            right: 20px;
+            transform: rotate(45deg);
+        }
+
+        .sea-turtle-icon.bottom-left {
+            bottom: 20px;
+            left: 20px;
+            transform: rotate(-135deg);
+        }
+
+        /* Add these styles to enhance the gamified experience */
+
+        /* Add glow effect to correct answers */
+        .answer-btn.correct.selected {
+            box-shadow: 0 0 15px #2ECC71;
+            border-color: #2ECC71;
+            background: #2ECC71;
+            color: white;
+        }
+
+        /* Add shake effect for incorrect answers */
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+
+        .answer-btn.incorrect.selected {
+            animation: shake 0.3s ease-in-out;
+            box-shadow: 0 0 15px #E74C3C;
+            border-color: #E74C3C;
+            background: #E74C3C;
+            color: white;
+        }
+
+        /* Enhance result board */
+        .result-title {
+            font-size: 2.5rem;
+            color: #2C3E50;
+            margin-bottom: 1.5rem;
+            text-align: center;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+
+        /* Add floating animation to turtle icons */
+        @keyframes float {
+            0%, 100% { transform: translateY(0) rotate(45deg); }
+            50% { transform: translateY(-10px) rotate(45deg); }
+        }
+
+        .sea-turtle-icon.top-right {
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes floatReverse {
+            0%, 100% { transform: translateY(0) rotate(-135deg); }
+            50% { transform: translateY(10px) rotate(-135deg); }
+        }
+
+        .sea-turtle-icon.bottom-left {
+            animation: floatReverse 3s ease-in-out infinite;
+        }
     </style>
 </head>
 <body>
@@ -731,7 +922,7 @@
         <div class="level-header">
             <div class="level-number">1</div>
             <div class="level-title">Introduction to Sea Turtles</div>
-        </div>
+                </div>
 
         <div class="content-area" id="contentArea">
             <div class="flex gap-8">
@@ -749,20 +940,20 @@
                         </span>
                         relative, the sea turtle. This is not surprising, since these reptiles spend almost their entire life in the sea.
                     </p>
-                </div>
+            </div>
                 <div class="w-1/3">
                     <div id="turtleAnimation"></div>
-                </div>
-            </div>
+        </div>
+    </div>
 
             <button class="nav-button" onclick="completeLevel()">
                 I'm Ready to Learn More!
                 <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/>
-                </svg>
-            </button>
-        </div>
-    </div>
+                    </svg>
+                </button>
+            </div>
+            </div>
 
     <script>
         // Replace the sounds initialization with this error-handled version
@@ -809,7 +1000,7 @@
                                 animation-delay: ${Math.random() * 2}s;
                             "></div>
                         `).join('')}
-                    </div>
+        </div>
                     <div class="turtle" id="interactiveTurtle">
                         <div class="eye"></div>
                         <div class="flipper flipper-front"></div>
@@ -1066,7 +1257,7 @@
             <div class="level-header">
                 <div class="level-number">1</div>
                 <div class="level-title">Introduction to Sea Turtles</div>
-            </div>
+        </div>
 
             <div class="content-area" id="contentArea">
                 <div class="flex gap-8">
@@ -1096,7 +1287,7 @@
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/>
                     </svg>
                 </button>
-            </div>
+                </div>
         `;
 
         // Update the level2Content to include the continue button
@@ -1104,7 +1295,7 @@
             <div class="level-header">
                 <div class="level-number">2</div>
                 <div class="level-title">Sea Turtle Species</div>
-            </div>
+                </div>
 
             <div class="content-area" id="contentArea">
                 <div class="flex gap-8">
@@ -1121,8 +1312,8 @@
                                 <span class="tooltip">The largest species of sea turtle</span>
                             </span>
                             . Compared to most tortoises, sea turtles are huge. Even the smallest species, the Olive Ridley, weighs up to 35 kg when fully grown. The largest of them all, the Leatherback, grows to a length of 2.2m and each could weigh as much as 700 kg!
-                        </p>
-                    </div>
+                    </p>
+                </div>
                     <div class="w-1/3">
                         <div class="image-container">
                             <img 
@@ -1173,8 +1364,8 @@
                                 <span class="tooltip">Building nests and laying eggs</span>
                             </span>
                             on sandy beaches all along our coasts.
-                        </p>
-                    </div>
+                    </p>
+                </div>
                     <div class="w-1/3">
                         <div class="image-container">
                             <img 
@@ -1199,27 +1390,31 @@
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/>
                         </svg>
                     </button>
-                </div>
-            </div>
+                    </div>
+                    </div>
         `;
 
         // Update the quiz buttons in level4Content
         const level4Content = `
             <div class="level-header">
                 <div class="level-number">4</div>
-                <div class="level-title">Check Your Understanding</div>
-            </div>
+                <div class="level-title">Sea Turtle Quiz Challenge</div>
+                </div>
 
             <div class="content-area" id="contentArea">
                 <div class="quiz-container">
+                    <!-- Decorative turtle icons -->
+                    <img src="/img/turtle-icon.png" class="sea-turtle-icon top-right" alt="">
+                    <img src="/img/turtle-icon.png" class="sea-turtle-icon bottom-left" alt="">
+
                     <div class="progress-bar">
                         <div class="progress"></div>
-                        <div class="question-counter">Question <span id="currentQuestion">1</span>/7</div>
-                    </div>
+                        <div class="question-counter">Question <span id="currentQuestion">1</span> of 7</div>
+                </div>
 
                     <div class="quiz-items">
-                        <!-- Questions will be inserted here one at a time -->
-                    </div>
+                        <!-- Questions will be inserted here -->
+                        </div>
 
                     <div class="result-board" style="display: none;">
                         <h2 class="result-title">Quiz Complete!</h2>
@@ -1230,24 +1425,24 @@
                         <div class="answer-summary">
                             <div class="correct-answers">
                                 Correct Answers: <span id="correctCount">0</span>
-                            </div>
+                    </div>
                             <div class="incorrect-answers">
                                 Incorrect Answers: <span id="incorrectCount">0</span>
-                            </div>
-                        </div>
+                    </div>
+                </div>
                         <div class="badges-container"></div>
                         <div class="feedback-message"></div>
                         <button class="try-again-btn" onclick="resetQuiz()">Try Again</button>
-                    </div>
+        </div>
+                </div>
 
-                    <div class="nav-buttons mt-8">
-                        <button class="back-button" onclick="goBack()">
-                            <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 17l-5-5m0 0l5-5m-5 5h12"/>
-                            </svg>
-                            Go Back
-                        </button>
-                    </div>
+                <div class="nav-buttons mt-8">
+                    <button class="back-button" onclick="goBack()">
+                        <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 17l-5-5m0 0l5-5m-5 5h12"/>
+                        </svg>
+                        Go Back
+                    </button>
                 </div>
             </div>
         `;
@@ -1633,7 +1828,7 @@
             if (percentage === 100) {
                 createCelebration();
                 const successSound = new Audio('/sounds/success.mp3');
-                successSound.play();
+                    successSound.play();
             }
         }
 
