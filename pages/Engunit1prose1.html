@@ -1841,19 +1841,104 @@
         function showFinalResults() {
             const resultBoard = document.querySelector('.result-board');
             const percentage = Math.round((correctAnswers / quizQuestions.length) * 100);
+            const badgesContainer = document.querySelector('.badges-container');
             
             document.getElementById('score').textContent = correctAnswers;
             document.getElementById('percentage').textContent = percentage;
             document.getElementById('correctCount').textContent = correctAnswers;
             document.getElementById('incorrectCount').textContent = quizQuestions.length - correctAnswers;
             
-            resultBoard.style.display = 'block';
+            // Clear previous badges
+            badgesContainer.innerHTML = '';
             
+            // Add badge and message based on score
+            let badgeImg, message;
             if (percentage === 100) {
+                badgeImg = '/img/gold-badge.png';
+                message = 'Outstanding! You\'ve earned the Gold Badge! 🌟';
                 createCelebration();
                 const successSound = new Audio('/sounds/success.mp3');
-                    successSound.play();
+                successSound.play();
+            } else if (percentage >= 80) {
+                badgeImg = '/img/silver-badge.png';
+                message = 'Great job! You\'ve earned the Silver Badge! 🎉';
+            } else if (percentage >= 60) {
+                badgeImg = '/img/bronze-badge.png';
+                message = 'Good effort! You\'ve earned the Bronze Badge! 👍';
+            } else {
+                badgeImg = '/img/try-again.png';
+                message = 'Keep practicing! You can do better! 💪';
             }
+
+            // Add badge with animation
+            badgesContainer.innerHTML = `
+                <div class="badge-container">
+                    <img src="${badgeImg}" class="badge" alt="Achievement Badge">
+                    <div class="badge-glow"></div>
+                </div>
+                <p class="badge-message">${message}</p>
+            `;
+            
+            // Add these styles if not already present
+            const style = document.createElement('style');
+            style.textContent = `
+                .badge-container {
+                    position: relative;
+                    display: inline-block;
+                    margin: 20px 0;
+                    animation: badgeAppear 0.5s ease-out;
+                }
+
+                .badge {
+                    width: 120px;
+                    height: 120px;
+                    object-fit: contain;
+                    animation: badgePulse 2s infinite;
+                }
+
+                .badge-glow {
+                    position: absolute;
+                    top: 50%;
+                    left: 50%;
+                    transform: translate(-50%, -50%);
+                    width: 100%;
+                    height: 100%;
+                    background: radial-gradient(circle, rgba(255,255,255,0.8) 0%, rgba(255,255,255,0) 70%);
+                    opacity: 0;
+                    animation: badgeGlow 2s infinite;
+                }
+
+                .badge-message {
+                    font-size: 1.5rem;
+                    color: #2C3E50;
+                    margin-top: 1rem;
+                    animation: messageAppear 0.5s ease-out 0.3s both;
+                }
+
+                @keyframes badgeAppear {
+                    0% { transform: scale(0) rotate(-180deg); }
+                    60% { transform: scale(1.2) rotate(10deg); }
+                    100% { transform: scale(1) rotate(0); }
+                }
+
+                @keyframes badgePulse {
+                    0%, 100% { transform: scale(1); }
+                    50% { transform: scale(1.05); }
+                }
+
+                @keyframes badgeGlow {
+                    0%, 100% { opacity: 0; }
+                    50% { opacity: 1; }
+                }
+
+                @keyframes messageAppear {
+                    0% { opacity: 0; transform: translateY(20px); }
+                    100% { opacity: 1; transform: translateY(0); }
+                }
+            `;
+            document.head.appendChild(style);
+            
+            resultBoard.style.display = 'block';
         }
 
         function initializeQuiz() {
