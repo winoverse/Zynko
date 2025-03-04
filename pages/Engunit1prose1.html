@@ -1679,6 +1679,20 @@
             let currentPattern = 0;
             const patterns = ['swimming-pattern-1', 'swimming-pattern-2', 'swimming-pattern-3'];
 
+            // Mouse following functionality
+            container.addEventListener('mousemove', (e) => {
+                const rect = container.getBoundingClientRect();
+                const x = e.clientX - rect.left - turtle.offsetWidth / 2;
+                const y = e.clientY - rect.top - turtle.offsetHeight / 2;
+
+                const maxX = container.offsetWidth - turtle.offsetWidth;
+                const maxY = container.offsetHeight - turtle.offsetHeight;
+                const boundedX = Math.min(Math.max(0, x), maxX);
+                const boundedY = Math.min(Math.max(0, y), maxY);
+
+                turtle.style.transform = `translate(${boundedX}px, ${boundedY}px)`;
+            });
+
             // Only add sound-related event listeners in level 1
             if (currentLevel === 1) {
                 // Click to dive with sound
@@ -1773,10 +1787,20 @@
                 </div>
             `;
 
-            // Update progress bar
-            const progress = (index / quizQuestions.length) * 100;
+            // Update progress bar - adjust calculation to include current question
+            const progress = ((index + 1) / quizQuestions.length) * 100;
             document.querySelector('.progress').style.width = `${progress}%`;
             document.getElementById('currentQuestion').textContent = index + 1;
+
+            // Add speech functionality to the question
+            const questionText = document.querySelector('.statement');
+            if (questionText) {
+                questionText.style.cursor = 'pointer';
+                questionText.addEventListener('click', () => {
+                    const speechManager = new SpeechManager();
+                    speechManager.speak(questionText.textContent);
+                });
+            }
         }
 
         function checkAnswer(userAnswer) {
