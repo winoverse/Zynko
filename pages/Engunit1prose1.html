@@ -1745,7 +1745,7 @@
             <div class="level-header">
                 <div class="level-number">5</div>
                 <div class="level-title">Sea Turtle Glossary Challenge</div>
-            </div>
+                </div>
 
             <div class="content-area" id="contentArea">
                 <div class="glossary-container">
@@ -1777,7 +1777,7 @@
                         <button class="back-button" onclick="goBack()">
                             <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 17l-5-5m0 0l5-5m-5 5h12"/>
-                    </svg>
+                            </svg>
                             Go Back
                         </button>
                     </div>
@@ -1814,8 +1814,8 @@
                                 </div>
                                 <p class="arribada-text">
                                     <span class="highlight-word">Odisha</span> is one of only three places in the world where you can see this amazing sight!
-                                </p>
-                            </div>
+                            </p>
+                        </div>
 
                             <div class="info-card interactive-beach">
                                 <div class="beach-scene">
@@ -1823,7 +1823,7 @@
                                     <div class="ocean"></div>
                                     <div class="sand"></div>
                                     <div class="turtle-container"></div>
-                                </div>
+                        </div>
                                 <p class="arribada-text">
                                     On special nights, thousands of mother turtles come to the beach to lay their eggs!
                                 </p>
@@ -1831,9 +1831,9 @@
                                     Watch Arribada
                                     <span class="turtle-emoji">🐢</span>
                                 </button>
-                            </div>
-                        </div>
                     </div>
+                    </div>
+                </div>
 
                     <div class="nav-buttons mt-8">
                         <button class="back-button" onclick="goBack()">
@@ -1842,7 +1842,7 @@
                             </svg>
                             Go Back
                         </button>
-                    </div>
+        </div>
                 </div>
             </div>
         `;
@@ -2707,6 +2707,23 @@
                                 createCelebration();
                                 const successSound = new Audio('/sounds/success.mp3');
                                 successSound.play();
+                                
+                                // Add continue button after completion
+                                const navButtons = document.querySelector('.nav-buttons');
+                                navButtons.innerHTML = `
+                                    <button class="back-button" onclick="goBack()">
+                                        <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 17l-5-5m0 0l5-5m-5 5h12"/>
+                                        </svg>
+                                        Go Back
+                                    </button>
+                                    <button class="nav-button" onclick="completeLevel()">
+                                        Continue to Arribada
+                                        <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/>
+                                        </svg>
+                                    </button>
+                                `;
                             }, 500);
                         }
                     } else {
