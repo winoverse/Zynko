@@ -915,6 +915,87 @@
         .sea-turtle-icon.bottom-left {
             animation: floatReverse 3s ease-in-out infinite;
         }
+
+        /* Add level 5 content with drag-drop matching game */
+        .glossary-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: linear-gradient(180deg, #87CEEB 0%, #1E90FF 100%);
+            padding: 2rem;
+            border-radius: 20px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .glossary-instructions {
+            color: white;
+            font-size: 1.5rem;
+            text-align: center;
+            margin-bottom: 2rem;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
+        }
+
+        .matching-game {
+            display: flex;
+            justify-content: space-between;
+            gap: 3rem;
+            margin: 2rem 0;
+        }
+
+        .words-container, .definitions-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .word {
+            background: white;
+            padding: 1rem;
+            border-radius: 10px;
+            text-align: center;
+            cursor: move;
+            font-size: 1.2rem;
+            color: #2C3E50;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+        }
+
+        .word:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+        }
+
+        .word.dragging {
+            opacity: 0.5;
+            transform: scale(1.05);
+        }
+
+        .definition {
+            min-height: 80px;
+            border: 2px dashed rgba(255,255,255,0.5);
+            border-radius: 10px;
+            padding: 0.5rem;
+        }
+
+        .definition-box {
+            background: rgba(255,255,255,0.9);
+            padding: 1rem;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            color: #2C3E50;
+        }
+
+        .definition.correct {
+            border-color: #2ECC71;
+            background: rgba(46, 204, 113, 0.1);
+        }
+
+        .definition.hover {
+            background: rgba(255,255,255,0.1);
+            border-style: solid;
+        }
     </style>
 </head>
 <body>
@@ -1236,6 +1317,10 @@
                         levelContainer.innerHTML = level4Content;
                         initializeQuiz();
                         break;
+                    case 4:
+                        levelContainer.innerHTML = level5Content;
+                        initializeGlossary();
+                        break;
                     default:
                         console.log('All levels completed!');
                         return;
@@ -1443,6 +1528,51 @@
                         </svg>
                         Go Back
                     </button>
+                </div>
+            </div>
+        `;
+
+        // Add level 5 content with drag-drop matching game
+        const level5Content = `
+            <div class="level-header">
+                <div class="level-number">5</div>
+                <div class="level-title">Sea Turtle Glossary Challenge</div>
+            </div>
+
+            <div class="content-area" id="contentArea">
+                <div class="glossary-container">
+                    <div class="glossary-instructions">
+                        Drag each word to its matching definition!
+                    </div>
+                    
+                    <div class="matching-game">
+                        <div class="words-container">
+                            <div class="word" draggable="true" data-word="marine">marine</div>
+                            <div class="word" draggable="true" data-word="species">species</div>
+                            <div class="word" draggable="true" data-word="coastal">coastal</div>
+                        </div>
+                        
+                        <div class="definitions-container">
+                            <div class="definition" data-definition="marine">
+                                <div class="definition-box">found in the sea</div>
+                            </div>
+                            <div class="definition" data-definition="species">
+                                <div class="definition-box">group of animals with common features</div>
+                            </div>
+                            <div class="definition" data-definition="coastal">
+                                <div class="definition-box">land by the edge of a sea</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="nav-buttons mt-8">
+                        <button class="back-button" onclick="goBack()">
+                            <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 17l-5-5m0 0l5-5m-5 5h12"/>
+                            </svg>
+                            Go Back
+                        </button>
+                    </div>
                 </div>
             </div>
         `;
@@ -1824,8 +1954,8 @@
                     showQuestion(currentQuestionIndex);
                 } else {
                     showFinalResults();
-                }
-            }, 1000);
+            }
+        }, 1000);
         }
 
         function showFeedback(isCorrect) {
@@ -1865,7 +1995,7 @@
             } else if (percentage >= 60) {
                 badgeImg = '/img/bronze-badge.png';
                 message = 'Good effort! You\'ve earned the Bronze Badge! 👍';
-            } else {
+                        } else {
                 badgeImg = '/img/try-again.png';
                 message = 'Keep practicing! You can do better! 💪';
             }
@@ -1875,7 +2005,7 @@
                 <div class="badge-container">
                     <img src="${badgeImg}" class="badge" alt="Achievement Badge">
                     <div class="badge-glow"></div>
-                </div>
+                        </div>
                 <p class="badge-message">${message}</p>
             `;
             
@@ -2018,6 +2148,64 @@
             }, 1000);
 
             setTimeout(() => celebration.remove(), 3000);
+        }
+
+        // Add initialization function for the glossary level
+        function initializeGlossary() {
+            const words = document.querySelectorAll('.word');
+            const definitions = document.querySelectorAll('.definition');
+            let correctMatches = 0;
+
+            words.forEach(word => {
+                word.addEventListener('dragstart', (e) => {
+                    word.classList.add('dragging');
+                    e.dataTransfer.setData('text/plain', word.dataset.word);
+                });
+
+                word.addEventListener('dragend', () => {
+                    word.classList.remove('dragging');
+                });
+            });
+
+            definitions.forEach(def => {
+                def.addEventListener('dragover', (e) => {
+                    e.preventDefault();
+                    def.classList.add('hover');
+                });
+
+                def.addEventListener('dragleave', () => {
+                    def.classList.remove('hover');
+                });
+
+                def.addEventListener('drop', (e) => {
+                    e.preventDefault();
+                    def.classList.remove('hover');
+                    const word = e.dataTransfer.getData('text/plain');
+                    
+                    if (word === def.dataset.definition) {
+                        def.classList.add('correct');
+                        correctMatches++;
+                        playSound('success');
+                        
+                        // Move the word into the definition
+                        const draggedWord = document.querySelector(`[data-word="${word}"]`);
+                        def.appendChild(draggedWord);
+                        draggedWord.setAttribute('draggable', 'false');
+                        
+                        if (correctMatches === definitions.length) {
+                            setTimeout(() => {
+                                createCelebration();
+                                const successSound = new Audio('/sounds/success.mp3');
+                                successSound.play();
+                            }, 500);
+                        }
+                    } else {
+                        playSound('fail');
+                        def.classList.add('incorrect');
+                        setTimeout(() => def.classList.remove('incorrect'), 1000);
+                    }
+                });
+            });
         }
     </script>
 </body>
