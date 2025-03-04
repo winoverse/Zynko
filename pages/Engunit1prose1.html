@@ -438,8 +438,7 @@
         }
 
         .word.active {
-            background: #FF9B3F;
-            color: white;
+            background-color: rgba(255, 215, 0, 0.5);  /* Semi-transparent gold */
             padding: 2px 6px;
             box-shadow: 0 1px 3px rgba(0,0,0,0.1);
             border-radius: 4px;
@@ -1078,6 +1077,8 @@
             animation: feedbackPop 0.8s cubic-bezier(0.36, 0, 0.66, -0.56);
             pointer-events: none;
         }
+
+        
     </style>
 </head>
 <body>
@@ -1607,11 +1608,11 @@
                     <button class="back-button" onclick="goBack()">
                         <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 17l-5-5m0 0l5-5m-5 5h12"/>
-                        </svg>
+                            </svg>
                         Go Back
                     </button>
-                </div>
-            </div>
+                        </div>
+                        </div>
         `;
 
         // Add level 5 content with drag-drop matching game
@@ -1619,7 +1620,7 @@
             <div class="level-header">
                 <div class="level-number">5</div>
                 <div class="level-title">Sea Turtle Glossary Challenge</div>
-            </div>
+                    </div>
 
             <div class="content-area" id="contentArea">
                 <div class="glossary-container">
@@ -1632,12 +1633,12 @@
                             <div class="word" draggable="true" data-word="marine">marine</div>
                             <div class="word" draggable="true" data-word="species">species</div>
                             <div class="word" draggable="true" data-word="coastal">coastal</div>
-                        </div>
+                </div>
                         
                         <div class="definitions-container">
                             <div class="definition" data-definition="marine">
                                 <div class="definition-box">found in the sea</div>
-                            </div>
+        </div>
                             <div class="definition" data-definition="species">
                                 <div class="definition-box">group of animals with common features</div>
                             </div>
@@ -1664,6 +1665,24 @@
             constructor() {
                 this.synth = window.speechSynthesis;
                 this.speaking = false;
+
+                // Add speech styles only once when SpeechManager is initialized
+                if (!document.getElementById('speechStyles')) {
+                    const style = document.createElement('style');
+                    style.id = 'speechStyles';
+                    style.textContent = `
+                        .word {
+                            display: inline;
+                            transition: background-color 0.2s ease;
+                        }
+                        .word.active {
+                            background-color: rgba(255, 215, 0, 0.3);
+                            border-radius: 4px;
+                            padding: 0 2px;
+                        }
+                    `;
+                    document.head.appendChild(style);
+                }
             }
 
             speak(text) {
@@ -1704,7 +1723,6 @@
                     }
 
                     if (node.nodeType === Node.ELEMENT_NODE) {
-                        // Skip tooltip elements entirely
                         if (node.classList.contains('tooltip')) return null;
                         
                         const clone = node.cloneNode(false);
@@ -1718,31 +1736,12 @@
                     return node;
                 };
 
-                // Process the content
                 const processedContainer = container.cloneNode(false);
                 Array.from(container.childNodes).forEach(child => {
                     const processed = wrapWords(child);
                     if (processed) processedContainer.appendChild(processed);
                 });
                 container.replaceWith(processedContainer);
-
-                // Add styles for word highlighting if not present
-                if (!document.getElementById('speechStyles')) {
-                    const style = document.createElement('style');
-                    style.id = 'speechStyles';
-                    style.textContent = `
-                        .word {
-                            display: inline-block;
-                            transition: all 0.2s ease;
-                        }
-                        .word.active {
-                            background-color: #FFD700;
-                            border-radius: 4px;
-                            padding: 0 2px;
-                        }
-                    `;
-                    document.head.appendChild(style);
-                }
 
                 const utterance = new SpeechSynthesisUtterance(cleanText);
                 utterance.rate = 0.9;
