@@ -1002,7 +1002,11 @@
             background: linear-gradient(180deg, #87CEEB 0%, #1E90FF 100%),
                         url('/img/underwater-bg.png');
             background-blend-mode: soft-light;
+            background-size: cover;  /* Makes image cover the container */
+            background-position: center;  /* Centers the background image */
+            background-repeat: no-repeat;  /* Prevents image from repeating */
             padding: 3rem;
+            min-height: 600px;  /* Ensures container has enough height to show background */
         }
 
         .glossary-instructions {
