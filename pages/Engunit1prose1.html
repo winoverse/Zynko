@@ -2046,6 +2046,7 @@
             setTimeout(() => feedback.remove(), 1000);
         }
 
+        // Update the showFinalResults function to move the continue button
         function showFinalResults() {
             const resultBoard = document.querySelector('.result-board');
             const percentage = Math.round((correctAnswers / quizQuestions.length) * 100);
@@ -2073,86 +2074,51 @@
             } else if (percentage >= 60) {
                 badgeImg = '/img/bronze-badge.png';
                 message = 'Good effort! You\'ve earned the Bronze Badge! 👍';
-                        } else {
+            } else {
                 badgeImg = '/img/try-again.png';
                 message = 'Keep practicing! You can do better! 💪';
             }
 
-            // Add badge with animation
+            // Add badge without the continue button
             badgesContainer.innerHTML = `
                 <div class="badge-container">
                     <img src="${badgeImg}" class="badge" alt="Achievement Badge">
                     <div class="badge-glow"></div>
                 </div>
                 <p class="badge-message">${message}</p>
-                
-                <!-- Add continue button -->
-                <button class="nav-button mt-6" onclick="completeLevel()">
+            `;
+
+            // Update the navigation buttons container
+            const navButtons = document.querySelector('.nav-buttons');
+            navButtons.innerHTML = `
+                <button class="back-button" onclick="goBack()">
+                    <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 17l-5-5m0 0l5-5m-5 5h12"/>
+                    </svg>
+                    Go Back
+                </button>
+                <button class="nav-button" onclick="completeLevel()">
                     Continue to Glossary
                     <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/>
                     </svg>
                 </button>
             `;
-            
-            // Add these styles if not already present
-            const style = document.createElement('style');
-            style.textContent = `
-                .badge-container {
-                    position: relative;
-                    display: inline-block;
-                    margin: 20px 0;
-                    animation: badgeAppear 0.5s ease-out;
-                }
 
-                .badge {
-                    width: 120px;
-                    height: 120px;
-                    object-fit: contain;
-                    animation: badgePulse 2s infinite;
-                }
-
-                .badge-glow {
-                    position: absolute;
-                    top: 50%;
-                    left: 50%;
-                    transform: translate(-50%, -50%);
-                    width: 100%;
-                    height: 100%;
-                    background: radial-gradient(circle, rgba(255,255,255,0.8) 0%, rgba(255,255,255,0) 70%);
-                    opacity: 0;
-                    animation: badgeGlow 2s infinite;
-                }
-
-                .badge-message {
-                    font-size: 1.5rem;
-                    color: #2C3E50;
-                    margin-top: 1rem;
-                    animation: messageAppear 0.5s ease-out 0.3s both;
-                }
-
-                @keyframes badgeAppear {
-                    0% { transform: scale(0) rotate(-180deg); }
-                    60% { transform: scale(1.2) rotate(10deg); }
-                    100% { transform: scale(1) rotate(0); }
-                }
-
-                @keyframes badgePulse {
-                    0%, 100% { transform: scale(1); }
-                    50% { transform: scale(1.05); }
-                }
-
-                @keyframes badgeGlow {
-                    0%, 100% { opacity: 0; }
-                    50% { opacity: 1; }
-                }
-
-                @keyframes messageAppear {
-                    0% { opacity: 0; transform: translateY(20px); }
-                    100% { opacity: 1; transform: translateY(0); }
-                }
-            `;
-            document.head.appendChild(style);
+            // Add style for nav buttons if not already present
+            if (!document.getElementById('navButtonsStyle')) {
+                const style = document.createElement('style');
+                style.id = 'navButtonsStyle';
+                style.textContent = `
+                    .nav-buttons {
+                        display: flex;
+                        justify-content: space-between;
+                        gap: 1rem;
+                        margin-top: 2rem;
+                    }
+                `;
+                document.head.appendChild(style);
+            }
             
             resultBoard.style.display = 'block';
         }
