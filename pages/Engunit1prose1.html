@@ -3005,6 +3005,19 @@
             const highlightWords = document.querySelectorAll('.highlight-word');
             const speechManager = new SpeechManager();
 
+            // Initialize speech buttons
+            const speechButtons = document.querySelectorAll('.speech-btn');
+            speechButtons.forEach(button => {
+                if (button) {
+                    button.addEventListener('click', () => {
+                        const textToSpeak = button.getAttribute('data-text');
+                        if (textToSpeak) {
+                            speechManager.speak(textToSpeak);
+                        }
+                    });
+                }
+            });
+
             highlightWords.forEach(word => {
                 word.addEventListener('click', () => {
                     speechManager.speak(word.textContent);
@@ -3013,7 +3026,7 @@
                 });
             });
 
-            // Add these styles if not present
+            // Update styles to match other levels
             if (!document.getElementById('level7Styles')) {
                 const style = document.createElement('style');
                 style.id = 'level7Styles';
@@ -3022,36 +3035,57 @@
                         max-width: 800px;
                         margin: 0 auto;
                         padding: 2rem;
-                        background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+                        background: linear-gradient(180deg, #87CEEB 0%, #1E90FF 100%);
                         border-radius: 20px;
                         box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+                        position: relative;
+                        overflow: hidden;
                     }
 
                     .story-text {
                         font-size: 1.2rem;
                         line-height: 1.8;
                         margin-bottom: 1.5rem;
-                        color: #2C3E50;
+                        color: white;
+                        text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
+                        background: rgba(255, 255, 255, 0.1);
+                        padding: 1.5rem;
+                        border-radius: 15px;
+                        backdrop-filter: blur(5px);
                     }
 
                     .highlight-word {
-                        color: #2980b9;
+                        color: #FFD700;
                         cursor: pointer;
-                        font-weight: 500;
+                        font-weight: bold;
                         padding: 2px 5px;
                         border-radius: 4px;
                         transition: all 0.3s ease;
+                        text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
                     }
 
                     .highlight-word:hover {
-                        background: #3498db;
+                        background: rgba(255, 215, 0, 0.3);
                         color: white;
+                        transform: scale(1.1);
                     }
 
                     .highlight-word.speaking {
                         animation: pulse 1s ease-in-out;
-                        background: #2ecc71;
+                        background: rgba(255, 215, 0, 0.5);
                         color: white;
+                    }
+
+                    /* Add wave effect like other levels */
+                    .story-container::before {
+                        content: '';
+                        position: absolute;
+                        top: 0;
+                        left: 0;
+                        right: 0;
+                        height: 10px;
+                        background: url('data:image/svg+xml,<svg viewBox="0 0 1200 120" xmlns="http://www.w3.org/2000/svg"><path d="M0,0V46.29c47.79,22.2,103.59,32.17,158,28,70.36-5.37,136.33-33.31,206.8-37.5C438.64,32.43,512.34,53.67,583,72.05c69.27,18,138.3,24.88,209.4,13.08,36.15-6,69.85-17.84,104.45-29.34C989.49,25,1113-14.29,1200,52.47V0Z" fill="%23ffffff" opacity=".25"/></svg>') repeat-x;
+                        animation: wave 15s linear infinite;
                     }
 
                     @keyframes pulse {
