@@ -2209,13 +2209,14 @@
 
         // Add initialization function for Arribada level
         function initializeArribada() {
-            // Add styles
             if (!document.getElementById('arribadaStyles')) {
                 const style = document.createElement('style');
                 style.id = 'arribadaStyles';
                 style.textContent = arribadaStyles;
                 document.head.appendChild(style);
             }
+            // Add continue button to Arribada level
+            addContinueButton();
         }
 
         // Add simulation function
