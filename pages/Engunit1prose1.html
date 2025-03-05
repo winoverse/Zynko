@@ -1705,6 +1705,9 @@
                         levelContainer.innerHTML = level6Content;
                         initializeArribada();
                         break;
+                    case 6:
+                        levelContainer.innerHTML = level7Content;
+                        break;
                     default:
                         console.log('All levels completed!');
                         return;
@@ -2019,6 +2022,59 @@
                             Go Back
                         </button>
         </div>
+                </div>
+            </div>
+        `;
+
+        // Add this after the Arribada level content
+        const level7Content = `
+            <div class="level-header">
+                <div class="level-number">7</div>
+                <div class="level-title">The Nesting Journey</div>
+            </div>
+
+            <div class="content-area" id="contentArea">
+                <div class="prose-container">
+                    <div class="prose-content">
+                        <p>
+                            <span class="highlight-word" onclick="speakWord('January')">Between the months of January</span> and
+                            <span class="highlight-word" onclick="speakWord('March')">March</span>, female Olive Ridleys come ashore at
+                            night to lay their eggs. This is quite a problem
+                            for them, as a turtle's front flippers enable it
+                            to swim gracefully and effortlessly but are not
+                            very useful for moving on land. The turtle has
+                            to haul itself laboriously onto the beach.
+                        </p>
+                        <p>
+                            Then it chooses a spot well away from the high-tide
+                            line. Here, it scoops out a <span class="highlight-word" onclick="speakWord('nest cavity')">nest cavity</span> 45 cm
+                            deep, into which it lays about 100 eggs. Each
+                            egg is in the shape and size of a table tennis
+                            ball. Once all the eggs are laid, the turtle fills
+                            in the cavity, then it <span class="highlight-word" onclick="speakWord('camouflages')">camouflages</span> the nest
+                            by tossing sand on it using its flippers. That
+                            done, it returns to the sea. The eggs are left
+                            to incubate under the warmth of the sun.
+                        </p>
+                    </div>
+                    <div class="prose-image">
+                        <img src="/img/turtle-nesting.png" alt="Sea Turtle Nesting" class="turtle-image">
+                    </div>
+                </div>
+
+                <div class="nav-buttons">
+                    <button class="back-button" onclick="goBack()">
+                        <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 17l-5-5m0 0l5-5m-5 5h12"/>
+                        </svg>
+                        Go Back
+                    </button>
+                    <button class="nav-button" onclick="completeLevel()">
+                        Continue to Next Level
+                        <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/>
+                        </svg>
+                    </button>
                 </div>
             </div>
         `;
@@ -2949,6 +3005,27 @@
                     }
                 });
             });
+        }
+
+        // Add continue button to Arribada level
+        function addContinueButton() {
+            const navButtons = document.querySelector('.nav-buttons');
+            if (navButtons) {
+                navButtons.innerHTML = `
+                    <button class="back-button" onclick="goBack()">
+                        <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 17l-5-5m0 0l5-5m-5 5h12"/>
+                        </svg>
+                        Go Back
+                    </button>
+                    <button class="nav-button" onclick="completeLevel()">
+                        Continue to Next Level
+                        <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/>
+                        </svg>
+                    </button>
+                `;
+            }
         }
     </script>
 </body>
