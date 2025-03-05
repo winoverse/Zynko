@@ -1990,7 +1990,41 @@
         function simulateArribada() {
             const container = document.querySelector('.turtle-container');
             const turtleCount = 20;
+            let animatedTurtles = 0;
             
+            // Add turtle animation styles if not present
+            if (!document.getElementById('turtleAnimationStyles')) {
+                const style = document.createElement('style');
+                style.id = 'turtleAnimationStyles';
+                style.textContent = `
+                    .arriving-turtle {
+                        position: absolute;
+                        width: 40px;
+                        height: 40px;
+                        background: url('/img/turtle-icon.png') no-repeat center/contain;
+                        bottom: -40px;
+                        animation: turtleArrival 8s linear forwards;
+                        transform-origin: center;
+                    }
+
+                    @keyframes turtleArrival {
+                        0% { transform: translateY(0) rotate(0deg); opacity: 0; }
+                        10% { opacity: 1; }
+                        100% { transform: translateY(-120px) rotate(360deg); opacity: 0.8; }
+                    }
+                `;
+                document.head.appendChild(style);
+            }
+            
+            // Clear any existing turtles
+            container.innerHTML = '';
+            
+            // Play ocean sound
+            const oceanSound = new Audio('/sounds/ocean-waves.mp3');
+            oceanSound.volume = 0.3;
+            oceanSound.play();
+
+            // Create turtles with staggered timing
             for (let i = 0; i < turtleCount; i++) {
                 setTimeout(() => {
                     const turtle = document.createElement('div');
@@ -2000,14 +2034,16 @@
                     container.appendChild(turtle);
 
                     // Remove turtle after animation
-                    setTimeout(() => turtle.remove(), 8000);
+                    turtle.addEventListener('animationend', () => {
+                        turtle.remove();
+                        animatedTurtles++;
+                        if (animatedTurtles === turtleCount) {
+                            oceanSound.pause();
+                            oceanSound.currentTime = 0;
+                        }
+                    });
                 }, i * 300);
             }
-
-            // Play ambient ocean sound
-            const oceanSound = new Audio('/sounds/ocean-waves.mp3');
-            oceanSound.volume = 0.3;
-            oceanSound.play();
         }
 
         // Update the SpeechManager class
