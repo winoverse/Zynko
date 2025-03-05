@@ -1329,7 +1329,7 @@
         @keyframes turtleSwim {
             0% {
                 transform: translateY(0) rotate(0deg) scale(0.8) translateX(0);
-                opacity: 0;
+            opacity: 0;
             }
             10% {
                 opacity: 1;
@@ -1707,7 +1707,7 @@
                         break;
                     case 6:
                         levelContainer.innerHTML = level7Content;
-                        initializeLevel7();
+                        initializeSpeechHighlighting();
                         break;
                     default:
                         console.log('All levels completed!');
@@ -1785,8 +1785,8 @@
                                 <span class="tooltip">The largest species of sea turtle</span>
                             </span>
                             . Compared to most tortoises, sea turtles are huge. Even the smallest species, the Olive Ridley, weighs up to 35 kg when fully grown. The largest of them all, the Leatherback, grows to a length of 2.2m and each could weigh as much as 700 kg!
-                </p>
-                    </div>
+                    </p>
+                </div>
                     <div class="w-1/3">
                         <div class="image-container">
                             <img 
@@ -1837,8 +1837,8 @@
                                 <span class="tooltip">Building nests and laying eggs</span>
                             </span>
                             on sandy beaches all along our coasts.
-                </p>
-                    </div>
+                    </p>
+                </div>
                     <div class="w-1/3">
                         <div class="image-container">
                             <img 
@@ -2022,13 +2022,7 @@
                             </svg>
                             Go Back
                         </button>
-                        <button class="nav-button" onclick="completeLevel()">
-                            Continue to Nesting Journey
-                            <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/>
-                            </svg>
-                        </button>
-                    </div>
+        </div>
                 </div>
             </div>
         `;
@@ -2965,38 +2959,34 @@
         const level7Content = `
             <div class="level-header">
                 <div class="level-number">7</div>
-                <div class="level-title">The Nesting Journey</div>
+                <div class="level-title">The Journey of Baby Turtles</div>
             </div>
-
             <div class="content-area" id="contentArea">
-                <div class="story-container">
-                    <div class="image-section">
-                        <img src="/img/turtle-nesting.jpg" alt="Turtle nesting on beach" class="story-image">
-                        <button class="speech-btn" data-text="A sea turtle digging its nest on the beach at night to lay eggs.">
-                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"/>
-                            </svg>
-                        </button>
-                    </div>
-                    <div class="story-section">
-                        <p class="story-text">
-                            Between the months of <span class="highlight-word" data-text="January">January</span> and <span class="highlight-word" data-text="March">March</span>, female Olive Ridleys come ashore at night to lay their eggs. This is quite a problem for them, as a turtle's front flippers enable it to swim gracefully and effortlessly but are not very useful for moving on land.
-                        </p>
-                        <p class="story-text">
-                            The turtle has to <span class="highlight-word" data-text="haul">haul</span> itself laboriously onto the beach. Then it chooses a spot well away from the <span class="highlight-word" data-text="high-tide">high-tide</span> line. Here, it scoops out a nest cavity <span class="highlight-word" data-text="45 cm">45 cm</span> deep, into which it lays about 100 eggs.
-                        </p>
-                        <p class="story-text">
-                            Each egg is in the shape and size of a <span class="highlight-word" data-text="table tennis ball">table tennis ball</span>. Once all the eggs are laid, the turtle fills in the cavity, then it <span class="highlight-word" data-text="camouflages">camouflages</span> the nest by tossing sand on it using its flippers. That done, it returns to the sea. The eggs are left to <span class="highlight-word" data-text="incubate">incubate</span> under the warmth of the sun.
-                        </p>
-                        <p class="story-text">
-                            In many places around the world, local people follow the tracks of the turtle to its nest. They collect the eggs for eating. <span class="highlight-word" data-text="Jackals">Jackals</span>, domestic dogs and pigs too dig up and eat the eggs by following the scent left by the turtle.
-                        </p>
-                        <p class="story-text">
-                            Those eggs that escape such people and predators hatch <span class="highlight-word" data-text="45–60 days">45–60 days</span> later. The hatchlings slash open the leathery eggshell with the help of a tiny '<span class="highlight-word" data-text="egg-tooth">egg-tooth</span>'. This is like a razor blade at the tip of a hatchling's snout. When most of the eggs have hatched, the hatchlings push themselves upwards through the sand and emerge on the surface of the beach. From here they make a hurried dash to the sea.
-                        </p>
-                    </div>
+                <div class="text-content">
+                    <p class="paragraph">
+                        <span class="highlight">Between the months of January and March</span>, female Olive Ridleys come ashore at
+                        night to lay their eggs. This is quite a problem for them, as a turtle's front flippers enable it
+                        to swim gracefully and effortlessly but are not very useful for moving on land. The turtle has
+                        to haul itself laboriously onto the beach.
+                    </p>
+                    <p class="paragraph">
+                        Then it chooses a spot <span class="highlight">well away from the high-tide line</span>. Here, it scoops out a 
+                        nest cavity 45 cm deep, into which it lays about 100 eggs. Each egg is in the shape and size of a 
+                        table tennis ball. Once all the eggs are laid, the turtle fills in the cavity, then it 
+                        <span class="highlight">camouflages the nest by tossing sand</span> on it using its flippers. That
+                        done, it returns to the sea. The eggs are left to incubate under the warmth of the sun.
+                    </p>
+                    <p class="paragraph">
+                        In many places around the world, local people follow the tracks of the turtle
+                        to its nest. They collect the eggs for eating. <span class="highlight">Jackals, domestic dogs and pigs</span> too dig up
+                        and eat the eggs by following the scent left by the turtle. Those eggs that escape such
+                        people and predators hatch 45–60 days later. The hatchlings slash open the leathery
+                        eggshell with the help of a tiny <span class="highlight">'egg-tooth'</span>. This is like a razor blade at the tip of a hatchling's
+                        snout. When most of the eggs have hatched, the hatchlings push themselves upwards
+                        through the sand and emerge on the surface of the beach. From here they make a
+                        hurried dash to the sea.
+                    </p>
                 </div>
-
                 <div class="nav-buttons">
                     <button class="back-button" onclick="goBack()">
                         <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -3004,149 +2994,46 @@
                         </svg>
                         Go Back
                     </button>
+                    <button class="nav-button" onclick="completeLevel()">
+                        Continue
+                        <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/>
+                        </svg>
+                    </button>
                 </div>
             </div>
         `;
 
-        // Add initialization function for Level 7
-        function initializeLevel7() {
-            const highlightWords = document.querySelectorAll('.highlight-word');
-            const speechManager = new SpeechManager();
-  
-            // Initialize speech buttons
-            const speechButtons = document.querySelectorAll('.speech-btn');
-            speechButtons.forEach(button => {
-                if (button) {
-                    button.addEventListener('click', () => {
-                        const textToSpeak = button.getAttribute('data-text');
-                        if (textToSpeak) {
-                            speechManager.speak(textToSpeak);
-                        }
-                    });
-                }
-            });
-  
-            highlightWords.forEach(word => {
-                word.addEventListener('click', () => {
-                    speechManager.speak(word.getAttribute('data-text') || word.textContent);
-                    word.classList.add('speaking');
-                    setTimeout(() => word.classList.remove('speaking'), 1000);
-                });
-            });
-  
-            // Add these styles to level7Styles
-            if (!document.getElementById('level7Styles')) {
-                const style = document.createElement('style');
-                style.id = 'level7Styles';
-                style.textContent = `
-                    .story-container {
-                        max-width: 800px;
-                        margin: 0 auto;
-                        padding: 2rem;
-                        background: linear-gradient(180deg, #87CEEB 0%, #1E90FF 100%);
-                        border-radius: 20px;
-                        box-shadow: 0 8px 32px rgba(0,0,0,0.1);
-                        position: relative;
-                        overflow: hidden;
-                    }
-
-                    .story-text {
-                        font-size: 1.2rem;
-                        line-height: 1.8;
-                        margin-bottom: 1.5rem;
-                        color: white;
-                        text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
-                        background: rgba(255, 255, 255, 0.1);
-                        padding: 1.5rem;
-                        border-radius: 15px;
-                        backdrop-filter: blur(5px);
-                    }
-
-                    .highlight-word {
-                        color: #FFD700;
-                        cursor: pointer;
-                        font-weight: bold;
-                        padding: 2px 5px;
-                        border-radius: 4px;
-                        transition: all 0.3s ease;
-                        text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
-                    }
-
-                    .highlight-word:hover {
-                        background: rgba(255, 215, 0, 0.3);
-                        color: white;
-                        transform: scale(1.1);
-                    }
-
-                    .highlight-word.speaking {
-                        animation: pulse 1s ease-in-out;
-                        background: rgba(255, 215, 0, 0.5);
-                        color: white;
-                    }
-
-                    /* Add wave effect like other levels */
-                    .story-container::before {
-                        content: '';
-                        position: absolute;
-                        top: 0;
-                        left: 0;
-                        right: 0;
-                        height: 10px;
-                        background: url('data:image/svg+xml,<svg viewBox="0 0 1200 120" xmlns="http://www.w3.org/2000/svg"><path d="M0,0V46.29c47.79,22.2,103.59,32.17,158,28,70.36-5.37,136.33-33.31,206.8-37.5C438.64,32.43,512.34,53.67,583,72.05c69.27,18,138.3,24.88,209.4,13.08,36.15-6,69.85-17.84,104.45-29.34C989.49,25,1113-14.29,1200,52.47V0Z" fill="%23ffffff" opacity=".25"/></svg>') repeat-x;
-                        animation: wave 15s linear infinite;
-                    }
-
-                    @keyframes pulse {
-                        0% { transform: scale(1); }
-                        50% { transform: scale(1.1); }
-                        100% { transform: scale(1); }
-                    }
-
-                    .image-section {
-                        position: relative;
-                        margin-bottom: 2rem;
-                        border-radius: 15px;
-                        overflow: hidden;
-                        box-shadow: 0 8px 32px rgba(0,0,0,0.2);
-                    }
-
-                    .story-image {
-                        width: 100%;
-                        height: 300px;
-                        object-fit: cover;
-                        border-radius: 15px;
-                    }
-
-                    .speech-btn {
-                        position: absolute;
-                        bottom: 1rem;
-                        right: 1rem;
-                        background: rgba(255, 255, 255, 0.9);
-                        border: none;
-                        border-radius: 50%;
-                        width: 40px;
-                        height: 40px;
-                        display: flex;
-                        align-items: center;
-                        justify-content: center;
-                        cursor: pointer;
-                        transition: all 0.3s ease;
-                        box-shadow: 0 2px 8px rgba(0,0,0,0.2);
-                    }
-
-                    .speech-btn:hover {
-                        transform: scale(1.1);
-                        background: white;
-                    }
-
-                    .speech-btn svg {
-                        width: 24px;
-                        height: 24px;
-                        stroke: #1E90FF;
-                    }
-                `;
-                document.head.appendChild(style);
+        // Update the completeLevel function to include Level 7
+        function completeLevel() {
+            switch(currentLevel) {
+                case 1:
+                    levelContainer.innerHTML = level2Content;
+                    break;
+                case 2:
+                    levelContainer.innerHTML = level3Content;
+                    break;
+                case 3:
+                    levelContainer.innerHTML = level4Content;
+                    initializeQuiz();
+                    break;
+                case 4:
+                    levelContainer.innerHTML = level5Content;
+                    initializeGlossary();
+                    break;
+                case 5:
+                    levelContainer.innerHTML = level6Content;
+                    initializeArribada();
+                    break;
+                case 6:
+                    levelContainer.innerHTML = level7Content;
+                    initializeSpeechHighlighting();
+                    break;
+                default:
+                    console.log('All levels completed!');
+                    return;
             }
+            currentLevel++;
         }
     </script>
 </body>
