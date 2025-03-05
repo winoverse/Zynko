@@ -1200,6 +1200,136 @@
             0%, 100% { transform: translateY(0); }
             50% { transform: translateY(-10px); }
         }
+
+        /* Enhanced beach scene and turtle animations */
+        .beach-scene {
+            background: linear-gradient(
+                to bottom,
+                #001f3f 0%,    /* Night sky */
+                #003366 30%,   /* Darker water */
+                #1E90FF 60%,   /* Ocean water */
+                #C2B280 60%,   /* Sand start */
+                #D4B887 100%   /* Darker sand */
+            );
+            height: 300px;     /* Increased height for better view */
+            position: relative;
+            overflow: hidden;
+            border-radius: 15px;
+            box-shadow: inset 0 0 50px rgba(0,0,0,0.3);
+        }
+
+        /* Enhanced moon with glow */
+        .moon {
+            width: 60px;
+            height: 60px;
+            background: radial-gradient(circle at 35% 35%, 
+                #fff 0%, 
+                #ffd700 50%, 
+                #ffa500 100%);
+            border-radius: 50%;
+            position: absolute;
+            top: 30px;
+            right: 50px;
+            box-shadow: 0 0 30px #ffd700, 
+                       0 0 50px rgba(255, 215, 0, 0.5);
+            animation: moonGlow 3s ease-in-out infinite;
+        }
+
+        /* Enhanced ocean with waves */
+        .ocean {
+            height: 60%;
+            background: linear-gradient(
+                180deg, 
+                rgba(0,51,102,0.8) 0%, 
+                rgba(30,144,255,0.6) 100%
+            );
+            position: absolute;
+            bottom: 40%;
+            width: 100%;
+            animation: waveMove 3s ease-in-out infinite;
+        }
+
+        /* Multiple wave layers */
+        .ocean::before, .ocean::after {
+            content: '';
+            position: absolute;
+            width: 200%;
+            height: 100%;
+            top: -25%;
+            left: -50%;
+            border-radius: 45%;
+            background: rgba(255,255,255,0.1);
+        }
+
+        .ocean::before {
+            animation: oceanWave 8s linear infinite;
+        }
+
+        .ocean::after {
+            animation: oceanWave 15s linear infinite;
+        }
+
+        /* Enhanced turtle animation */
+        .arriving-turtle {
+            position: absolute;
+            width: 50px;
+            height: 50px;
+            background: url('/img/turtle-icon.png') no-repeat center/contain;
+            bottom: -50px;
+            filter: drop-shadow(0 0 10px rgba(255,255,255,0.3));
+            animation: turtleSwim 8s ease-in-out forwards;
+        }
+
+        @keyframes turtleSwim {
+            0% {
+                transform: translateY(0) rotate(0deg) scale(0.8);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+                transform: translateY(-30px) rotate(10deg) scale(1);
+            }
+            30% {
+                transform: translateY(-60px) rotate(-5deg) scale(1.1);
+            }
+            50% {
+                transform: translateY(-90px) rotate(5deg) scale(1);
+            }
+            70% {
+                transform: translateY(-120px) rotate(-8deg) scale(0.9);
+            }
+            100% {
+                transform: translateY(-150px) rotate(0deg) scale(0.8);
+                opacity: 0.8;
+            }
+        }
+
+        @keyframes oceanWave {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @keyframes moonGlow {
+            0%, 100% { box-shadow: 0 0 30px #ffd700, 0 0 50px rgba(255, 215, 0, 0.5); }
+            50% { box-shadow: 0 0 40px #ffd700, 0 0 60px rgba(255, 215, 0, 0.6); }
+        }
+
+        /* Add stars to the night sky */
+        .beach-scene::after {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 30%;
+            top: 0;
+            background-image: 
+                radial-gradient(1px 1px at 10% 10%, white 100%, transparent),
+                radial-gradient(1px 1px at 20% 20%, white 100%, transparent),
+                radial-gradient(1px 1px at 30% 30%, white 100%, transparent),
+                radial-gradient(1px 1px at 40% 40%, white 100%, transparent),
+                radial-gradient(2px 2px at 50% 50%, white 100%, transparent);
+            background-size: 200px 200px;
+            opacity: 0.5;
+        }
     </style>
 </head>
 <body>
