@@ -1205,23 +1205,47 @@
         .beach-scene {
             background: linear-gradient(
                 to bottom,
-                #001f3f 0%,    /* Night sky */
-                #003366 30%,   /* Darker water */
+                #0B1026 0%,    /* Deep night sky */
+                #1B2C5C 20%,   /* Night sky with stars */
+                #24419C 40%,   /* Twilight water */
                 #1E90FF 60%,   /* Ocean water */
                 #C2B280 60%,   /* Sand start */
                 #D4B887 100%   /* Darker sand */
             );
-            height: 300px;     /* Increased height for better view */
+            height: 300px;
             position: relative;
             overflow: hidden;
             border-radius: 15px;
-            box-shadow: inset 0 0 50px rgba(0,0,0,0.3);
+            box-shadow: inset 0 0 50px rgba(0,0,0,0.5);
+            perspective: 1000px;
+        }
+
+        /* Enhanced stars effect */
+        .beach-scene::before {
+            content: '';
+            position: absolute;
+            width: 200%;
+            height: 40%;
+            top: 0;
+            left: -50%;
+            background-image: 
+                radial-gradient(2px 2px at 20% 20%, rgba(255, 255, 255, 0.9) 100%, transparent),
+                radial-gradient(2px 2px at 40% 40%, rgba(255, 255, 255, 0.8) 100%, transparent),
+                radial-gradient(3px 3px at 60% 60%, rgba(255, 255, 255, 0.7) 100%, transparent),
+                radial-gradient(1px 1px at 80% 80%, rgba(255, 255, 255, 0.6) 100%, transparent);
+            background-size: 400px 400px;
+            animation: twinkle 4s ease-in-out infinite;
+        }
+
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.8; }
+            50% { opacity: 0.4; }
         }
 
         /* Enhanced moon with glow */
         .moon {
-            width: 60px;
-            height: 60px;
+            width: 80px;
+            height: 80px;
             background: radial-gradient(circle at 35% 35%, 
                 #fff 0%, 
                 #ffd700 50%, 
@@ -1230,8 +1254,10 @@
             position: absolute;
             top: 30px;
             right: 50px;
-            box-shadow: 0 0 30px #ffd700, 
-                       0 0 50px rgba(255, 215, 0, 0.5);
+            box-shadow: 0 0 40px #ffd700, 
+                        0 0 60px rgba(255, 215, 0, 0.6),
+                        0 0 80px rgba(255, 215, 0, 0.4),
+                        inset -5px -5px 20px rgba(0,0,0,0.3);
             animation: moonGlow 3s ease-in-out infinite;
         }
 
@@ -1240,33 +1266,38 @@
             height: 60%;
             background: linear-gradient(
                 180deg, 
-                rgba(0,51,102,0.8) 0%, 
-                rgba(30,144,255,0.6) 100%
+                rgba(13,41,82,0.9) 0%, 
+                rgba(30,144,255,0.8) 50%,
+                rgba(135,206,235,0.6) 100%
             );
             position: absolute;
             bottom: 40%;
             width: 100%;
-            animation: waveMove 3s ease-in-out infinite;
+            animation: waveMove 4s ease-in-out infinite;
         }
 
-        /* Multiple wave layers */
+        /* Enhanced wave effects */
         .ocean::before, .ocean::after {
             content: '';
             position: absolute;
             width: 200%;
             height: 100%;
-            top: -25%;
+            top: -35%;
             left: -50%;
             border-radius: 45%;
-            background: rgba(255,255,255,0.1);
+            background: rgba(255,255,255,0.2);
+            filter: blur(3px);
         }
 
         .ocean::before {
-            animation: oceanWave 8s linear infinite;
+            animation: oceanWave 10s linear infinite;
+            opacity: 0.8;
         }
 
         .ocean::after {
-            animation: oceanWave 15s linear infinite;
+            animation: oceanWave 18s linear infinite;
+            opacity: 0.6;
+            top: -30%;
         }
 
         /* Enhanced turtle animation */
@@ -1276,30 +1307,43 @@
             height: 50px;
             background: url('/img/turtle-icon.png') no-repeat center/contain;
             bottom: -50px;
-            filter: drop-shadow(0 0 10px rgba(255,255,255,0.3));
+            filter: drop-shadow(0 0 15px rgba(255,255,255,0.4));
+            transform-style: preserve-3d;
             animation: turtleSwim 8s ease-in-out forwards;
+        }
+
+        /* Add turtle trail effect */
+        .arriving-turtle::after {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: inherit;
+            filter: blur(5px) brightness(1.5);
+            opacity: 0.3;
+            transform: translateZ(-10px);
         }
 
         @keyframes turtleSwim {
             0% {
-                transform: translateY(0) rotate(0deg) scale(0.8);
+                transform: translateY(0) rotate(0deg) scale(0.8) translateX(0);
                 opacity: 0;
             }
             10% {
                 opacity: 1;
-                transform: translateY(-30px) rotate(10deg) scale(1);
+                transform: translateY(-30px) rotate(10deg) scale(1) translateX(10px);
             }
             30% {
-                transform: translateY(-60px) rotate(-5deg) scale(1.1);
+                transform: translateY(-60px) rotate(-5deg) scale(1.1) translateX(-15px);
             }
             50% {
-                transform: translateY(-90px) rotate(5deg) scale(1);
+                transform: translateY(-90px) rotate(5deg) scale(1) translateX(20px);
             }
             70% {
-                transform: translateY(-120px) rotate(-8deg) scale(0.9);
+                transform: translateY(-120px) rotate(-8deg) scale(0.9) translateX(-10px);
             }
             100% {
-                transform: translateY(-150px) rotate(0deg) scale(0.8);
+                transform: translateY(-150px) rotate(0deg) scale(0.8) translateX(0);
                 opacity: 0.8;
             }
         }
@@ -1310,8 +1354,8 @@
         }
 
         @keyframes moonGlow {
-            0%, 100% { box-shadow: 0 0 30px #ffd700, 0 0 50px rgba(255, 215, 0, 0.5); }
-            50% { box-shadow: 0 0 40px #ffd700, 0 0 60px rgba(255, 215, 0, 0.6); }
+            0%, 100% { box-shadow: 0 0 40px #ffd700, 0 0 60px rgba(255, 215, 0, 0.6); }
+            50% { box-shadow: 0 0 50px #ffd700, 0 0 70px rgba(255, 215, 0, 0.7); }
         }
 
         /* Add stars to the night sky */
