@@ -270,6 +270,7 @@
             padding: 2rem 5%;
             align-items: center;
             gap: 2rem;
+            margin-top: 2rem;
         }
 
         .hero-content {
@@ -289,12 +290,15 @@
 
         .hero-tag span {
             color: #FF6B00;
+            font-family: 'Nunito', sans-serif;
         }
 
         .hero h1 {
             font-size: 3.5rem;
             margin-bottom: 1rem;
             line-height: 1.2;
+            font-family: 'Nunito', sans-serif;
+            font-weight: 700;
         }
 
         .hero h1 .highlight {
@@ -305,23 +309,26 @@
             color: #666;
             margin-bottom: 2rem;
             line-height: 1.6;
+            font-family: 'Nunito', sans-serif;
+            font-size: 1.1rem;
         }
 
         .get-started {
-            background-color: #FFB800;
+            background-color: #FF6B00;
             color: white;
             padding: 1rem 2rem;
             border-radius: 8px;
             text-decoration: none;
             display: inline-block;
             font-weight: bold;
+            font-family: 'Nunito', sans-serif;
             transition: all 0.3s ease;
         }
 
         .get-started:hover {
             background-color: #FF9100;
             transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(255, 184, 0, 0.3);
+            box-shadow: 0 4px 12px rgba(255, 107, 0, 0.2);
         }
 
         .hero-image {
@@ -478,18 +485,26 @@
             font-size: 3.5rem;
             color: #333;
             margin-bottom: 4rem;
+            font-family: 'Nunito', sans-serif;
+        }
+
+        .stats-header .highlight {
+            color: #FF6B00;
+            font-weight: 600;
+            display: inline-block;
+            font-family: 'Nunito', sans-serif;
+            letter-spacing: 0.5px;
         }
 
         .loved-by {
             display: flex;
             flex-direction: column;
-            align-items: flex-start;
+            align-items: center;
             gap: 1.5rem;
             margin-bottom: 4rem;
             font-size: 2rem;
-            border-bottom: 1px solid #e0e0e0;
             padding-bottom: 3rem;
-            text-align: left;
+            text-align: center;
             max-width: 1000px;
             margin-left: auto;
             margin-right: auto;
@@ -497,7 +512,9 @@
 
         .loved-by .group {
             display: flex;
+            text-align: center;
             align-items: center;
+            justify-content: center;
             gap: 1.5rem;
         }
 
@@ -518,46 +535,126 @@
             max-width: 1000px;
             margin: 0 auto;
             display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            gap: 1rem;
-        }
-
-        .stats-grid {
-            flex: 0 0 50%;
-            text-align: left;
-        }
-
-        .stat-item {
-            padding: 2rem 0;
-            border-bottom: 1px solid #e0e0e0;
-        }
-
-        .stat-item:last-child {
-            border-bottom: none;
-        }
-
-        .stat-number {
-            font-size: 4.5rem;
-            font-weight: bold;
-            color: #FF6B00;
-            line-height: 1;
-            margin-bottom: 0.5rem;
-        }
-
-        .stat-label {
-            font-size: 1.25rem;
-            color: #333;
-        }
-
-        .stat-label span {
-            color: #888;
+            flex-direction: column;
+            align-items: center;
+            gap: 3rem;
         }
 
         .india-map {
-            flex: 0 0 35%;
-            max-width: 350px;
-            margin-left: -2rem;
+            width: 100%;
+            max-width: 550px;
+            margin: 0 auto;
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            aspect-ratio: 1;
+            padding: 0.5rem;
+        }
+
+        .india-map img {
+            width: 95%;
+            max-height: 500px;
+            object-fit: contain;
+            position: relative;
+            z-index: 2;
+            transition: transform 0.5s ease;
+        }
+
+        .india-map:hover img {
+            transform: scale(1.02);
+        }
+
+        .india-map::before {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 243, 234, 0.6);
+            border-radius: 50%;
+            z-index: 1;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        .india-map::after {
+            content: 'ZYNKO AI';
+            position: absolute;
+            color: rgba(0, 0, 0, 0.3);
+            font-size: calc(0.8rem + 0.5vw);
+            font-weight: 700;
+            z-index: 3;
+            top: 48%;
+            left: 45%;
+            transform: translate(-50%, -50%);
+            pointer-events: none;
+            text-align: center;
+            white-space: nowrap;
+            width: 40%;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            animation: fadeInOut 3s ease-in-out infinite;
+            letter-spacing: 1px;
+            padding: 5px;
+        }
+
+        /* Adding new circle */
+        .india-map .circle-bg {
+            content: '';
+            position: absolute;
+            width: 85%;
+            height: 85%;
+            background: rgba(255, 243, 234, 0.8);
+            border-radius: 50%;
+            z-index: 1;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            animation: pulse-reverse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0% {
+                transform: translate(-50%, -50%) scale(1);
+                opacity: 0.6;
+            }
+            50% {
+                transform: translate(-50%, -50%) scale(1.02);
+                opacity: 0.8;
+            }
+            100% {
+                transform: translate(-50%, -50%) scale(1);
+                opacity: 0.6;
+            }
+        }
+
+        @keyframes pulse-reverse {
+            0% {
+                transform: translate(-50%, -50%) scale(1);
+                opacity: 0.8;
+            }
+            50% {
+                transform: translate(-50%, -50%) scale(0.98);
+                opacity: 0.6;
+            }
+            100% {
+                transform: translate(-50%, -50%) scale(1);
+                opacity: 0.8;
+            }
+        }
+
+        @keyframes fadeInOut {
+            0% {
+                opacity: 0.4;
+            }
+            50% {
+                opacity: 0.6;
+            }
+            100% {
+                opacity: 0.4;
+            }
         }
 
         /* Responsive Styles */
@@ -567,7 +664,7 @@
             }
             
             .india-map {
-                max-width: 400px;
+                max-width: 500px;
             }
         }
 
@@ -575,7 +672,6 @@
         @media screen and (max-width: 768px) {
             .stats-section {
                 padding: 4rem 3%;
-                text-align: center;
             }
 
             .stats-header {
@@ -592,26 +688,14 @@
                 justify-content: center;
             }
 
-            .stats-container {
-                flex-direction: column; /* Change to column layout on mobile */
-                gap: 2rem;
-                padding: 0;
-            }
-
-            .stats-grid {
-                flex: 0 0 100%; /* Take full width */
-                width: 100%;
-            }
-
             .india-map {
-                flex: 0 0 100%;
-                max-width: 250px; /* Control the map size */
-                margin: 0 auto; /* Center the map */
-                opacity: 0.6; /* Make it slightly transparent */
+                max-width: 400px;
             }
-
-            .stat-item {
-                text-align: center; /* Center stats on mobile */
+            
+            .india-map::after {
+                font-size: calc(0.7rem + 0.5vw);
+                top: 47%;
+                left: 44%;
             }
         }
 
@@ -624,16 +708,14 @@
                 font-size: 1.5rem;
             }
 
-            .stat-number {
-                font-size: 3rem;
-            }
-
-            .stat-label {
-                font-size: 1.1rem;
-            }
-
             .india-map {
-                max-width: 200px; /* Smaller map for very small screens */
+                max-width: 350px;
+            }
+            
+            .india-map::after {
+                font-size: calc(0.6rem + 0.5vw);
+                top: 46%;
+                left: 43%;
             }
         }
 
@@ -663,6 +745,12 @@
         .tutor-block h2 span {
             color: #FF6B00;
             display: block; /* Makes the orange text go to next line */
+        }
+
+        .tutor-block h2 .smaller-text {
+            font-size: 0.9em;
+            display: block;
+            margin-top: 0.5rem;
         }
 
         .ai-tutor-tagline {
@@ -718,6 +806,10 @@
 
             .ui-components-display {
                 padding: 0.5rem;
+            }
+
+            .tutor-block h2 .smaller-text {
+                font-size: 0.75em;
             }
         }
 
@@ -1390,9 +1482,21 @@
 
         /* Footer Styles */
         .footer {
-            background-color: #fff;
-            padding: 4rem 5%;
-            border-top: 1px solid #eee;
+            background: linear-gradient(180deg, #ffffff 0%, #f8f9fa 100%);
+            padding: 6rem 5% 2rem;
+            border-top: 1px solid rgba(255, 107, 0, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .footer::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, #FF6B00, #FFB800);
         }
 
         .footer-content {
@@ -1401,51 +1505,125 @@
             display: grid;
             grid-template-columns: repeat(4, 1fr);
             gap: 3rem;
+            position: relative;
         }
 
         .footer-column h3 {
-            font-size: 1.2rem;
+            font-size: 1.3rem;
             color: #333;
-            margin-bottom: 1.5rem;
+            margin-bottom: 1.8rem;
+            font-weight: bold;
+            position: relative;
+            display: inline-block;
+        }
+
+        .footer-column h3::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            bottom: -8px;
+            width: 40px;
+            height: 3px;
+            background: linear-gradient(90deg, #FF6B00, #FFB800);
+            transition: width 0.3s ease;
+        }
+
+        .footer-column:hover h3::after {
+            width: 100%;
         }
 
         .footer-links {
             display: flex;
             flex-direction: column;
-            gap: 0.8rem;
+            gap: 1rem;
         }
 
         .footer-links a {
             color: #666;
             text-decoration: none;
-            font-size: 0.9rem;
-            transition: color 0.3s ease;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+            position: relative;
+            width: fit-content;
+            padding: 2px 0;
+        }
+
+        .footer-links a::before {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 1px;
+            background: #FF6B00;
+            bottom: 0;
+            left: 0;
+            transform: scaleX(0);
+            transform-origin: right;
+            transition: transform 0.3s ease;
         }
 
         .footer-links a:hover {
             color: #FF6B00;
+            transform: translateX(8px);
+        }
+
+        .footer-links a:hover::before {
+            transform: scaleX(1);
+            transform-origin: left;
+        }
+
+        .footer-logo-container {
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+        }
+
+        .footer-logo {
+            max-width: 180px;
+            height: auto;
+            transition: transform 0.3s ease;
+            filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.1));
+        }
+
+        .footer-logo:hover {
+            transform: translateY(-5px);
         }
 
         .footer-bottom {
             max-width: 1200px;
             margin: 3rem auto 0;
             padding-top: 2rem;
-            border-top: 1px solid #eee;
+            border-top: 1px solid rgba(0, 0, 0, 0.1);
             text-align: center;
-            color: #666;
-            font-size: 0.9rem;
         }
 
-        .footer-logo {
-            max-width: 150px;
-            margin-bottom: 1rem;
+        .footer-bottom p {
+            color: #333;
+            font-size: 0.9rem;
+            font-weight: 700;
+            font-family: 'Nunito', sans-serif;
+            letter-spacing: 0.5px;
         }
 
         /* Mobile styles */
         @media screen and (max-width: 768px) {
+            .footer {
+                padding: 4rem 3% 2rem;
+            }
+
             .footer-content {
-                grid-template-columns: repeat(2, 1fr);
+                grid-template-columns: 1fr 1fr;
                 gap: 2rem;
+            }
+
+            .footer-logo-container {
+                grid-column: span 2;
+                justify-content: center;
+                margin-top: 2rem;
+            }
+
+            .footer-column h3 {
+                font-size: 1.2rem;
+                margin-bottom: 1.5rem;
             }
         }
 
@@ -1455,8 +1633,12 @@
                 gap: 2rem;
             }
 
-            .footer-bottom {
-                margin-top: 2rem;
+            .footer-logo-container {
+                grid-column: span 1;
+            }
+
+            .footer-bottom p {
+                font-size: 0.85rem;
             }
         }
 
@@ -1513,7 +1695,8 @@
                 <span class="highlight">Free Learning,</span><br>
                 Easy Access
             </h1>
-            <p>Transform your learning journey with our open-source, AI-powered platform. Unlock free resources tailored to your needs, all while experiencing smart, personalized lessons designed to help you achieve more.</p>
+            <p>Transform your learning with our AI-powered, next-gen education platform! Designed for students, we bring you a digital-first experience with cutting-edge technology, personalized lessons, and high-quality resources—all for free. Learn smarter, explore limitless possibilities, 
+            and shape your future with the power of modern education! 📚💡</p>
             <a href="/pages/authform.html" class="get-started">Get started !</a>
         </div>
         <div class="hero-image">
@@ -1523,7 +1706,7 @@
 
     <!-- Stats Section -->
     <section class="stats-section">
-        <h2 class="stats-header">20+ subjects, all in one place</h2>
+        <h2 class="stats-header"><span class="highlight">One Platform, Limitless Learning!</span></h2>
         
         <div class="loved-by">
             <div class="group">
@@ -1531,29 +1714,13 @@
                 <img src="/img/students-group.png" alt="Students">
                 <span class="highlight">Students</span>
             </div>
-            <div class="group">
-                <span>and by</span>
-                <img src="/img/teacher.png" alt="Teacher">
-                <span class="highlight">Teachers</span>
-            </div>
         </div>
 
         <div class="stats-container">
-            <div class="stats-grid">
-                <div class="stat-item">
-                    <div class="stat-number" data-value="120" data-suffix="k">0</div>
-                    <div class="stat-label">Students <span>worldwide</span></div>
-                </div>
-                <div class="stat-item">
-                    <div class="stat-number" data-value="175" data-suffix="+">0</div>
-                    <div class="stat-label">Countries <span>impacted</span></div>
-                </div>
-                <div class="stat-item">
-                    <div class="stat-number" data-value="2000" data-suffix="+">0</div>
-                    <div class="stat-label">Schools using <span>our platform</span></div>
-                </div>
+            <div class="india-map">
+                <div class="circle-bg"></div>
+                <img src="/img/india-map.png" alt="India Map">
             </div>
-            <img src="/img/india-map.png" alt="India Map" class="india-map">
         </div>
     </section>
 
@@ -1564,14 +1731,25 @@
             <h2>An AI tutor in the pocket of <span>every Indian child</span></h2>
         </div>
         <div class="ui-components-display">
-            <img src="/img/ui-components.png" alt="AI Tutor Interface Components">
+            <img src="/img/AI-ui.png" alt="AI Tutor Interface Components">
         </div>
 
         <!-- New Tutor Block -->
         <div class="tutor-block">
-            <h2>As if every child had a <span>UniLag-educated tutor</span></h2>
+            <h2><span>From books to bytes </span>The Future of Learning</h2>
             <div class="ui-components-display">
-                <img src="/img/ui-components-2.png" alt="AI Tutor Interface Components">
+                <img src="/img/dashboard.png" alt="AI Tutor Interface Components">
+            </div>
+        </div>
+
+        <!-- New Community Block -->
+        <div class="tutor-block">
+            <h2>
+                A Space for Every Learner,
+                <span class="smaller-text">A Group for Every Dream</span>
+            </h2>
+            <div class="ui-components-display">
+                <img src="/img/ui-components-2.png" alt="Community Interface Components">
             </div>
         </div>
     </section>
@@ -1860,57 +2038,43 @@
     <!-- Footer -->
     <footer class="footer">
         <div class="footer-content">
-            <div class="footer-column">
+            <div class="footer-column" data-aos="fade-up" data-aos-delay="100">
                 <h3>Subjects</h3>
                 <div class="footer-links">
-                    <a href="#">Christian Religious Studies</a>
-                    <a href="#">Computer Studies</a>
-                    <a href="#">Physics</a>
+                    <a href="#">Mathematics</a>
+                    <a href="#">Science</a>
                     <a href="#">Social Studies</a>
-                    <a href="#">Commerce</a>
-                    <a href="#">Basic Science</a>
-                    <a href="#">Animal Husbandry</a>
-                    <a href="#">Further Maths</a>
+                    <a href="#">Computer Science</a>
+                    <a href="#">Language Studies</a>
+                    <a href="#">Business & Economics</a>
+                    <a href="#">Arts & Creativity</a>
+                    <a href="#">Environmental Science</a>
+                    <a href="#">Technical Studies</a>
+                    <a href="#">Vocational Studies</a>
                 </div>
             </div>
-            <div class="footer-column">
-                <h3>More Subjects</h3>
+            <div class="footer-column" data-aos="fade-up" data-aos-delay="200">
+                <h3>Extra Learning</h3>
                 <div class="footer-links">
-                    <a href="#">Accounts</a>
-                    <a href="#">Data Processing</a>
-                    <a href="#">Maths</a>
-                    <a href="#">English</a>
-                    <a href="#">Bookkeeping</a>
-                    <a href="#">Government</a>
-                    <a href="#">Civic Education</a>
-                    <a href="#">Agricultural Science</a>
+                    <a href="#">Coding & Programming</a>
+                    <a href="#">Career Guidance</a>
+                    <a href="#">Soft Skills & Communication</a>
                 </div>
             </div>
-            <div class="footer-column">
-                <h3>And More</h3>
+            <div class="footer-column" data-aos="fade-up" data-aos-delay="300">
+                <h3>About Us</h3>
                 <div class="footer-links">
-                    <a href="#">Biology</a>
-                    <a href="#">Economics</a>
-                    <a href="#">Business Studies</a>
-                    <a href="#">Culture & Creative Arts</a>
-                    <a href="#">Chemistry</a>
-                    <a href="#">Islamic Religious Studies</a>
-                    <a href="#">Literature in English</a>
+                    <a href="#">Contact Support</a>
+                    <a href="#">Terms & Conditions</a>
+                    <a href="#">Privacy Policy</a>
                 </div>
             </div>
-            <div class="footer-column">
-                <h3>Zynko</h3>
-                <div class="footer-links">
-                    <a href="#">Pricing</a>
-                    <a href="#">Contact us</a>
-                    <a href="#">Terms and conditions</a>
-                    <a href="#">Privacy policy</a>
-                </div>
+            <div class="footer-logo-container" data-aos="fade-up" data-aos-delay="400">
+                <img src="/img/zynko-logo.png" alt="Zynko Logo" class="footer-logo">
             </div>
         </div>
         <div class="footer-bottom">
-            <img src="/img/zynko-logo.png" alt="Zynko Logo" class="footer-logo">
-            <p>© 2022 - 2024 Zynko.ai</p>
+            <p>© 2022 - 2024 Zynko.ai | Empowering Education Through Innovation</p>
         </div>
     </footer>
 
@@ -1946,10 +2110,6 @@
         });
         sr.reveal('.loved-by', {
             delay: 600
-        });
-        sr.reveal('.stats-grid', {
-            origin: 'left',
-            delay: 800
         });
         sr.reveal('.india-map', {
             origin: 'right',
@@ -2006,16 +2166,6 @@
         sr.reveal('.cta-section', {
             origin: 'bottom',
             distance: '30px'
-        });
-
-        // Footer
-        sr.reveal('.footer-column', {
-            origin: 'bottom',
-            interval: 300
-        });
-        sr.reveal('.footer-bottom', {
-            origin: 'bottom',
-            delay: 400
         });
 
         // FAQ Functionality
