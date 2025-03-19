@@ -1034,6 +1034,10 @@
                 const fileInput = document.getElementById('fileInput');
                 
                 fileInput.addEventListener('change', async (e) => {
+                    // Add these console.logs at the start of the function
+                    console.log('Current User:', firebase.auth().currentUser?.uid);
+                    console.log('Community ID:', communityData.id);
+                    
                     const file = e.target.files[0];
                     if (!file) return;
 
