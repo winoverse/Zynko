@@ -771,6 +771,7 @@
                     const div = document.createElement('div');
                     div.className = `message ${message.senderId === currentUser.uid ? 'own' : ''}`;
                     div.dataset.messageId = messageId;
+                    div.dataset.senderId = message.senderId;
 
                     const time = message.timestamp ? new Date(message.timestamp.toDate()).toLocaleTimeString() : '';
                     
@@ -1379,6 +1380,70 @@
 
         // Initialize search when the page loads
         document.addEventListener('DOMContentLoaded', initializeSearch);
+
+        // Add this function to generate consistent colors for usernames
+        function generateUserColor(userId) {
+            const colors = [
+                '#FF6B6B', // coral red
+                '#4ECDC4', // turquoise
+                '#45B7D1', // sky blue
+                '#96CEB4', // sage green
+                '#9B59B6', // purple
+                '#F39C12', // orange
+                '#1ABC9C', // emerald
+                '#D35400', // pumpkin
+                '#26A69A', // teal
+                '#5E35B1', // deep purple
+                '#FF7043', // deep orange
+                '#66BB6A', // green
+                '#EC407A', // pink
+                '#7E57C2', // indigo
+                '#FFA726'  // amber
+            ];
+            
+            // Use userId to consistently pick a color
+            const index = Array.from(userId).reduce((acc, char) => acc + char.charCodeAt(0), 0);
+            return colors[index % colors.length];
+        }
+
+        // Add this CSS for colorful usernames
+        const userColorStyle = document.createElement('style');
+        userColorStyle.textContent = `
+            .sender-name {
+                font-size: 0.8rem;
+                font-weight: 600;
+                transition: all 0.3s ease;
+            }
+
+            .message.own .sender-name {
+                color: white !important; /* Always white for own messages */
+            }
+        `;
+        document.head.appendChild(userColorStyle);
+
+        // Modify the message creation to add colors
+        // Add this where you create messages (in your createMessageElement function)
+        function applyUserColors() {
+            const messages = document.querySelectorAll('.message');
+            messages.forEach(message => {
+                const senderElement = message.querySelector('.sender-name');
+                const senderId = message.dataset.senderId; // Make sure you're setting this attribute when creating messages
+                if (senderElement && senderId) {
+                    senderElement.style.color = generateUserColor(senderId);
+                }
+            });
+        }
+
+        // Call this function after messages are loaded and when new messages arrive
+        // Add this to your message creation/loading logic
+        document.addEventListener('DOMContentLoaded', () => {
+            applyUserColors();
+            // If you're using real-time updates, call it after new messages are added
+            // For example, in your message listener:
+            // messagesRef.onSnapshot(() => {
+            //     applyUserColors();
+            // });
+        });
     </script>
 </body>
 </html> 
