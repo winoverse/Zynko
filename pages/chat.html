@@ -1034,92 +1034,80 @@
                 const fileInput = document.getElementById('fileInput');
                 
                 fileInput.addEventListener('change', async (e) => {
-                    // Add these console.logs at the start of the function
-                    console.log('Current User:', firebase.auth().currentUser?.uid);
-                    console.log('Community ID:', communityData.id);
+                    // Add these debug logs
+                    console.log('Debug Info:', {
+                        currentUser: firebase.auth().currentUser?.uid,
+                        communityId: communityData.id,
+                        isAuthenticated: !!firebase.auth().currentUser,
+                        storage: !!firebase.storage()
+                    });
                     
                     const file = e.target.files[0];
                     if (!file) return;
 
-                    // Validate file type and size
-                    const validTypes = ['image/jpeg', 'image/png', 'image/gif', 'application/pdf'];
-                    const maxSize = 5 * 1024 * 1024; // 5MB
-
-                    if (!validTypes.includes(file.type)) {
-                        await Swal.fire({
-                            title: 'Invalid File Type',
-                            text: 'Please upload only images (JPEG, PNG, GIF) or PDF files',
-                            icon: 'error',
-                            confirmButtonColor: '#FF9B3F'
-                        });
-                        return;
-                    }
-
-                    if (file.size > maxSize) {
-                        await Swal.fire({
-                            title: 'File Too Large',
-                            text: 'Please upload files smaller than 5MB',
-                            icon: 'error',
-                            confirmButtonColor: '#FF9B3F'
-                        });
-                        return;
-                    }
-
                     try {
-                        // Create a unique filename
+                        // Initialize storage reference
+                        const storage = firebase.storage();
+                        const storageRef = storage.ref();
+                        
+                        // Create file path and reference
                         const fileName = `${Date.now()}_${file.name}`;
                         const filePath = `communities/${communityData.id}/files/${fileName}`;
-                        const fileRef = storage.ref(filePath);
+                        console.log('Uploading to path:', filePath);
+                        
+                        const fileRef = storageRef.child(filePath);
 
                         // Upload file
                         const uploadTask = fileRef.put(file);
 
-                        // Show upload progress
-                        uploadTask.on('state_changed', 
+                        uploadTask.on('state_changed',
                             (snapshot) => {
                                 const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-                                // You could add a progress bar here if desired
+                                console.log('Upload progress:', progress);
                             },
                             (error) => {
-                                console.error('Upload error:', error);
+                                console.error('Upload error details:', {
+                                    code: error.code,
+                                    message: error.message,
+                                    serverResponse: error.serverResponse,
+                                    name: error.name
+                                });
+                                
                                 Swal.fire({
                                     title: 'Upload Failed',
-                                    text: 'Failed to upload file. Please try again.',
+                                    text: error.message,
                                     icon: 'error',
                                     confirmButtonColor: '#FF9B3F'
                                 });
                             },
                             async () => {
-                                // Get download URL
-                                const downloadURL = await fileRef.getDownloadURL();
-                                const userName = await getUserName(currentUser.uid);
+                                try {
+                                    const downloadURL = await fileRef.getDownloadURL();
+                                    console.log('Upload successful, URL:', downloadURL);
+                                    
+                                    // Add to messages collection
+                                    const userName = await getUserName(currentUser.uid);
+                                    await messagesRef.add({
+                                        content: '',
+                                        senderId: currentUser.uid,
+                                        senderName: userName,
+                                        timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+                                        reactions: {},
+                                        file: {
+                                            url: downloadURL,
+                                            type: file.type,
+                                            name: file.name
+                                        }
+                                    });
 
-                                // Add message with file
-                                await messagesRef.add({
-                                    content: '',
-                                    senderId: currentUser.uid,
-                                    senderName: userName,
-                                    timestamp: firebase.firestore.FieldValue.serverTimestamp(),
-                                    reactions: {},
-                                    file: {
-                                        url: downloadURL,
-                                        type: file.type,
-                                        name: file.name
-                                    }
-                                });
-
-                                // Clear file input
-                                fileInput.value = '';
+                                    fileInput.value = '';
+                                } catch (err) {
+                                    console.error('Error in success handler:', err);
+                                }
                             }
                         );
                     } catch (error) {
-                        console.error('Error handling file:', error);
-                        Swal.fire({
-                            title: 'Error',
-                            text: 'Failed to process file. Please try again.',
-                            icon: 'error',
-                            confirmButtonColor: '#FF9B3F'
-                        });
+                        console.error('Error in file upload:', error);
                     }
                 });
             } catch (error) {
