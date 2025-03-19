@@ -1440,9 +1440,9 @@
             applyUserColors();
             // If you're using real-time updates, call it after new messages are added
             // For example, in your message listener:
-            // messagesRef.onSnapshot(() => {
-            //     applyUserColors();
-            // });
+            messagesRef.onSnapshot(() => {
+                applyUserColors();
+            });
         });
     </script>
 </body>
