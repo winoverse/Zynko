@@ -796,19 +796,31 @@
                         confirmButtonText: 'Yes, delete it!',
                         cancelButtonText: 'Cancel',
                         background: '#ffffff',
-                        borderRadius: '12px',
-                        customClass: {
-                            confirmButton: 'swal-confirm',
-                            cancelButton: 'swal-cancel'
-                        }
+                        borderRadius: '12px'
                     });
 
                     if (result.isConfirmed) {
                         try {
+                            // Get the message data first
+                            const messageDoc = await messagesRef.doc(messageId).get();
+                            const messageData = messageDoc.data();
+
+                            // If message has a file, delete it from storage first
+                            if (messageData.file && messageData.file.url) {
+                                // Get file path from URL
+                                const fileUrl = messageData.file.url;
+                                const fileRef = firebase.storage().refFromURL(fileUrl);
+                                
+                                // Delete the file from storage
+                                await fileRef.delete();
+                            }
+
+                            // Then delete the message from Firestore
                             await messagesRef.doc(messageId).delete();
+
                             Swal.fire({
                                 title: 'Deleted!',
-                                text: 'Message has been deleted',
+                                text: 'Message and associated files have been deleted',
                                 icon: 'success',
                                 confirmButtonColor: '#FF9B3F',
                                 timer: 1500,
@@ -819,7 +831,7 @@
                             console.error('Error deleting message:', error);
                             Swal.fire({
                                 title: 'Error!',
-                                text: 'Failed to delete message',
+                                text: 'Failed to delete message or associated files',
                                 icon: 'error',
                                 confirmButtonColor: '#FF9B3F',
                                 background: '#ffffff',
