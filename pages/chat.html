@@ -406,6 +406,77 @@
                 display: none;
             }
         }
+
+        /* File upload button */
+        .file-upload-btn {
+            padding: 8px;
+            background: #f1f5f9;
+            border-radius: 8px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+
+        .file-upload-btn:hover {
+            background: #e2e8f0;
+            transform: translateY(-1px);
+        }
+
+        .file-upload-btn svg {
+            color: #64748b;
+        }
+
+        /* File preview in message */
+        .message-file {
+            margin-top: 8px;
+            max-width: 300px;
+        }
+
+        .message-file img {
+            max-width: 100%;
+            border-radius: 8px;
+        }
+
+        .message-file .pdf-preview {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px;
+            background: #f8fafc;
+            border-radius: 8px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .message-file .pdf-preview svg {
+            color: #ef4444;
+        }
+
+        .message-file .pdf-preview a {
+            color: #1e293b;
+            text-decoration: none;
+            font-size: 0.875rem;
+        }
+
+        .message-file .pdf-preview a:hover {
+            text-decoration: underline;
+        }
+
+        /* Upload progress */
+        .upload-progress {
+            height: 4px;
+            background: #e2e8f0;
+            border-radius: 2px;
+            margin-top: 4px;
+        }
+
+        .upload-progress-bar {
+            height: 100%;
+            background: #FF9B3F;
+            border-radius: 2px;
+            transition: width 0.2s;
+        }
     </style>
 </head>
 <body>
@@ -435,6 +506,14 @@
             </div>
 
             <div class="chat-input">
+                <label for="fileInput" class="file-upload-btn">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                        <polyline points="17 8 12 3 7 8"/>
+                        <line x1="12" y1="3" x2="12" y2="15"/>
+                    </svg>
+                </label>
+                <input type="file" id="fileInput" accept="image/*,.pdf" style="display: none;">
                 <input type="text" placeholder="Type a message..." id="messageInput">
                 <button id="sendMessage">Send</button>
             </div>
@@ -610,13 +689,38 @@
                         console.error('Error checking admin status:', error);
                     }
 
+                    let fileHTML = '';
+                    if (message.file) {
+                        if (message.file.type.startsWith('image/')) {
+                            fileHTML = `
+                                <div class="message-file">
+                                    <img src="${message.file.url}" alt="Shared image" loading="lazy">
+                                </div>
+                            `;
+                        } else if (message.file.type === 'application/pdf') {
+                            fileHTML = `
+                                <div class="message-file">
+                                    <div class="pdf-preview">
+                                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                                            <polyline points="14 2 14 8 20 8"></polyline>
+                                            <line x1="12" y1="18" x2="12" y2="12"></line>
+                                        </svg>
+                                        <a href="${message.file.url}" target="_blank">${message.file.name}</a>
+                                    </div>
+                                </div>
+                            `;
+                        }
+                    }
+
                     div.innerHTML = `
                         <div class="message-info">
                             <span class="sender-name">${message.senderName}</span>
                             ${message.senderId === communityData.createdBy ? '<span class="admin-tag">Admin</span>' : ''}
                             <span class="timestamp">${time}</span>
                         </div>
-                        <div class="message-content">${message.content}</div>
+                        ${message.content ? `<div class="message-content">${message.content}</div>` : ''}
+                        ${fileHTML}
                         <div class="message-reactions">
                             <button class="reaction" data-reaction="👍">👍 ${Object.keys(message.reactions || {}).filter(uid => message.reactions[uid] === '👍').length}</button>
                             <button class="reaction" data-reaction="❤️">❤️ ${Object.keys(message.reactions || {}).filter(uid => message.reactions[uid] === '❤️').length}</button>
@@ -919,6 +1023,98 @@
                         typingIndicator.style.display = 'block';
                     } else {
                         typingIndicator.style.display = 'none';
+                    }
+                });
+
+                // Initialize Firebase Storage
+                const storage = firebase.storage();
+
+                // File upload handling
+                const fileInput = document.getElementById('fileInput');
+                
+                fileInput.addEventListener('change', async (e) => {
+                    const file = e.target.files[0];
+                    if (!file) return;
+
+                    // Validate file type and size
+                    const validTypes = ['image/jpeg', 'image/png', 'image/gif', 'application/pdf'];
+                    const maxSize = 5 * 1024 * 1024; // 5MB
+
+                    if (!validTypes.includes(file.type)) {
+                        await Swal.fire({
+                            title: 'Invalid File Type',
+                            text: 'Please upload only images (JPEG, PNG, GIF) or PDF files',
+                            icon: 'error',
+                            confirmButtonColor: '#FF9B3F'
+                        });
+                        return;
+                    }
+
+                    if (file.size > maxSize) {
+                        await Swal.fire({
+                            title: 'File Too Large',
+                            text: 'Please upload files smaller than 5MB',
+                            icon: 'error',
+                            confirmButtonColor: '#FF9B3F'
+                        });
+                        return;
+                    }
+
+                    try {
+                        // Create a unique filename
+                        const fileName = `${Date.now()}_${file.name}`;
+                        const filePath = `communities/${communityData.id}/files/${fileName}`;
+                        const fileRef = storage.ref(filePath);
+
+                        // Upload file
+                        const uploadTask = fileRef.put(file);
+
+                        // Show upload progress
+                        uploadTask.on('state_changed', 
+                            (snapshot) => {
+                                const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+                                // You could add a progress bar here if desired
+                            },
+                            (error) => {
+                                console.error('Upload error:', error);
+                                Swal.fire({
+                                    title: 'Upload Failed',
+                                    text: 'Failed to upload file. Please try again.',
+                                    icon: 'error',
+                                    confirmButtonColor: '#FF9B3F'
+                                });
+                            },
+                            async () => {
+                                // Get download URL
+                                const downloadURL = await fileRef.getDownloadURL();
+                                const userName = await getUserName(currentUser.uid);
+
+                                // Add message with file
+                                await messagesRef.add({
+                                    content: '',
+                                    senderId: currentUser.uid,
+                                    senderName: userName,
+                                    timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+                                    reactions: {},
+                                    file: {
+                                        url: downloadURL,
+                                        type: file.type,
+                                        name: file.name
+                                    }
+                                });
+
+                                // Clear file input
+                                fileInput.value = '';
+                            }
+                        );
+                    } catch (error) {
+                        console.error('Error handling file:', error);
+                        Swal.fire({
+                            title: 'Error',
+                            text: 'Failed to process file. Please try again.',
+                            icon: 'error',
+                            confirmButtonColor: '#FF9B3F'
+                        });
                     }
                 });
             } catch (error) {
