@@ -1110,6 +1110,19 @@
                         console.error('Error in file upload:', error);
                     }
                 });
+
+                // Add this right after your existing debug info
+                const debugCommunityRef = firebase.firestore().collection('communities').doc(communityData.id);
+                debugCommunityRef.get().then(doc => {
+                    console.log('Community Data:', {
+                        exists: doc.exists,
+                        data: doc.data(),
+                        members: doc.data()?.members,
+                        currentUserInMembers: doc.data()?.members?.includes(firebase.auth().currentUser?.uid)
+                    });
+                }).catch(error => {
+                    console.error('Error fetching community:', error);
+                });
             } catch (error) {
                 console.error('Error initializing chat:', error);
                 alert('Failed to initialize chat. Please try again.');
