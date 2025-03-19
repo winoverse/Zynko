@@ -550,6 +550,11 @@
         };
 
         firebase.initializeApp(firebaseConfig);
+
+        // Add these lines for explicit Storage initialization
+        const storage = firebase.storage();
+        console.log('Storage bucket:', storage.ref().bucket); // This should match your Firebase project
+
         const db = firebase.firestore();
 
         document.addEventListener('DOMContentLoaded', async () => {
