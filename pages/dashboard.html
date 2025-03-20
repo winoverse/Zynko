@@ -1131,6 +1131,195 @@
         .subject-icon {
             animation: floatAnimation 3s ease-in-out infinite;
         }
+
+        /* Add these styles for the leaderboard */
+        .leaderboard-section {
+            position: relative;
+            z-index: 1;
+            padding: 1rem 0;
+        }
+        
+        .leaderboard-container {
+            background: linear-gradient(to bottom, #8BC34A, #689F38);
+            border-radius: 20px;
+            padding: 2rem;
+            max-width: 600px;
+            margin: 0 auto;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+            position: relative;
+            overflow: hidden;
+            border: 12px solid #A67C52;
+        }
+        
+        .leaderboard-container::before,
+        .leaderboard-container::after {
+            content: '';
+            position: absolute;
+            width: 40px;
+            height: 100%;
+            background: #A67C52;
+            top: 0;
+        }
+        
+        .leaderboard-container::before {
+            left: -12px;
+        }
+        
+        .leaderboard-container::after {
+            right: -12px;
+        }
+        
+        .leaderboard-header {
+            background: #8D6E63;
+            margin: -2rem -2rem 1.5rem -2rem;
+            padding: 1.5rem 2rem;
+            border-bottom: 6px solid #A67C52;
+            color: white;
+            text-align: center;
+            position: relative;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+        
+        .leaderboard-header h2 {
+            font-size: 2rem;
+            margin: 0;
+            color: #FFF59D;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            font-weight: bold;
+        }
+        
+        .leaderboard-timer {
+            position: absolute;
+            bottom: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #F9A825;
+            padding: 0.5rem 1.5rem;
+            border-radius: 30px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: white;
+            font-weight: bold;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            border: 2px solid #FBC02D;
+        }
+        
+        .leaderboard-body {
+            background: #FFFFFF;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+        
+        .leaderboard-item {
+            display: flex;
+            align-items: center;
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid #E0E0E0;
+            transition: all 0.3s ease;
+        }
+        
+        .leaderboard-item:last-child {
+            border-bottom: none;
+        }
+        
+        .leaderboard-item:hover {
+            transform: translateX(5px);
+        }
+        
+        .rank {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 1.2rem;
+            margin-right: 1rem;
+        }
+        
+        .rank-1 .rank {
+            background: #FFD700;
+            color: white;
+            box-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+        }
+        
+        .rank-2 .rank {
+            background: #C0C0C0;
+            color: white;
+        }
+        
+        .rank-3 .rank {
+            background: #CD7F32;
+            color: white;
+        }
+        
+        .rank-4 .rank {
+            background: #EEEEEE;
+            color: #757575;
+        }
+        
+        .rank-you {
+            background: #E8F5E9;
+        }
+        
+        .rank-you .rank {
+            background: #4CAF50;
+            color: white;
+        }
+        
+        .user-info {
+            display: flex;
+            align-items: center;
+            flex: 1;
+        }
+        
+        .user-avatar {
+            font-size: 1.5rem;
+            margin-right: 1rem;
+        }
+        
+        .user-name {
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+        
+        .score-info {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .trophy {
+            font-size: 1.2rem;
+        }
+        
+        .score {
+            background: #AA00FF;
+            color: white;
+            padding: 0.4rem 0.8rem;
+            border-radius: 20px;
+            font-weight: bold;
+        }
+        
+        /* Responsive styles */
+        @media (max-width: 768px) {
+            .leaderboard-container {
+                margin: 0 1rem;
+                padding: 1.5rem;
+            }
+            
+            .leaderboard-header h2 {
+                font-size: 1.5rem;
+            }
+            
+            .leaderboard-timer {
+                padding: 0.4rem 1rem;
+                font-size: 0.9rem;
+            }
+        }
     </style>
     <!-- Update Firebase SDK imports -->
     <script src="https://www.gstatic.com/firebasejs/11.4.0/firebase-app-compat.js"></script>
@@ -1877,6 +2066,136 @@
                 </div>
             `;
         }
+
+        // Add this JavaScript code to handle the leaderboard display
+        document.addEventListener('DOMContentLoaded', function() {
+            // Get all nav links
+            const navLinks = document.querySelectorAll('.nav-link');
+            
+            // Add click event listeners to each nav link
+            navLinks.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    
+                    // Remove active class from all links
+                    navLinks.forEach(l => l.classList.remove('active'));
+                    
+                    // Add active class to clicked link
+                    this.classList.add('active');
+                    
+                    // Get the section to show based on link's data attribute or href
+                    const section = this.getAttribute('data-section') || this.getAttribute('href').substring(1);
+                    
+                    // Handle different sections
+                    if (section === 'leaderboard') {
+                        showLeaderboard();
+                    } else {
+                        // Hide leaderboard if showing another section
+                        const leaderboardSection = document.querySelector('.leaderboard-section');
+                        if (leaderboardSection) {
+                            leaderboardSection.style.display = 'none';
+                        }
+                        
+                        // Show subjects section for other links
+                        document.querySelector('.subjects-section').style.display = 'block';
+                    }
+                });
+            });
+            
+            // Function to show leaderboard
+            function showLeaderboard() {
+                // Hide subjects section
+                document.querySelector('.subjects-section').style.display = 'none';
+                
+                // Check if leaderboard section already exists
+                let leaderboardSection = document.querySelector('.leaderboard-section');
+                
+                if (!leaderboardSection) {
+                    // Create leaderboard section
+                    leaderboardSection = document.createElement('div');
+                    leaderboardSection.className = 'leaderboard-section';
+                    
+                    // Create leaderboard HTML
+                    leaderboardSection.innerHTML = `
+                        <div class="leaderboard-container">
+                            <div class="leaderboard-header">
+                                <h2>Leaderboard</h2>
+                                <div class="leaderboard-timer">
+                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <circle cx="12" cy="12" r="10"></circle>
+                                        <polyline points="12 6 12 12 16 14"></polyline>
+                                    </svg>
+                                    <span>10h 20m</span>
+                                </div>
+                            </div>
+                            <div class="leaderboard-body">
+                                <div class="leaderboard-item rank-1">
+                                    <div class="rank">1</div>
+                                    <div class="user-info">
+                                        <div class="user-avatar">👨‍🎓</div>
+                                        <div class="user-name">Angel</div>
+                                    </div>
+                                    <div class="score-info">
+                                        <div class="trophy">🏆</div>
+                                        <div class="score">265</div>
+                                    </div>
+                                </div>
+                                <div class="leaderboard-item rank-2">
+                                    <div class="rank">2</div>
+                                    <div class="user-info">
+                                        <div class="user-avatar">👨‍🎓</div>
+                                        <div class="user-name">Bob</div>
+                                    </div>
+                                    <div class="score-info">
+                                        <div class="trophy">🏆</div>
+                                        <div class="score">110</div>
+                                    </div>
+                                </div>
+                                <div class="leaderboard-item rank-3">
+                                    <div class="rank">3</div>
+                                    <div class="user-info">
+                                        <div class="user-avatar">👩‍🎓</div>
+                                        <div class="user-name">Melinda</div>
+                                    </div>
+                                    <div class="score-info">
+                                        <div class="trophy">🏆</div>
+                                        <div class="score">109</div>
+                                    </div>
+                                </div>
+                                <div class="leaderboard-item rank-4">
+                                    <div class="rank">4</div>
+                                    <div class="user-info">
+                                        <div class="user-avatar">👩‍🎓</div>
+                                        <div class="user-name">Kate</div>
+                                    </div>
+                                    <div class="score-info">
+                                        <div class="trophy">🏆</div>
+                                        <div class="score">106</div>
+                                    </div>
+                                </div>
+                                <div class="leaderboard-item rank-you">
+                                    <div class="rank">13</div>
+                                    <div class="user-info">
+                                        <div class="user-avatar">👨‍🎓</div>
+                                        <div class="user-name">You</div>
+                                    </div>
+                                    <div class="score-info">
+                                        <div class="trophy">🏆</div>
+                                        <div class="score">84</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    
+                    // Add leaderboard to main content
+                    document.querySelector('.main-content').appendChild(leaderboardSection);
+                } else {
+                    // Show existing leaderboard
+                    leaderboardSection.style.display = 'block';
+                }
+            }
+        });
     </script>
 </head>
 <body>
@@ -1938,13 +2257,16 @@
                     Dashboard
                 </a>
             </li>
+            <!-- Add this to your sidebar navigation -->
             <li class="nav-item">
-                <a href="#" class="nav-link">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                        <path d="M22 12h-4l-3 9L9 3l-3 9H2"/>
-                    </svg>
-                    Leaderboard
-                </a>
+            <a href="#leaderboard" class="nav-link" data-section="leaderboard">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="18" y="3" width="4" height="18"></rect>
+                    <rect x="10" y="8" width="4" height="13"></rect>
+                    <rect x="2" y="13" width="4" height="8"></rect>
+                </svg>
+                Leaderboard
+            </a>
             </li>
             <li class="nav-item">
                 <a href="#" class="nav-link">
