@@ -1639,7 +1639,7 @@
     
     .search-bar {
         width: 100%;
-    }
+    }   
     
     .create-community-btn {
         width: 100%;
@@ -1650,11 +1650,212 @@
         grid-template-columns: 1fr;
     }
 }
+
+/* Reports Section Styles */
+.reports-section {
+    padding: 2rem;
+    background: #f8f9fa;
+}
+
+.reports-header {
+    margin-bottom: 2rem;
+}
+
+.reports-filters {
+    display: flex;
+    gap: 1.5rem;
+    margin-top: 1rem;
+}
+
+.filter-group {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.filter-select {
+    padding: 0.5rem 1rem;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background: white;
+}
+
+.reports-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 2rem;
+}
+
+/* Progress Cards */
+.subject-progress-cards {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+    grid-column: 1 / -1;
+}
+
+.progress-card {
+    background: white;
+    padding: 1.5rem;
+    border-radius: 15px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    text-align: center;
+}
+
+.progress-circle {
+    position: relative;
+    width: 100px;
+    height: 100px;
+    margin: 1rem auto;
+}
+
+.circular-chart {
+    width: 100%;
+    height: 100%;
+}
+
+.circle-bg {
+    fill: none;
+    stroke: #eee;
+    stroke-width: 3;
+}
+
+.circle {
+    fill: none;
+    stroke: #FF9B3F;
+    stroke-width: 3;
+    stroke-linecap: round;
+    animation: progress 1s ease-out forwards;
+}
+
+.progress-text {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #333;
+}
+
+/* Activity Chart */
+.activity-chart {
+    background: white;
+    padding: 1.5rem;
+    border-radius: 15px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    grid-column: 1 / -1;
+}
+
+.chart-container {
+    height: 300px;
+}
+
+/* Topics Progress */
+.topics-progress {
+    background: white;
+    padding: 1.5rem;
+    border-radius: 15px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+}
+
+.topic-list {
+    margin-top: 1rem;
+}
+
+.topic-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.topic-info {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    width: 100px;
+}
+
+.topic-info img {
+    width: 24px;
+    height: 24px;
+}
+
+.topic-progress-bar {
+    flex: 1;
+    height: 8px;
+    background: #eee;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.progress {
+    height: 100%;
+    background: #FF9B3F;
+    border-radius: 4px;
+}
+
+.topic-percentage {
+    width: 50px;
+    text-align: right;
+    font-weight: 500;
+}
+
+/* Points Card */
+.points-card {
+    background: white;
+    padding: 1.5rem;
+    border-radius: 15px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+}
+
+.points-content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.points-value {
+    font-size: 3rem;
+    font-weight: bold;
+    color: #FF9B3F;
+    margin: 1rem 0;
+}
+
+.character-img {
+    width: 150px;
+    height: auto;
+}
+
+/* Animation */
+@keyframes progress {
+    0% {
+        stroke-dasharray: 0 100;
+    }
+}
+
+/* Mobile Responsiveness */
+@media screen and (max-width: 768px) {
+    .reports-filters {
+        flex-direction: column;
+    }
+
+    .reports-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .subject-progress-cards {
+        grid-template-columns: 1fr;
+    }
+}
     </style>
     <!-- Update Firebase SDK imports -->
     <script src="https://www.gstatic.com/firebasejs/11.4.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/11.4.0/firebase-firestore-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/11.4.0/firebase-auth-compat.js"></script>
+    <!-- Add this in the head section -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <script>
         const firebaseConfig = {
@@ -2574,6 +2775,44 @@
                 });
             }
         });
+
+        // Add this to your existing script section
+        document.addEventListener('DOMContentLoaded', function() {
+            // Setup activity chart
+            const ctx = document.getElementById('activityChart').getContext('2d');
+            const activityChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'],
+                    datasets: [{
+                        label: 'Activity',
+                        data: [100, 150, 200, 250, 300, 250, 200, 300, 250, 200, 150, 300],
+                        backgroundColor: '#FF9B3F',
+                        borderRadius: 5
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+        });
+
+        // Add click handler for reports nav link
+        document.querySelector('.nav-link[title="Reports"]').addEventListener('click', function(e) {
+            e.preventDefault();
+            // Hide other sections
+            document.querySelectorAll('.main-content > section, .community-section').forEach(section => {
+                section.style.display = 'none';
+            });
+            // Show reports section
+            document.querySelector('.reports-section').style.display = 'block';
+        });
     </script>
 </head>
 <body>
@@ -2835,6 +3074,130 @@
                         <div class="loading-spinner"></div>
                     </button>
                 </form>
+            </div>
+        </div>
+
+        <!-- Add this section to your main content area -->
+        <div class="reports-section" style="display: none;">
+            <div class="reports-header">
+                <h2>Student Reports</h2>
+                <div class="reports-filters">
+                    <div class="filter-group">
+                        <label>Timeframe:</label>
+                        <select class="filter-select">
+                            <option>All-time</option>
+                            <option>Last 7 Days</option>
+                            <option>This Month</option>
+                            <option>This Year</option>
+                            <option>Custom</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label>People:</label>
+                        <select class="filter-select">
+                            <option>All</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label>Topic:</label>
+                        <select class="filter-select">
+                            <option>All</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="reports-grid">
+                <!-- Subject Progress Cards -->
+                <div class="subject-progress-cards">
+                    <div class="progress-card">
+                        <h3>MATHS</h3>
+                        <div class="progress-circle">
+                            <svg viewBox="0 0 36 36" class="circular-chart">
+                                <path class="circle-bg" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"/>
+                                <path class="circle" stroke-dasharray="75, 100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"/>
+                            </svg>
+                            <span class="progress-text">75%</span>
+                        </div>
+                    </div>
+                    <div class="progress-card">
+                        <h3>SCIENCE</h3>
+                        <div class="progress-circle">
+                            <svg viewBox="0 0 36 36" class="circular-chart">
+                                <path class="circle-bg" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"/>
+                                <path class="circle" stroke-dasharray="65, 100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"/>
+                            </svg>
+                            <span class="progress-text">65%</span>
+                        </div>
+                    </div>
+                    <div class="progress-card">
+                        <h3>COMPUTER</h3>
+                        <div class="progress-circle">
+                            <svg viewBox="0 0 36 36" class="circular-chart">
+                                <path class="circle-bg" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"/>
+                                <path class="circle" stroke-dasharray="85, 100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"/>
+                            </svg>
+                            <span class="progress-text">85%</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Activity Chart -->
+                <div class="activity-chart">
+                    <h3>Activity</h3>
+                    <div class="chart-container">
+                        <canvas id="activityChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- Topics Progress -->
+                <div class="topics-progress">
+                    <h3>OVERALL TOPICS COVERED</h3>
+                    <div class="topic-list">
+                        <div class="topic-item">
+                            <div class="topic-info">
+                                <img src="/img/tamil-icon.png" alt="Tamil">
+                                <span>TAMIL</span>
+                            </div>
+                            <div class="topic-progress-bar">
+                                <div class="progress" style="width: 74%"></div>
+                            </div>
+                            <span class="topic-percentage">74%</span>
+                        </div>
+                        <div class="topic-item">
+                            <div class="topic-info">
+                                <img src="/img/english-icon.png" alt="English">
+                                <span>ENGLISH</span>
+                            </div>
+                            <div class="topic-progress-bar">
+                                <div class="progress" style="width: 52%"></div>
+                            </div>
+                            <span class="topic-percentage">52%</span>
+                        </div>
+                        <div class="topic-item">
+                            <div class="topic-info">
+                                <img src="/img/maths-icon.png" alt="Maths">
+                                <span>MATHS</span>
+                            </div>
+                            <div class="topic-progress-bar">
+                                <div class="progress" style="width: 38%"></div>
+                            </div>
+                            <span class="topic-percentage">38%</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Points Card -->
+                <div class="points-card">
+                    <div class="points-content">
+                        <div class="points-info">
+                            <h3>Your Points</h3>
+                            <div class="points-value">2803</div>
+                            <p>Keep it up you are moving ahead</p>
+                        </div>
+                        <img src="/img/character.png" alt="Character" class="character-img">
+                    </div>
+                </div>
             </div>
         </div>
     </main>
