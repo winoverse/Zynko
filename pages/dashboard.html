@@ -2827,7 +2827,9 @@
             function hideAllSections() {
                 const sections = [subjectsSection, leaderboardSection, communitySection, reportsSection];
                 sections.forEach(section => {
-                    if (section) section.style.display = 'none';
+                    if (section) {
+                        section.style.display = 'none';
+                    }
                 });
             }
 
@@ -2840,58 +2842,68 @@
             navLinks.forEach(link => {
                 link.addEventListener('click', function(e) {
                     e.preventDefault();
-                    removeActiveClass();
-                    this.classList.add('active');
-
+                    
                     // Get the section to show based on link's title or data attribute
                     const section = this.getAttribute('title') || this.getAttribute('data-section');
+                    
+                    console.log('Clicked section:', section); // Debug log
+                    
                     hideAllSections();
+                    removeActiveClass();
+                    this.classList.add('active');
 
                     // Show appropriate section based on navigation
                     switch(section) {
                         case 'Dashboard':
-                            subjectsSection.style.display = 'block';
+                            if(subjectsSection) subjectsSection.style.display = 'block';
                             break;
                         case 'Reports':
-                            reportsSection.style.display = 'block';
+                            if(reportsSection) {
+                                reportsSection.style.display = 'block';
+                                console.log('Showing reports section'); // Debug log
+                            }
                             break;
                         case 'Community':
-                            communitySection.style.display = 'block';
+                            if(communitySection) communitySection.style.display = 'block';
                             break;
                         case 'leaderboard':
-                            leaderboardSection.style.display = 'block';
+                            if(leaderboardSection) leaderboardSection.style.display = 'block';
                             break;
                     }
                 });
             });
 
             // Setup activity chart
-            const ctx = document.getElementById('activityChart').getContext('2d');
-            const activityChart = new Chart(ctx, {
-                type: 'bar',
-                data: {
-                    labels: ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'],
-                    datasets: [{
-                        label: 'Activity',
-                        data: [100, 150, 200, 250, 300, 250, 200, 300, 250, 200, 150, 300],
-                        backgroundColor: '#FF9B3F',
-                        borderRadius: 5
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    scales: {
-                        y: {
-                            beginAtZero: true
+            const ctx = document.getElementById('activityChart');
+            if(ctx) {
+                const activityChart = new Chart(ctx.getContext('2d'), {
+                    type: 'bar',
+                    data: {
+                        labels: ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'],
+                        datasets: [{
+                            label: 'Activity',
+                            data: [100, 150, 200, 250, 300, 250, 200, 300, 250, 200, 150, 300],
+                            backgroundColor: '#FF9B3F',
+                            borderRadius: 5
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            y: {
+                                beginAtZero: true
+                            }
                         }
                     }
-                }
-            });
+                });
+            }
 
             // Show dashboard by default
-            subjectsSection.style.display = 'block';
-            document.querySelector('.nav-link[title="Dashboard"]').classList.add('active');
+            hideAllSections();
+            if(subjectsSection) subjectsSection.style.display = 'block';
+            const dashboardLink = document.querySelector('.nav-link[title="Dashboard"]');
+            if(dashboardLink) dashboardLink.classList.add('active');
         });
     </script>
 </head>
@@ -3074,7 +3086,7 @@
             </div>
         </section>
 
-        <!-- Add this in the main-content section -->
+        <!-- Community Section -->
         <div class="community-section" style="display: none;">
             <!-- Communities for You Section -->
             <div class="community-section-divider">
@@ -3278,6 +3290,11 @@
                     </div>
                 </div>
             </div>
+        </section>
+
+        <!-- Leaderboard Section -->
+        <div class="leaderboard-section" style="display: none;">
+            <!-- ... existing leaderboard content ... -->
         </div>
     </main>
 
