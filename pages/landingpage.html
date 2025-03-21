@@ -1646,6 +1646,225 @@
         body {
             padding-top: 80px;
         }
+
+        /* Update AI Assistant Styles */
+        .ai-assistant-button {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            z-index: 1000;
+            cursor: pointer;
+        }
+
+        .ai-icon {
+            width: 80px;  /* Size of the image */
+            height: 80px;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            filter: drop-shadow(0 4px 15px rgba(255, 107, 0, 0.3));
+        }
+
+        .ai-assistant-button:hover .ai-icon {
+            transform: translateY(-5px) rotate(15deg);
+            filter: drop-shadow(0 8px 20px rgba(255, 107, 0, 0.4));
+        }
+
+        .ai-tooltip {
+            position: absolute;
+            bottom: 100px;
+            right: 0;
+            background: white;
+            padding: 15px 20px;
+            border-radius: 16px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            font-size: 0.95rem;
+            color: #333;
+            width: 250px;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(10px);
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255, 107, 0, 0.1);
+        }
+
+        .ai-tooltip::before {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            right: 25px;
+            width: 16px;
+            height: 16px;
+            background: white;
+            transform: rotate(45deg);
+            border-right: 1px solid rgba(255, 107, 0, 0.1);
+            border-bottom: 1px solid rgba(255, 107, 0, 0.1);
+        }
+
+        .ai-assistant-button:hover .ai-tooltip {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        /* Mobile responsiveness */
+        @media screen and (max-width: 768px) {
+            .ai-assistant-button {
+                bottom: 20px;
+                right: 20px;
+            }
+
+            .ai-icon {
+                width: 65px;
+                height: 65px;
+            }
+
+            .ai-tooltip {
+                width: 200px;
+                font-size: 0.85rem;
+                padding: 12px 16px;
+            }
+        }
+
+        /* Add this after the AI assistant button */
+        .ai-chat-container {
+            position: fixed;
+            bottom: 100px;
+            right: 30px;
+            width: 350px;
+            height: 400px;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            display: flex;
+            flex-direction: column;
+            z-index: 999;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(20px);
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255, 107, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .ai-chat-container.active {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        .ai-chat-header {
+            padding: 15px 20px;
+            background: linear-gradient(135deg, #FF6B00, #FFB800);
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .ai-chat-title {
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        .ai-chat-close {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 0;
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .ai-chat-close:hover {
+            transform: scale(1.1);
+        }
+
+        .ai-chat-messages {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            background: #f8f9fa;
+        }
+
+        .ai-message {
+            background: white;
+            padding: 12px 16px;
+            border-radius: 15px;
+            margin-bottom: 10px;
+            max-width: 85%;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+            line-height: 1.4;
+            font-size: 0.95rem;
+        }
+
+        .user-message {
+            background: linear-gradient(135deg, #FF6B00, #FFB800);
+            color: white;
+            margin-left: auto;
+            border-top-right-radius: 4px;
+        }
+
+        .ai-chat-input {
+            padding: 15px;
+            display: flex;
+            gap: 10px;
+            background: white;
+            border-top: 1px solid rgba(0, 0, 0, 0.1);
+        }
+
+        #ai-input {
+            flex: 1;
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            border-radius: 25px;
+            padding: 8px 15px;
+            font-size: 0.95rem;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        #ai-input:focus {
+            border-color: #FF6B00;
+            box-shadow: 0 0 0 2px rgba(255, 107, 0, 0.1);
+        }
+
+        .ai-send-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: none;
+            background: linear-gradient(135deg, #FF6B00, #FFB800);
+            color: white;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .ai-send-btn:hover {
+            transform: scale(1.05);
+        }
+
+        .ai-send-btn svg {
+            width: 20px;
+            height: 20px;
+        }
+
+        /* Mobile responsiveness */
+        @media screen and (max-width: 768px) {
+            .ai-chat-container {
+                width: calc(100% - 40px);
+                height: 400px;
+                bottom: 90px;
+                right: 20px;
+            }
+        }
     </style>
 </head>
 <body>
@@ -1731,7 +1950,7 @@
             <h2>An AI tutor in the pocket of <span>every Indian child</span></h2>
         </div>
         <div class="ui-components-display">
-            <img src="/img/AI-ui.png" alt="AI Tutor Interface Components">
+            <img src="/img/AI-u.png" alt="AI Tutor Interface Components">
         </div>
 
         <!-- New Tutor Block -->
@@ -2078,6 +2297,34 @@
         </div>
     </footer>
 
+    <!-- Update the AI assistant button HTML -->
+    <div class="ai-assistant-button">
+        <div class="ai-tooltip">Hey hi, I'm your AI Assistant and I will guide you about Zynko! 👋</div>
+        <img src="/img/AI-ui.png" alt="AI Assistant" class="ai-icon">
+    </div>
+
+    <!-- Add this after the AI assistant button -->
+    <div class="ai-chat-container">
+        <div class="ai-chat-header">
+            <div class="ai-chat-title">AI Assistant</div>
+            <button class="ai-chat-close">×</button>
+        </div>
+        <div class="ai-chat-messages">
+            <!-- Messages will appear here -->
+            <div class="ai-message">
+                Hi! I'm your AI assistant. How can I help you today? 👋
+            </div>
+        </div>
+        <div class="ai-chat-input">
+            <input type="text" placeholder="Type your message..." id="ai-input">
+            <button class="ai-send-btn">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/>
+                </svg>
+            </button>
+        </div>
+    </div>
+
     <script>
         // Initialize ScrollReveal with default config
         const sr = ScrollReveal({
@@ -2289,6 +2536,214 @@
         // Select all stats numbers and observe them
         document.querySelectorAll('.stat-number').forEach(stat => {
             observer.observe(stat);
+        });
+
+        // Add this to your existing script section
+        document.addEventListener('DOMContentLoaded', function() {
+            const aiButton = document.querySelector('.ai-assistant-button');
+            const chatContainer = document.querySelector('.ai-chat-container');
+            const closeButton = document.querySelector('.ai-chat-close');
+            const sendButton = document.querySelector('.ai-send-btn');
+            const input = document.getElementById('ai-input');
+            const messagesContainer = document.querySelector('.ai-chat-messages');
+
+            // Toggle chat interface
+            aiButton.addEventListener('click', () => {
+                chatContainer.classList.add('active');
+            });
+
+            closeButton.addEventListener('click', () => {
+                chatContainer.classList.remove('active');
+            });
+
+            // Expanded responses object with more context-specific answers
+            const responses = {
+                // General questions about Zynko
+                'what is zynko': 'Zynko is your one-stop hub for smarter learning! We\'re an AI-powered education platform that combines personalized learning, interactive content, and cutting-edge technology to make education accessible and engaging for everyone! 📚✨',
+                'who are you': 'I\'m your AI assistant at Zynko! I can help you explore our platform, learn about our features, and guide you through your educational journey. Ask me anything about our services! 🤖',
+                
+                // Expanded Features and Services
+                'features': 'Zynko offers a comprehensive set of features:\n• AI-powered personalized learning\n• Interactive study materials\n• Practice questions and mock tests\n• Subject-specific resources\n• Community learning\n• Progress tracking\n• Real-time doubt solving\n• Study schedules\n• Performance analytics\n• Mobile learning support\n• And much more! 🚀',
+                
+                // Expanded Subjects List
+                'subjects': 'We offer a wide range of subjects:\n• Mathematics\n• Science\n• English\n• Social Studies\n• Physics\n• Biology\n• Computer Science\n• Language Studies\n• Business & Economics\n• Arts & Creativity\n• Environmental Science\n• Technical Studies\n• Vocational Studies\nAll with personalized learning paths! 📖',
+                
+                // Extra Learning Options
+                'extra learning': 'Beyond regular subjects, we offer:\n• Coding & Programming\n• Career Guidance\n• Soft Skills & Communication\n• Leadership Development\n• Project Management\n• Digital Skills\nPerfect for holistic development! 🌟',
+                
+                // Study Tools and Features
+                'study tools': 'Our comprehensive study tools include:\n• AI-powered flashcards\n• Interactive practice tests\n• Custom question banks\n• Progress tracking dashboard\n• Study schedule planner\n• Notes organization system\n• Mock exam simulator\n• Performance analytics\n• Resource library\nAll designed to optimize your learning! 📚',
+                
+                // Mock Tests and Exams
+                'mock tests': 'Yes! Our mock test feature includes:\n• Real exam simulations\n• Timed assessments\n• Detailed performance analysis\n• Personalized feedback\n• Progress tracking\n• Difficulty levels adjustment\nPerfect for exam preparation! 📝',
+                
+                // AI Tutor Capabilities
+                'ai tutor': 'Our advanced AI tutor offers:\n• 24/7 doubt solving\n• Personalized learning paths\n• Adaptive content delivery\n• Interactive problem solving\n• Real-time feedback\n• Progress monitoring\n• Concept explanations\n• Practice recommendations\nLike having a personal tutor anytime! 🎓',
+                
+                // Community Features
+                'community': 'Join our vibrant learning community:\n• Connect with fellow students\n• Join study groups\n• Participate in discussions\n• Share resources\n• Collaborative learning\n• Peer support\n• Expert interactions\nLearn together, grow together! 👥',
+                
+                // Pricing Information
+                'pricing': 'Great news! Zynko is completely FREE! We believe in:\n• No hidden charges\n• Full feature access\n• Unlimited learning resources\n• Free community access\n• Regular updates\nQuality education should be accessible to everyone! 🎉',
+                
+                // Getting Started
+                'get started': 'Starting with Zynko is easy:\n1. Click the "Sign Up" button\n2. Create your account\n3. Choose your subjects\n4. Set your learning goals\n5. Start your learning journey\nNeed help? I\'m here to guide you! 🌟',
+                
+                // Support and Help
+                'help': 'We\'re here to support you:\n• 24/7 AI assistance\n• Technical support team\n• Community help\n• FAQ section\n• Video tutorials\n• Learning guides\n• Email support\nJust let me know what you need! 🤝'
+            };
+
+            // Expanded keywords mapping
+            const keywords = {
+                // General inquiries
+                'about': 'what is zynko',
+                'platform': 'what is zynko',
+                'introduction': 'what is zynko',
+                
+                // Features and tools
+                'features': 'features',
+                'offer': 'features',
+                'provide': 'features',
+                'tools': 'study tools',
+                'resources': 'study tools',
+                'materials': 'study tools',
+                
+                // Subjects and courses
+                'subjects': 'subjects',
+                'courses': 'subjects',
+                'topics': 'subjects',
+                'curriculum': 'subjects',
+                'study': 'subjects',
+                
+                // Extra learning
+                'extra': 'extra learning',
+                'additional': 'extra learning',
+                'skills': 'extra learning',
+                'coding': 'extra learning',
+                'programming': 'extra learning',
+                
+                // Tests and exams
+                'test': 'mock tests',
+                'exam': 'mock tests',
+                'practice': 'mock tests',
+                'assessment': 'mock tests',
+                'quiz': 'mock tests',
+                
+                // AI Tutor
+                'tutor': 'ai tutor',
+                'teacher': 'ai tutor',
+                'mentor': 'ai tutor',
+                'guide': 'ai tutor',
+                'explain': 'ai tutor',
+                'learn': 'ai tutor',
+                
+                // Community
+                'community': 'community',
+                'group': 'community',
+                'connect': 'community',
+                'together': 'community',
+                'social': 'community',
+                'collaborate': 'community',
+                
+                // Pricing
+                'price': 'pricing',
+                'cost': 'pricing',
+                'free': 'pricing',
+                'payment': 'pricing',
+                'subscription': 'pricing',
+                
+                // Getting started
+                'start': 'get started',
+                'begin': 'get started',
+                'register': 'get started',
+                'signup': 'get started',
+                'join': 'get started',
+                'account': 'get started',
+                
+                // Help and support
+                'help': 'help',
+                'support': 'help',
+                'assist': 'help',
+                'guidance': 'help',
+                'contact': 'help',
+                'issue': 'help',
+                'problem': 'help'
+            };
+
+            // Function to find best matching response
+            function findBestResponse(userInput) {
+                const input = userInput.toLowerCase();
+                
+                // Direct matches
+                for (let key in responses) {
+                    if (input.includes(key)) {
+                        return responses[key];
+                    }
+                }
+                
+                // Keywords mapping
+                for (let keyword in keywords) {
+                    if (input.includes(keyword)) {
+                        return responses[keywords[keyword]];
+                    }
+                }
+                
+                // Default response if no match found
+                return "I'm here to help you learn about Zynko! You can ask me about:\n• What Zynko is\n• Our features\n• Available subjects\n• How to get started\n• Our community\n• Study tools\n• AI tutor\n• And more! 🤗";
+            }
+
+            // Update sendMessage function
+            function sendMessage() {
+                const message = input.value.trim();
+                if (message) {
+                    // Add user message
+                    const userMessage = document.createElement('div');
+                    userMessage.className = 'ai-message user-message';
+                    userMessage.textContent = message;
+                    messagesContainer.appendChild(userMessage);
+
+                    // Clear input
+                    input.value = '';
+
+                    // Scroll to bottom
+                    messagesContainer.scrollTop = messagesContainer.scrollHeight;
+
+                    // Add AI response with typing effect
+                    const aiMessage = document.createElement('div');
+                    aiMessage.className = 'ai-message';
+                    messagesContainer.appendChild(aiMessage);
+
+                    // Get AI response
+                    const response = findBestResponse(message);
+
+                    // Simulate typing effect
+                    let i = 0;
+                    const typingSpeed = 30; // milliseconds per character
+                    function typeWriter() {
+                        if (i < response.length) {
+                            aiMessage.textContent += response.charAt(i);
+                            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+                            i++;
+                            setTimeout(typeWriter, typingSpeed);
+                        }
+                    }
+
+                    // Add typing indicator
+                    setTimeout(() => {
+                        typeWriter();
+                    }, 500);
+                }
+            }
+
+            // Send message on button click
+            sendButton.addEventListener('click', sendMessage);
+
+            // Send message on Enter key
+            input.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    sendMessage();
+                }
+            });
         });
     </script>
 </body>
