@@ -2813,6 +2813,86 @@
             // Show reports section
             document.querySelector('.reports-section').style.display = 'block';
         });
+
+        // Add this to your existing script section
+        document.addEventListener('DOMContentLoaded', function() {
+            // Get all nav links and content sections
+            const navLinks = document.querySelectorAll('.nav-link');
+            const subjectsSection = document.querySelector('.subjects-section');
+            const leaderboardSection = document.querySelector('.leaderboard-section');
+            const communitySection = document.querySelector('.community-section');
+            const reportsSection = document.querySelector('.reports-section');
+
+            // Function to hide all sections
+            function hideAllSections() {
+                const sections = [subjectsSection, leaderboardSection, communitySection, reportsSection];
+                sections.forEach(section => {
+                    if (section) section.style.display = 'none';
+                });
+            }
+
+            // Function to remove active class from all links
+            function removeActiveClass() {
+                navLinks.forEach(link => link.classList.remove('active'));
+            }
+
+            // Add click event listeners to each nav link
+            navLinks.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    removeActiveClass();
+                    this.classList.add('active');
+
+                    // Get the section to show based on link's title or data attribute
+                    const section = this.getAttribute('title') || this.getAttribute('data-section');
+                    hideAllSections();
+
+                    // Show appropriate section based on navigation
+                    switch(section) {
+                        case 'Dashboard':
+                            subjectsSection.style.display = 'block';
+                            break;
+                        case 'Reports':
+                            reportsSection.style.display = 'block';
+                            break;
+                        case 'Community':
+                            communitySection.style.display = 'block';
+                            break;
+                        case 'leaderboard':
+                            leaderboardSection.style.display = 'block';
+                            break;
+                    }
+                });
+            });
+
+            // Setup activity chart
+            const ctx = document.getElementById('activityChart').getContext('2d');
+            const activityChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'],
+                    datasets: [{
+                        label: 'Activity',
+                        data: [100, 150, 200, 250, 300, 250, 200, 300, 250, 200, 150, 300],
+                        backgroundColor: '#FF9B3F',
+                        borderRadius: 5
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+
+            // Show dashboard by default
+            subjectsSection.style.display = 'block';
+            document.querySelector('.nav-link[title="Dashboard"]').classList.add('active');
+        });
     </script>
 </head>
 <body>
@@ -2866,7 +2946,7 @@
         </div>
         <ul class="nav-links">
             <li class="nav-item">
-                <a href="#" class="nav-link active">
+                <a href="#" class="nav-link" title="Dashboard">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
                         <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
                         <polyline points="9 22 9 12 15 12 15 22"/>
@@ -2874,19 +2954,18 @@
                     Dashboard
                 </a>
             </li>
-            <!-- Add this to your sidebar navigation -->
             <li class="nav-item">
-            <a href="#leaderboard" class="nav-link" data-section="leaderboard">
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <rect x="18" y="3" width="4" height="18"></rect>
-                    <rect x="10" y="8" width="4" height="13"></rect>
-                    <rect x="2" y="13" width="4" height="8"></rect>
-                </svg>
-                Leaderboard
-            </a>
+                <a href="#leaderboard" class="nav-link" data-section="leaderboard">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="18" y="3" width="4" height="18"></rect>
+                        <rect x="10" y="8" width="4" height="13"></rect>
+                        <rect x="2" y="13" width="4" height="8"></rect>
+                    </svg>
+                    Leaderboard
+                </a>
             </li>
             <li class="nav-item">
-                <a href="#" class="nav-link">
+                <a href="#" class="nav-link" title="Reports">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
                         <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
                         <polyline points="14 2 14 8 20 8"/>
