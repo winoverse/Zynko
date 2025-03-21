@@ -1477,6 +1477,179 @@
                 font-size: 0.9rem;
             }
         }
+
+
+        /* Community Section Styles */
+.community-section {
+    padding: 20px;
+}
+
+.community-header {
+    margin-bottom: 25px;
+    padding-bottom: 15px;
+    border-bottom: 2px solid rgba(255, 107, 0, 0.1);
+}
+
+.community-header h2 {
+    font-size: 1.5rem;
+    color: #333;
+    margin-bottom: 15px;
+}
+
+.header-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 15px;
+}
+
+/* Search Bar Styles */
+.search-bar {
+    flex: 1;
+    display: flex;
+    gap: 10px;
+}
+
+.search-bar input {
+    flex: 1;
+    padding: 10px 15px;
+    border: 1px solid rgba(255, 107, 0, 0.2);
+    border-radius: 8px;
+    outline: none;
+    transition: all 0.3s ease;
+}
+
+.search-bar input:focus {
+    border-color: #FF6B00;
+    box-shadow: 0 0 0 2px rgba(255, 107, 0, 0.1);
+}
+
+/* Section Divider Styles */
+.community-section-divider {
+    margin: 40px 0 25px;
+    position: relative;
+    text-align: left;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.community-section-divider h2 {
+    font-size: 1.3rem;
+    color: #333;
+    margin: 0;
+}
+
+.community-section-divider::after {
+    content: '';
+    flex: 1;
+    height: 2px;
+    background: linear-gradient(to right, rgba(255, 107, 0, 0.2), transparent);
+    border-radius: 2px;
+}
+
+/* Communities Grid Styles */
+.communities-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 20px;
+    margin-bottom: 30px;
+}
+
+/* Create Community Button */
+.create-community-btn {
+    background: linear-gradient(135deg, #FF6B00, #FFB800);
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.3s ease;
+}
+
+.create-community-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(255, 107, 0, 0.2);
+}
+
+/* Community Card Styles */
+.community-card {
+    background: white;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.05);
+    transition: all 0.3s ease;
+    border: 1px solid rgba(255, 107, 0, 0.1);
+}
+
+.community-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(255, 107, 0, 0.1);
+}
+
+.community-card h3 {
+    color: #333;
+    margin-bottom: 10px;
+    font-size: 1.1rem;
+}
+
+.community-card p {
+    color: #666;
+    font-size: 0.9rem;
+    margin-bottom: 15px;
+}
+
+.community-stats {
+    display: flex;
+    gap: 15px;
+    font-size: 0.85rem;
+    color: #888;
+}
+
+.stat-item {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+/* Empty State Styles */
+.empty-state {
+    text-align: center;
+    padding: 30px;
+    color: #666;
+    background: rgba(255, 107, 0, 0.05);
+    border-radius: 12px;
+    margin: 10px 0;
+}
+
+.empty-state p {
+    margin: 10px 0;
+    font-size: 0.95rem;
+}
+
+/* Mobile Responsiveness */
+@media screen and (max-width: 768px) {
+    .header-actions {
+        flex-direction: column;
+    }
+    
+    .search-bar {
+        width: 100%;
+    }
+    
+    .create-community-btn {
+        width: 100%;
+        justify-content: center;
+    }
+    
+    .communities-grid {
+        grid-template-columns: 1fr;
+    }
+}
     </style>
     <!-- Update Firebase SDK imports -->
     <script src="https://www.gstatic.com/firebasejs/11.4.0/firebase-app-compat.js"></script>
@@ -2585,37 +2758,46 @@
 
         <!-- Add this in the main-content section -->
         <div class="community-section" style="display: none;">
-            <header class="community-header">
+            <!-- Communities for You Section -->
+            <div class="community-section-divider">
                 <h2>Communities for You</h2>
-                <div class="header-actions">
-                    <div class="search-bar">
-                        <input type="text" id="communitySearch" placeholder="Type something here">
-                        <button>Search</button>
-                    </div>
-                    <button class="create-community-btn">
-                        Create a community
-                    </button>
+            </div>
+            <div class="header-actions">
+                <div class="search-bar">
+                    <input type="text" id="communitySearch" placeholder="Search communities...">
                 </div>
-            </header>
-
+                <button class="create-community-btn">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <path d="M12 5v14M5 12h14"/>
+                    </svg>
+                    Create a community
+                </button>
+            </div>
             <div class="communities-grid" id="communitiesGrid">
-                <!-- Communities will be dynamically added here -->
+                <!-- Communities will be added here -->
             </div>
-
-            <!-- Add Your Communities Section -->
-            <header class="community-header" style="margin-top: 40px;">
+        
+            <!-- Your Communities Section -->
+            <div class="community-section-divider">
                 <h2>Your Communities</h2>
-            </header>
-            <div class="communities-grid" id="yourCommunitiesGrid">
-                <!-- User's created communities will be added here -->
             </div>
-
-            <!-- Joined Communities section -->
-            <header class="community-header" style="margin-top: 40px;">
+            <div class="communities-grid" id="yourCommunitiesGrid">
+                <!-- Your created communities will be added here -->
+                <div class="empty-state">
+                    <p>You haven't created any communities yet</p>
+                    <button class="create-community-btn">Create your first community</button>
+                </div>
+            </div>
+        
+            <!-- Joined Communities Section -->
+            <div class="community-section-divider">
                 <h2>Joined Communities</h2>
-            </header>
+            </div>
             <div class="communities-grid" id="joinedCommunitiesGrid">
-                <!-- User's joined communities will be added here -->
+                <!-- Joined communities will be added here -->
+                <div class="empty-state">
+                    <p>You haven't joined any communities yet</p>
+                </div>
             </div>
         </div>
 
