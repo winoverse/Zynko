@@ -2818,16 +2818,18 @@
         document.addEventListener('DOMContentLoaded', function() {
             // Get all nav links and content sections
             const navLinks = document.querySelectorAll('.nav-link');
-            const subjectsSection = document.querySelector('.subjects-section');
-            const leaderboardSection = document.querySelector('.leaderboard-section');
-            const communitySection = document.querySelector('.community-section');
-            const reportsSection = document.querySelector('.reports-section');
+            const sections = {
+                dashboard: document.querySelector('.subjects-section'),
+                leaderboard: document.querySelector('.leaderboard-section'),
+                community: document.querySelector('.community-section'),
+                reports: document.querySelector('.reports-section')
+            };
 
             // Function to hide all sections
             function hideAllSections() {
-                const sections = [subjectsSection, leaderboardSection, communitySection, reportsSection];
-                sections.forEach(section => {
+                Object.values(sections).forEach(section => {
                     if (section) {
+                        console.log('Hiding section:', section.className);
                         section.style.display = 'none';
                     }
                 });
@@ -2844,66 +2846,95 @@
                     e.preventDefault();
                     
                     // Get the section to show based on link's title or data attribute
-                    const section = this.getAttribute('title') || this.getAttribute('data-section');
+                    const sectionType = this.getAttribute('title')?.toLowerCase() || 
+                                      this.getAttribute('data-section')?.toLowerCase();
                     
-                    console.log('Clicked section:', section); // Debug log
+                    console.log('Clicked section:', sectionType); // Debug log
                     
                     hideAllSections();
                     removeActiveClass();
                     this.classList.add('active');
 
-                    // Show appropriate section based on navigation
-                    switch(section) {
-                        case 'Dashboard':
-                            if(subjectsSection) subjectsSection.style.display = 'block';
-                            break;
-                        case 'Reports':
-                            if(reportsSection) {
-                                reportsSection.style.display = 'block';
-                                console.log('Showing reports section'); // Debug log
+                    // Show appropriate section
+                    switch(sectionType) {
+                        case 'dashboard':
+                            if(sections.dashboard) {
+                                console.log('Showing dashboard');
+                                sections.dashboard.style.display = 'block';
                             }
                             break;
-                        case 'Community':
-                            if(communitySection) communitySection.style.display = 'block';
+                        case 'reports':
+                            if(sections.reports) {
+                                console.log('Showing reports');
+                                sections.reports.style.display = 'block';
+                            }
+                            break;
+                        case 'community':
+                            if(sections.community) {
+                                console.log('Showing community');
+                                sections.community.style.display = 'block';
+                            }
                             break;
                         case 'leaderboard':
-                            if(leaderboardSection) leaderboardSection.style.display = 'block';
+                            if(sections.leaderboard) {
+                                console.log('Showing leaderboard');
+                                sections.leaderboard.style.display = 'block';
+                            }
                             break;
                     }
                 });
             });
 
-            // Setup activity chart
-            const ctx = document.getElementById('activityChart');
-            if(ctx) {
-                const activityChart = new Chart(ctx.getContext('2d'), {
-                    type: 'bar',
-                    data: {
-                        labels: ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'],
-                        datasets: [{
-                            label: 'Activity',
-                            data: [100, 150, 200, 250, 300, 250, 200, 300, 250, 200, 150, 300],
-                            backgroundColor: '#FF9B3F',
-                            borderRadius: 5
-                        }]
-                    },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        scales: {
-                            y: {
-                                beginAtZero: true
+            // Initialize Chart.js only when reports section is visible
+            function initializeChart() {
+                const ctx = document.getElementById('activityChart');
+                if(ctx && !ctx.chart) { // Check if chart doesn't already exist
+                    ctx.chart = new Chart(ctx.getContext('2d'), {
+                        type: 'bar',
+                        data: {
+                            labels: ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'],
+                            datasets: [{
+                                label: 'Activity',
+                                data: [100, 150, 200, 250, 300, 250, 200, 300, 250, 200, 150, 300],
+                                backgroundColor: '#FF9B3F',
+                                borderRadius: 5
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            scales: {
+                                y: {
+                                    beginAtZero: true
+                                }
                             }
                         }
+                    });
+                }
+            }
+
+            // Add specific click handler for reports link
+            const reportsLink = document.querySelector('.nav-link[title="Reports"]');
+            if(reportsLink) {
+                reportsLink.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    hideAllSections();
+                    removeActiveClass();
+                    this.classList.add('active');
+                    if(sections.reports) {
+                        sections.reports.style.display = 'block';
+                        initializeChart(); // Initialize chart when reports section is shown
                     }
                 });
             }
 
             // Show dashboard by default
             hideAllSections();
-            if(subjectsSection) subjectsSection.style.display = 'block';
-            const dashboardLink = document.querySelector('.nav-link[title="Dashboard"]');
-            if(dashboardLink) dashboardLink.classList.add('active');
+            if(sections.dashboard) {
+                sections.dashboard.style.display = 'block';
+                const dashboardLink = document.querySelector('.nav-link[title="Dashboard"]');
+                if(dashboardLink) dashboardLink.classList.add('active');
+            }
         });
     </script>
 </head>
@@ -2967,7 +2998,7 @@
                 </a>
             </li>
             <li class="nav-item">
-                <a href="#leaderboard" class="nav-link" data-section="leaderboard">
+                <a href="#leaderboard" class="nav-link" data-section="leaderboard" data-section="leaderboard">
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <rect x="18" y="3" width="4" height="18"></rect>
                         <rect x="10" y="8" width="4" height="13"></rect>
