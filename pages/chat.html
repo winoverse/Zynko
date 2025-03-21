@@ -22,7 +22,7 @@
             display: grid;
             grid-template-columns: 1fr 320px;
             height: 100vh;
-            background: linear-gradient(to bottom, #ffffff, #f8fafc);
+            background: linear-gradient(to bottom, #fff9f5, #fff5f0);
             box-shadow: 0 0 20px rgba(0,0,0,0.1);
             border-radius: 16px;
             overflow: hidden;
@@ -103,11 +103,11 @@
     
         .message {
             padding: 0.75rem 1rem;
-            background: #ffffff;
+            background: #fff;
             border-radius: 16px;
             max-width: 65%;
             position: relative;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            box-shadow: 0 2px 8px rgba(255, 155, 63, 0.1);
             transition: all 0.3s ease;
             animation: slideIn 0.3s ease;
             margin-bottom: 0.5rem;
@@ -126,7 +126,7 @@
     
         .message.own {
             margin-left: auto;
-            background: linear-gradient(135deg, #00c6ff, #0084ff);
+            background: linear-gradient(135deg, #FF9B3F, #FF6B00);
             color: white;
             border-top-right-radius: 4px;
             padding: 0.6rem 0.875rem;
@@ -156,13 +156,11 @@
         }
     
         .admin-tag {
-            background: linear-gradient(135deg, #FF416C, #FF4B2B);
+            background: #FF9B3F;
             color: white;
-            padding: 3px 10px;
-            border-radius: 20px;
-            font-size: 0.75rem;
-            font-weight: 500;
-            box-shadow: 0 2px 4px rgba(255,75,43,0.2);
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 0.7rem;
         }
     
         .timestamp {
@@ -189,7 +187,9 @@
     
         .file-upload-btn {
             padding: 0.75rem;
-            background: linear-gradient(135deg, #f0f2f5, #e5e7eb);
+            background: rgba(255, 155, 63, 0.1);
+            color: #FF6B00;
+            border: 1px solid rgba(255, 155, 63, 0.2);
             border-radius: 50%;
             cursor: pointer;
             display: flex;
@@ -200,6 +200,7 @@
         }
     
         .file-upload-btn:hover {
+            background: rgba(255, 155, 63, 0.2);
             transform: translateY(-2px) scale(1.05);
             box-shadow: 0 4px 12px rgba(0,0,0,0.1);
         }
@@ -243,10 +244,10 @@
         /* Members sidebar */
         .members-sidebar {
             padding: 1.5rem;
-            background: linear-gradient(to bottom, #ffffff, #f8fafc);
+            background: #fff;
             height: 100vh;
             overflow-y: auto;
-            border-left: 1px solid rgba(226,232,240,0.8);
+            border-left: 1px solid rgba(255, 155, 63, 0.2);
             box-shadow: -2px 0 10px rgba(0,0,0,0.05);
         }
     
@@ -293,54 +294,52 @@
             width: 12px;
             height: 12px;
             border-radius: 50%;
-            background: #cbd5e1;
+            background: #ccc;
             transition: all 0.3s ease;
         }
     
         .online-status.online {
-            background: linear-gradient(135deg, #22c55e, #16a34a);
-            box-shadow: 0 0 0 3px rgba(34,197,94,0.2);
+            background: #FF9B3F;
+            box-shadow: 0 0 0 2px rgba(255, 155, 63, 0.3);
             animation: pulse 2s infinite;
         }
     
         @keyframes pulse {
             0% {
-                box-shadow: 0 0 0 0 rgba(34,197,94,0.4);
+                box-shadow: 0 0 0 0 rgba(255, 155, 63,0.4);
             }
             70% {
-                box-shadow: 0 0 0 6px rgba(34,197,94,0);
+                box-shadow: 0 0 0 6px rgba(255, 155, 63,0);
             }
             100% {
-                box-shadow: 0 0 0 0 rgba(34,197,94,0);
+                box-shadow: 0 0 0 0 rgba(255, 155, 63,0);
             }
         }
     
         /* Message reactions */
         .message-reactions {
             margin-top: 6px;
+            display: flex;
             gap: 6px;
         }
     
         .reaction {
+            background: rgba(255, 155, 63, 0.1);
+            color: #FF6B00;
             padding: 3px 8px;
-            background: linear-gradient(to bottom, #f8fafc, #f0f2f5);
-            border-radius: 20px;
+            border-radius: 12px;
             font-size: 0.8rem;
             cursor: pointer;
-            border: none;
             transition: all 0.3s ease;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
         }
     
         .reaction:hover {
-            transform: translateY(-2px) scale(1.05);
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            background: rgba(255, 155, 63, 0.2);
         }
     
         .reaction.active {
-            background: linear-gradient(135deg, #e3f2fd, #bbdefb);
-            color: #0084ff;
-            box-shadow: 0 2px 6px rgba(0,132,255,0.2);
+            background: #FF6B00;
+            color: white;
         }
     
         /* File attachments */
@@ -369,16 +368,20 @@
             align-items: center;
             gap: 12px;
             padding: 1rem;
-            background: linear-gradient(to right, #f8fafc, #f0f2f5);
+            background: rgba(255, 155, 63, 0.05);
             border-radius: 12px;
-            border: 1px solid rgba(226,232,240,0.8);
+            border: 1px solid rgba(255, 155, 63, 0.2);
             transition: all 0.3s ease;
         }
     
         .pdf-preview:hover {
-            background: linear-gradient(to right, #f1f5f9, #e5e7eb);
-            border-color: #cbd5e1;
+            background: rgba(255, 155, 63, 0.1);
+            border-color: rgba(255, 155, 63, 0.3);
             transform: translateY(-2px);
+        }
+    
+        .pdf-preview a {
+            color: #FF6B00;
         }
     
         .delete-message {
@@ -415,12 +418,12 @@
         }
     
         .chat-messages::-webkit-scrollbar-thumb {
-            background: linear-gradient(to bottom, #cbd5e1, #94a3b8);
-            border-radius: 3px;
+            background: rgba(255, 155, 63, 0.5);
+            border-radius: 10px;
         }
     
         .chat-messages::-webkit-scrollbar-thumb:hover {
-            background: linear-gradient(to bottom, #94a3b8, #64748b);
+            background: rgba(255, 155, 63, 0.7);
         }
     
         /* Search toggle */
@@ -511,16 +514,16 @@
             .members-toggle {
                 display: block;
                 padding: 0.5rem;
-                background: rgba(255,255,255,0.2);
-                border: 1px solid rgba(255,255,255,0.3);
+                background: rgba(255, 155, 63, 0.1);
+                color: #FF6B00;
+                border: 1px solid rgba(255, 155, 63, 0.2);
                 border-radius: 50%;
                 cursor: pointer;
                 transition: all 0.3s ease;
             }
     
             .members-toggle:hover {
-                background: rgba(255,255,255,0.3);
-                transform: translateY(-2px);
+                background: rgba(255, 155, 63, 0.2);
             }
     
             .members-sidebar {
@@ -553,6 +556,78 @@
             .overlay.active {
                 display: block;
             }
+        }
+
+        /* Update typing indicator */
+        .typing-indicator {
+            color: #FF6B00;
+            font-size: 0.85rem;
+            padding: 0.5rem;
+        }
+
+        /* Update buttons and interactive elements */
+        button {
+            background: #FF9B3F;
+            color: white;
+        }
+
+        button:hover {
+            background: #FF6B00;
+        }
+
+        /* Update input styles */
+        .message-input {
+            border: 1px solid rgba(255, 155, 63, 0.2);
+        }
+
+        .message-input:focus {
+            border-color: #FF9B3F;
+            box-shadow: 0 0 0 2px rgba(255, 155, 63, 0.1);
+        }
+
+        /* Update scrollbar */
+        .chat-messages::-webkit-scrollbar-thumb {
+            background: rgba(255, 155, 63, 0.5);
+            border-radius: 10px;
+        }
+
+        .chat-messages::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 155, 63, 0.7);
+        }
+
+        /* Update search highlighting */
+        .highlight {
+            background: rgba(255, 155, 63, 0.2);
+            color: #FF6B00;
+        }
+
+        /* Update Sweet Alert customization */
+        .swal2-styled.swal2-confirm {
+            background-color: #FF9B3F !important;
+        }
+
+        .swal2-styled.swal2-confirm:hover {
+            background-color: #FF6B00 !important;
+        }
+
+        /* Update file upload button */
+        .file-upload-btn {
+            background: rgba(255, 155, 63, 0.1);
+            color: #FF6B00;
+            border: 1px solid rgba(255, 155, 63, 0.2);
+        }
+
+        .file-upload-btn:hover {
+            background: rgba(255, 155, 63, 0.2);
+        }
+
+        /* Update admin tag */
+        .admin-tag {
+            background: #FF9B3F;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 0.7rem;
         }
     </style>
 </head>
@@ -1357,10 +1432,10 @@
         const style = document.createElement('style');
         style.textContent = `
             .highlight {
-                background: #fef08a;
+                background: rgba(255, 155, 63, 0.2);
                 border-radius: 2px;
                 padding: 0 2px;
-                color: #854d0e;
+                color: #FF6B00;
             }
 
             .search-info {
