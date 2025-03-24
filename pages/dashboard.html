@@ -2716,12 +2716,12 @@
             const subjectsSection = document.querySelector('.subjects-section');
             const communitySection = document.querySelector('.community-section');
             const leaderboardSection = document.querySelector('.leaderboard-section');
+            const reportSection = document.querySelector('.report-section');
+            const mainSections = document.querySelectorAll('.main-content > section');
 
             // Function to hide all sections
             function hideAllSections() {
-                if (subjectsSection) subjectsSection.style.display = 'none';
-                if (communitySection) communitySection.style.display = 'none';
-                if (leaderboardSection) leaderboardSection.style.display = 'none';
+                mainSections.forEach(section => section.style.display = 'none');
             }
 
             // Handle community link click
@@ -2732,16 +2732,13 @@
                     if (communitySection) {
                         communitySection.style.display = 'block';
                     }
-                    // Update active state of nav links
-                    document.querySelectorAll('.nav-link').forEach(link => {
-                        link.classList.remove('active');
-                    });
-                    communityLink.classList.add('active');
+                    updateActiveNav(communityLink);
+                    loadCommunities();
                 });
             }
 
             // Handle dashboard/home link click
-            const dashboardLink = document.querySelector('.nav-link[href="#"]');
+            const dashboardLink = document.querySelector('.nav-link[href="#"]:not([title])');
             if (dashboardLink) {
                 dashboardLink.addEventListener('click', (e) => {
                     e.preventDefault();
@@ -2749,12 +2746,43 @@
                     if (subjectsSection) {
                         subjectsSection.style.display = 'block';
                     }
-                    // Update active state of nav links
-                    document.querySelectorAll('.nav-link').forEach(link => {
-                        link.classList.remove('active');
-                    });
-                    dashboardLink.classList.add('active');
+                    updateActiveNav(dashboardLink);
                 });
+            }
+
+            // Handle leaderboard link click
+            const leaderboardLink = document.querySelector('.nav-link[data-section="leaderboard"]');
+            if (leaderboardLink) {
+                leaderboardLink.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    hideAllSections();
+                    if (leaderboardSection) {
+                        leaderboardSection.style.display = 'block';
+                    }
+                    updateActiveNav(leaderboardLink);
+                });
+            }
+
+            // Handle report link click
+            const reportLink = document.querySelector('.nav-link[title="Report"]');
+            if (reportLink) {
+                reportLink.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    hideAllSections();
+                    if (reportSection) {
+                        reportSection.style.display = 'block';
+                    }
+                    updateActiveNav(reportLink);
+                    initActivityChart();
+                });
+            }
+
+            // Function to update active nav link
+            function updateActiveNav(clickedLink) {
+                document.querySelectorAll('.nav-link').forEach(link => {
+                    link.classList.remove('active');
+                });
+                clickedLink.classList.add('active');
             }
         });
 
