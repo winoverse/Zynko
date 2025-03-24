@@ -1650,6 +1650,188 @@
         grid-template-columns: 1fr;
     }
 }
+.report-section {
+        padding: 2rem;
+    }
+
+    .report-header {
+        margin-bottom: 2rem;
+    }
+
+    .report-header h2 {
+        font-size: 1.5rem;
+        color: #333;
+        margin-bottom: 1rem;
+    }
+
+    .report-filters {
+        display: flex;
+        gap: 2rem;
+        margin-bottom: 2rem;
+    }
+
+    .filter-group {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .filter-group select {
+        padding: 0.5rem 1rem;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        background: white;
+    }
+
+    .report-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 2rem;
+        margin-bottom: 2rem;
+    }
+
+    .subject-progress-cards {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1rem;
+    }
+
+    .progress-card {
+        background: white;
+        padding: 1.5rem;
+        border-radius: 15px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+
+    .circular-progress {
+        position: relative;
+        width: 150px;
+        margin: 1rem auto;
+    }
+
+    .circular-chart {
+        width: 100%;
+        height: auto;
+    }
+
+    .percentage {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        font-size: 1.5rem;
+        font-weight: bold;
+        color: #333;
+    }
+
+    .progress-legend {
+        margin-top: 1rem;
+    }
+
+    .legend-item {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 0.5rem;
+    }
+
+    .dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        margin-right: 0.5rem;
+    }
+
+    .dot.completed {
+        background: #FFC107;
+    }
+
+    .dot.pending {
+        background: #ddd;
+    }
+
+    .activity-chart {
+        background: white;
+        padding: 1.5rem;
+        border-radius: 15px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+
+    .report-bottom-grid {
+        display: grid;
+        grid-template-columns: 2fr 1fr;
+        gap: 2rem;
+    }
+
+    .topics-covered {
+        background: white;
+        padding: 1.5rem;
+        border-radius: 15px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+
+    .subject-progress {
+        margin-top: 1rem;
+    }
+
+    .subject-item {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        margin-bottom: 1rem;
+    }
+
+    .subject-item img {
+        width: 30px;
+        height: 30px;
+    }
+
+    .progress-bar-container {
+        flex: 1;
+        height: 8px;
+        background: #eee;
+        border-radius: 4px;
+        overflow: hidden;
+    }
+
+    .progress-bar {
+        height: 100%;
+        background: #FF9B3F;
+        border-radius: 4px;
+    }
+
+    .points-card {
+        background: white;
+        padding: 1.5rem;
+        border-radius: 15px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        display: flex;
+        align-items: center;
+        gap: 1.5rem;
+    }
+
+    .points-avatar {
+        width: 100px;
+        height: auto;
+    }
+
+    .points-value {
+        font-size: 2.5rem;
+        font-weight: bold;
+        color: #FF9B3F;
+        margin: 0.5rem 0;
+    }
+
+    @media (max-width: 768px) {
+        .report-filters {
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .report-bottom-grid {
+            grid-template-columns: 1fr;
+        }
+    }
     </style>
     <!-- Update Firebase SDK imports -->
     <script src="https://www.gstatic.com/firebasejs/11.4.0/firebase-app-compat.js"></script>
@@ -1675,7 +1857,8 @@
 
     <!-- Add SweetAlert -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
+    <!-- Add Chart.js library before your closing </body> tag -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
         // Add this function to check user data
         async function checkUserData(userId) {
@@ -2574,6 +2757,77 @@
                 });
             }
         });
+
+        // Initialize Chart.js for reports section
+        document.addEventListener('DOMContentLoaded', () => {
+    const reportLink = document.querySelector('.nav-link[title="Report"]');
+    const reportSection = document.querySelector('.report-section');
+    const subjectsSection = document.querySelector('.subjects-section');
+    const communitySection = document.querySelector('.community-section');
+
+    if (reportLink) {
+        reportLink.addEventListener('click', (e) => {
+            e.preventDefault();
+            
+            // Hide other sections
+            if (subjectsSection) subjectsSection.style.display = 'none';
+            if (communitySection) communitySection.style.display = 'none';
+            
+            // Show report section
+            if (reportSection) reportSection.style.display = 'block';
+            
+            // Update active state
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.classList.remove('active');
+            });
+            reportLink.classList.add('active');
+
+            // Initialize activity chart
+            initActivityChart();
+        });
+    }
+
+    function initActivityChart() {
+        const ctx = document.getElementById('activityChart').getContext('2d');
+        const months = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'];
+        const data = [100, 150, 120, 200, 180, 250, 220, 190, 250, 150, 200, 180];
+
+        new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: months,
+                datasets: [{
+                    data: data,
+                    backgroundColor: '#FF9B3F',
+                    borderRadius: 5,
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        grid: {
+                            display: true,
+                            color: '#f0f0f0'
+                        }
+                    },
+                    x: {
+                        grid: {
+                            display: false
+                        }
+                    }
+                }
+            }
+        });
+    }
+});
     </script>
 </head>
 <body>
@@ -2647,7 +2901,7 @@
             </a>
             </li>
             <li class="nav-item">
-                <a href="#" class="nav-link">
+                <a href="#" class="nav-link" title="Report">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
                         <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
                         <polyline points="14 2 14 8 20 8"/>
@@ -2837,6 +3091,127 @@
                 </form>
             </div>
         </div>
+
+        <section class="report-section" style="display: none;">
+            <div class="report-header">
+                <h2>Student Reports</h2>
+                <div class="report-filters">
+                    <div class="filter-group">
+                        <label>Timeframe:</label>
+                        <select>
+                            <option>All-time</option>
+                            <option>Last 7 Days</option>
+                            <option>This Month</option>
+                            <option>This Year</option>
+                            <option>Custom</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label>People:</label>
+                        <select>
+                            <option>All</option>
+                            <option>Class 7</option>
+                            <option>Class 8</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label>Topic:</label>
+                        <select>
+                            <option>All</option>
+                            <option>Maths</option>
+                            <option>Science</option>
+                            <option>English</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        
+            <div class="report-grid">
+                <div class="subject-progress-cards">
+                    <div class="progress-card">
+                        <h3>MATHS</h3>
+                        <div class="circular-progress">
+                            <svg viewBox="0 0 36 36" class="circular-chart">
+                                <path d="M18 2.0845
+                                    a 15.9155 15.9155 0 0 1 0 31.831
+                                    a 15.9155 15.9155 0 0 1 0 -31.831"
+                                    stroke="#eee"
+                                    stroke-width="2"
+                                    fill="none"
+                                />
+                                <path d="M18 2.0845
+                                    a 15.9155 15.9155 0 0 1 0 31.831
+                                    a 15.9155 15.9155 0 0 1 0 -31.831"
+                                    stroke="#FFC107"
+                                    stroke-width="2"
+                                    fill="none"
+                                    stroke-dasharray="75, 100"
+                                />
+                            </svg>
+                            <div class="percentage">75%</div>
+                        </div>
+                        <div class="progress-legend">
+                            <div class="legend-item">
+                                <span class="dot completed"></span>
+                                <span>Completed</span>
+                                <span>75%</span>
+                            </div>
+                            <div class="legend-item">
+                                <span class="dot pending"></span>
+                                <span>Not Completed</span>
+                                <span>25%</span>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Repeat for Science and Computer with different percentages -->
+                </div>
+        
+                <div class="activity-chart">
+                    <h3>Activity</h3>
+                    <div class="chart-container">
+                        <canvas id="activityChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        
+            <div class="report-bottom-grid">
+                <div class="topics-covered">
+                    <h3>OVERALL TOPICS COVERED</h3>
+                    <div class="subject-progress">
+                        <div class="subject-item">
+                            <img src="/img/tamil-icon.png" alt="Tamil">
+                            <div class="progress-bar-container">
+                                <div class="progress-bar" style="width: 74%"></div>
+                            </div>
+                            <span>74%</span>
+                        </div>
+                        <div class="subject-item">
+                            <img src="/img/english-icon.png" alt="English">
+                            <div class="progress-bar-container">
+                                <div class="progress-bar" style="width: 52%"></div>
+                            </div>
+                            <span>52%</span>
+                        </div>
+                        <div class="subject-item">
+                            <img src="/img/maths-icon.png" alt="Maths">
+                            <div class="progress-bar-container">
+                                <div class="progress-bar" style="width: 38%"></div>
+                            </div>
+                            <span>38%</span>
+                        </div>
+                    </div>
+                </div>
+        
+                <div class="points-card">
+                    <img src="/img/student-avatar.png" alt="Student Avatar" class="points-avatar">
+                    <div class="points-info">
+                        <h3>Your Points</h3>
+                        <div class="points-value">2803</div>
+                        <p>Keep it up you are moving ahead</p>
+                    </div>
+                </div>
+            </div>
+        </section>
     </main>
 
     <!-- Hamburger Menu Button -->
