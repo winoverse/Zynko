@@ -3121,6 +3121,108 @@
                 if(dashboardLink) dashboardLink.classList.add('active');
             }
         });
+
+        document.addEventListener('DOMContentLoaded', function() {
+            // Debug logging to check sections
+            console.log('Sections found:', {
+                dashboard: document.querySelector('.subjects-section'),
+                leaderboard: document.querySelector('.leaderboard-section'),
+                community: document.querySelector('.community-section'),
+                reports: document.querySelector('.reports-section')
+            });
+
+            // Get all nav links
+            const navLinks = document.querySelectorAll('.nav-link');
+            console.log('Nav links found:', navLinks);
+
+            // Function to handle navigation
+            function handleNavigation(targetSection) {
+                console.log('Handling navigation to:', targetSection);
+                
+                // Hide all sections first
+                const allSections = document.querySelectorAll('.subjects-section, .leaderboard-section, .community-section, .reports-section');
+                allSections.forEach(section => {
+                    section.style.display = 'none';
+                    console.log('Hiding section:', section.className);
+                });
+
+                // Remove active class from all links
+                navLinks.forEach(link => link.classList.remove('active'));
+
+                // Show the target section
+                const sectionToShow = document.querySelector(`.${targetSection}-section`);
+                if (sectionToShow) {
+                    console.log('Showing section:', targetSection);
+                    sectionToShow.style.display = 'block';
+                } else {
+                    console.error('Section not found:', targetSection);
+                }
+            }
+
+            // Add click handlers to nav links
+            navLinks.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    
+                    // Get section from title or data-section attribute
+                    const section = (this.getAttribute('title') || this.getAttribute('data-section'))?.toLowerCase();
+                    console.log('Nav link clicked:', section);
+
+                    // Add active class to clicked link
+                    this.classList.add('active');
+
+                    // Handle navigation based on section
+                    switch(section) {
+                        case 'dashboard':
+                            handleNavigation('subjects');
+                            break;
+                        case 'leaderboard':
+                            handleNavigation('leaderboard');
+                            break;
+                        case 'reports':
+                            handleNavigation('reports');
+                            break;
+                        case 'community':
+                            handleNavigation('community');
+                            break;
+                        default:
+                            console.error('Unknown section:', section);
+                    }
+                });
+            });
+
+            // Initialize Chart.js for reports section
+            function initializeChart() {
+                const ctx = document.getElementById('activityChart');
+                if(ctx && !ctx.chart) {
+                    ctx.chart = new Chart(ctx.getContext('2d'), {
+                        type: 'bar',
+                        data: {
+                            labels: ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'],
+                            datasets: [{
+                                label: 'Activity',
+                                data: [100, 150, 200, 250, 300, 250, 200, 300, 250, 200, 150, 300],
+                                backgroundColor: '#FF9B3F',
+                                borderRadius: 5
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            scales: {
+                                y: {
+                                    beginAtZero: true
+                                }
+                            }
+                        }
+                    });
+                }
+            }
+
+            // Show dashboard by default
+            handleNavigation('subjects');
+            document.querySelector('.nav-link[title="Dashboard"]')?.classList.add('active');
+        });
     </script>
 </head>
 <body>
@@ -3183,7 +3285,7 @@
                 </a>
             </li>
             <li class="nav-item">
-                <a href="#leaderboard" class="nav-link" data-section="leaderboard" data-section="leaderboard">
+                <a href="#" class="nav-link" data-section="leaderboard" data-section="leaderboard">
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <rect x="18" y="3" width="4" height="18"></rect>
                         <rect x="10" y="8" width="4" height="13"></rect>
