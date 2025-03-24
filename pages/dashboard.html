@@ -3014,7 +3014,6 @@
             function hideAllSections() {
                 Object.values(sections).forEach(section => {
                     if (section) {
-                        console.log('Hiding section:', section.className);
                         section.style.display = 'none';
                     }
                 });
@@ -3030,163 +3029,18 @@
                 link.addEventListener('click', function(e) {
                     e.preventDefault();
                     
-                    // Get the section to show based on link's title or data attribute
-                    const sectionType = this.getAttribute('title')?.toLowerCase() || 
-                                      this.getAttribute('data-section')?.toLowerCase();
-                    
-                    console.log('Clicked section:', sectionType); // Debug log
+                    // Get the section to show based on link's title
+                    const sectionType = this.getAttribute('title').toLowerCase();
                     
                     hideAllSections();
                     removeActiveClass();
                     this.classList.add('active');
 
                     // Show appropriate section
-                    switch(sectionType) {
-                        case 'dashboard':
-                            if(sections.dashboard) {
-                                console.log('Showing dashboard');
-                                sections.dashboard.style.display = 'block';
-                            }
-                            break;
-                        case 'reports':
-                            if(sections.reports) {
-                                console.log('Showing reports');
-                                sections.reports.style.display = 'block';
-                            }
-                            break;
-                        case 'community':
-                            if(sections.community) {
-                                console.log('Showing community');
-                                sections.community.style.display = 'block';
-                            }
-                            break;
-                        case 'leaderboard':
-                            if(sections.leaderboard) {
-                                console.log('Showing leaderboard');
-                                sections.leaderboard.style.display = 'block';
-                            }
-                            break;
-                    }
-                });
-            });
-
-            // Initialize Chart.js only when reports section is visible
-            function initializeChart() {
-                const ctx = document.getElementById('activityChart');
-                if(ctx && !ctx.chart) { // Check if chart doesn't already exist
-                    ctx.chart = new Chart(ctx.getContext('2d'), {
-                        type: 'bar',
-                        data: {
-                            labels: ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'],
-                            datasets: [{
-                                label: 'Activity',
-                                data: [100, 150, 200, 250, 300, 250, 200, 300, 250, 200, 150, 300],
-                                backgroundColor: '#FF9B3F',
-                                borderRadius: 5
-                            }]
-                        },
-                        options: {
-                            responsive: true,
-                            maintainAspectRatio: false,
-                            scales: {
-                                y: {
-                                    beginAtZero: true
-                                }
-                            }
-                        }
-                    });
-                }
-            }
-
-            // Add specific click handler for reports link
-            const reportsLink = document.querySelector('.nav-link[title="Reports"]');
-            if(reportsLink) {
-                reportsLink.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    hideAllSections();
-                    removeActiveClass();
-                    this.classList.add('active');
-                    if(sections.reports) {
-                        sections.reports.style.display = 'block';
-                        initializeChart(); // Initialize chart when reports section is shown
-                    }
-                });
-            }
-
-            // Show dashboard by default
-            hideAllSections();
-            if(sections.dashboard) {
-                sections.dashboard.style.display = 'block';
-                const dashboardLink = document.querySelector('.nav-link[title="Dashboard"]');
-                if(dashboardLink) dashboardLink.classList.add('active');
-            }
-        });
-
-        document.addEventListener('DOMContentLoaded', function() {
-            // Debug logging to check sections
-            console.log('Sections found:', {
-                dashboard: document.querySelector('.subjects-section'),
-                leaderboard: document.querySelector('.leaderboard-section'),
-                community: document.querySelector('.community-section'),
-                reports: document.querySelector('.reports-section')
-            });
-
-            // Get all nav links
-            const navLinks = document.querySelectorAll('.nav-link');
-            console.log('Nav links found:', navLinks);
-
-            // Function to handle navigation
-            function handleNavigation(targetSection) {
-                console.log('Handling navigation to:', targetSection);
-                
-                // Hide all sections first
-                const allSections = document.querySelectorAll('.subjects-section, .leaderboard-section, .community-section, .reports-section');
-                allSections.forEach(section => {
-                    section.style.display = 'none';
-                    console.log('Hiding section:', section.className);
-                });
-
-                // Remove active class from all links
-                navLinks.forEach(link => link.classList.remove('active'));
-
-                // Show the target section
-                const sectionToShow = document.querySelector(`.${targetSection}-section`);
-                if (sectionToShow) {
-                    console.log('Showing section:', targetSection);
-                    sectionToShow.style.display = 'block';
-                } else {
-                    console.error('Section not found:', targetSection);
-                }
-            }
-
-            // Add click handlers to nav links
-            navLinks.forEach(link => {
-                link.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    
-                    // Get section from title or data-section attribute
-                    const section = (this.getAttribute('title') || this.getAttribute('data-section'))?.toLowerCase();
-                    console.log('Nav link clicked:', section);
-
-                    // Add active class to clicked link
-                    this.classList.add('active');
-
-                    // Handle navigation based on section
-                    switch(section) {
-                        case 'dashboard':
-                            handleNavigation('subjects');
-                            break;
-                        case 'leaderboard':
-                            handleNavigation('leaderboard');
-                            break;
-                        case 'reports':
-                            handleNavigation('reports');
-                            break;
-                        case 'community':
-                            handleNavigation('community');
-                            break;
-                        default:
-                            console.error('Unknown section:', section);
+                    if (sections[sectionType]) {
+                        sections[sectionType].style.display = 'block';
+                    } else {
+                        console.error('Section not found:', sectionType);
                     }
                 });
             });
@@ -3219,9 +3073,27 @@
                 }
             }
 
+            // Add specific click handler for reports link to initialize chart
+            const reportsLink = document.querySelector('.nav-link[title="Reports"]');
+            if(reportsLink) {
+                reportsLink.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    hideAllSections();
+                    removeActiveClass();
+                    this.classList.add('active');
+                    if(sections.reports) {
+                        sections.reports.style.display = 'block';
+                        initializeChart(); // Initialize chart when reports section is shown
+                    }
+                });
+            }
+
             // Show dashboard by default
-            handleNavigation('subjects');
-            document.querySelector('.nav-link[title="Dashboard"]')?.classList.add('active');
+            hideAllSections();
+            if (sections.dashboard) {
+                sections.dashboard.style.display = 'block';
+                document.querySelector('.nav-link[title="Dashboard"]').classList.add('active');
+            }
         });
     </script>
 </head>
@@ -3277,72 +3149,26 @@
         <ul class="nav-links">
             <li class="nav-item">
                 <a href="#" class="nav-link" title="Dashboard">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                        <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
-                        <polyline points="9 22 9 12 15 12 15 22"/>
-                    </svg>
+                    <!-- SVG icon -->
                     Dashboard
                 </a>
             </li>
             <li class="nav-item">
-                <a href="#" class="nav-link" data-section="leaderboard" data-section="leaderboard">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <rect x="18" y="3" width="4" height="18"></rect>
-                        <rect x="10" y="8" width="4" height="13"></rect>
-                        <rect x="2" y="13" width="4" height="8"></rect>
-                    </svg>
+                <a href="#" class="nav-link" title="Leaderboard">
+                    <!-- SVG icon -->
                     Leaderboard
                 </a>
             </li>
             <li class="nav-item">
                 <a href="#" class="nav-link" title="Reports">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
-                        <polyline points="14 2 14 8 20 8"/>
-                        <line x1="16" y1="13" x2="8" y2="13"/>
-                        <line x1="16" y1="17" x2="8" y2="17"/>
-                        <polyline points="10 9 9 9 8 9"/>
-                    </svg>
-                    Report
+                    <!-- SVG icon -->
+                    Reports
                 </a>
             </li>
             <li class="nav-item">
                 <a href="#" class="nav-link" title="Community">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
-                        <circle cx="9" cy="7" r="4"/>
-                        <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
-                        <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
-                    </svg>
+                    <!-- SVG icon -->
                     Community
-                </a>
-            </li>
-            <li class="nav-item">
-                <a href="#" class="nav-link">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                        <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
-                        <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
-                    </svg>
-                    Notifications
-                </a>
-            </li>
-            <li class="nav-item">
-                <a href="#" class="nav-link">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                        <path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/>
-                        <line x1="4" y1="22" x2="4" y2="15"/>
-                    </svg>
-                    Schedule
-                </a>
-            </li>
-            <li class="nav-item">
-                <a href="#" class="nav-link">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
-                        <polyline points="16 17 21 12 16 7"/>
-                        <line x1="21" y1="12" x2="9" y2="12"/>
-                    </svg>
-                    Logout
                 </a>
             </li>
         </ul>
@@ -3350,270 +3176,28 @@
 
     <!-- Main Content -->
     <main class="main-content">
-        <!-- Header -->
-        <header class="header">
-            <div class="header-logo">
-                <img src="/img/zynko-logo.png" alt="Zynko" class="header-logo-img">
-            </div>
-            <div class="user-profile">
-                <div class="user-info">
-                    <div class="user-name">Jai shree</div>
-                    <div class="user-class">Class 7</div>
-                </div>
-                <svg class="notification-icon" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor">
-                    <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
-                    <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
-                </svg>
-            </div>
-        </header>
-
-        <!-- Welcome Banner -->
-        <section class="welcome-banner">
-            <div class="welcome-text">
-                <div class="banner-date" id="currentDate"></div>
-                <h2>Welcome back, jai shree!</h2>
-                <p>Always stay updated in your student portal</p>
-            </div>
-            <img src="/img/student-avatar.png" alt="Student" class="banner-image">
+        <!-- Dashboard Section -->
+        <section class="subjects-section">
+            <!-- Dashboard content -->
         </section>
 
-        <!-- Subjects Section -->
-        <section class="subjects-section">
-            <h3>Subjects</h3>
-            <div class="subjects-grid">
-                <div class="subject-card">
-                    <img src="/img/tamil-icon.png" alt="Tamil" class="subject-icon">
-                    <div class="subject-name">Tamil</div>
-                </div>
-                <div class="subject-card">
-                    <img src="/img/english-icon.png" alt="English" class="subject-icon">
-                    <div class="subject-name">English</div>
-                </div>
-                <div class="subject-card">
-                    <img src="/img/maths-icon.png" alt="Maths" class="subject-icon">
-                    <div class="subject-name">Maths</div>
-                </div>
-                <div class="subject-card">
-                    <img src="/img/science-icon.png" alt="Science" class="subject-icon">
-                    <div class="subject-name">Science</div>
-                </div>
-                <div class="subject-card">
-                    <img src="/img/social-icon.png" alt="Social" class="subject-icon">
-                    <div class="subject-name">Social</div>
-                </div>
+        <!-- Leaderboard Section -->
+        <section class="leaderboard-section" style="display: none;">
+            <div class="leaderboard-header">
+                <h2>Leaderboard</h2>
+                <!-- Leaderboard content -->
             </div>
         </section>
 
         <!-- Community Section -->
-        <div class="community-section" style="display: none;">
-            <!-- Communities for You Section -->
-            <div class="community-section-divider">
-                <h2>Communities for You</h2>
-            </div>
-            <div class="header-actions">
-                <div class="search-bar">
-                    <input type="text" id="communitySearch" placeholder="Search communities...">
-                </div>
-                <button class="create-community-btn">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                        <path d="M12 5v14M5 12h14"/>
-                    </svg>
-                    Create a community
-                </button>
-            </div>
-            <div class="communities-grid" id="communitiesGrid">
-                <!-- Communities will be added here -->
-            </div>
-        
-            <!-- Your Communities Section -->
-            <div class="community-section-divider">
-                <h2>Your Communities</h2>
-            </div>
-            <div class="communities-grid" id="yourCommunitiesGrid">
-                <!-- Your created communities will be added here -->
-                <div class="empty-state">
-                    <p>You haven't created any communities yet</p>
-                    <button class="create-community-btn">Create your first community</button>
-                </div>
-            </div>
-        
-            <!-- Joined Communities Section -->
-            <div class="community-section-divider">
-                <h2>Joined Communities</h2>
-            </div>
-            <div class="communities-grid" id="joinedCommunitiesGrid">
-                <!-- Joined communities will be added here -->
-                <div class="empty-state">
-                    <p>You haven't joined any communities yet</p>
-                </div>
-            </div>
-        </div>
-
-        <!-- Add community modal -->
-        <div class="modal" id="createCommunityModal">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h2>Create Community</h2>
-                    <button type="button" class="close-modal">
-                        <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor">
-                            <line x1="18" y1="6" x2="6" y2="18"></line>
-                            <line x1="6" y1="6" x2="18" y2="18"></line>
-                        </svg>
-                    </button>
-                </div>
-                <form id="createCommunityForm">
-                    <div class="form-group">
-                        <input type="text" required placeholder="Enter community name" class="form-input" name="name">
-                    </div>
-                    <div class="form-group select-group">
-                        <select required name="subject">
-                            <option value="" disabled selected>Select subject</option>
-                            <option value="Tamil">Tamil</option>
-                            <option value="English">English</option>
-                            <option value="Maths">Maths</option>
-                            <option value="Science">Science</option>
-                            <option value="Social">Social</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <textarea required placeholder="Description of community" class="form-input" name="description"></textarea>
-                    </div>
-                    <button type="submit" class="continue-btn">
-                        <span class="btn-text">Create</span>
-                        <div class="loading-spinner"></div>
-                    </button>
-                </form>
-            </div>
-        </div>
-
-        <!-- Add this section to your main content area -->
-        <div class="reports-section" style="display: none;">
-            <div class="reports-header">
-                <h2>Student Reports</h2>
-                <div class="reports-filters">
-                    <div class="filter-group">
-                        <label>Timeframe:</label>
-                        <select class="filter-select">
-                            <option>All-time</option>
-                            <option>Last 7 Days</option>
-                            <option>This Month</option>
-                            <option>This Year</option>
-                            <option>Custom</option>
-                        </select>
-                    </div>
-                    <div class="filter-group">
-                        <label>People:</label>
-                        <select class="filter-select">
-                            <option>All</option>
-                        </select>
-                    </div>
-                    <div class="filter-group">
-                        <label>Topic:</label>
-                        <select class="filter-select">
-                            <option>All</option>
-                        </select>
-                    </div>
-                </div>
-            </div>
-
-            <div class="reports-grid">
-                <!-- Subject Progress Cards -->
-                <div class="subject-progress-cards">
-                    <div class="progress-card">
-                        <h3>MATHS</h3>
-                        <div class="progress-circle">
-                            <svg viewBox="0 0 36 36" class="circular-chart">
-                                <path class="circle-bg" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"/>
-                                <path class="circle" stroke-dasharray="75, 100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"/>
-                            </svg>
-                            <span class="progress-text">75%</span>
-                        </div>
-                    </div>
-                    <div class="progress-card">
-                        <h3>SCIENCE</h3>
-                        <div class="progress-circle">
-                            <svg viewBox="0 0 36 36" class="circular-chart">
-                                <path class="circle-bg" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"/>
-                                <path class="circle" stroke-dasharray="65, 100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"/>
-                            </svg>
-                            <span class="progress-text">65%</span>
-                        </div>
-                    </div>
-                    <div class="progress-card">
-                        <h3>COMPUTER</h3>
-                        <div class="progress-circle">
-                            <svg viewBox="0 0 36 36" class="circular-chart">
-                                <path class="circle-bg" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"/>
-                                <path class="circle" stroke-dasharray="85, 100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"/>
-                            </svg>
-                            <span class="progress-text">85%</span>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Activity Chart -->
-                <div class="activity-chart">
-                    <h3>Activity</h3>
-                    <div class="chart-container">
-                        <canvas id="activityChart"></canvas>
-                    </div>
-                </div>
-
-                <!-- Topics Progress -->
-                <div class="topics-progress">
-                    <h3>OVERALL TOPICS COVERED</h3>
-                    <div class="topic-list">
-                        <div class="topic-item">
-                            <div class="topic-info">
-                                <img src="/img/tamil-icon.png" alt="Tamil">
-                                <span>TAMIL</span>
-                            </div>
-                            <div class="topic-progress-bar">
-                                <div class="progress" style="width: 74%"></div>
-                            </div>
-                            <span class="topic-percentage">74%</span>
-                        </div>
-                        <div class="topic-item">
-                            <div class="topic-info">
-                                <img src="/img/english-icon.png" alt="English">
-                                <span>ENGLISH</span>
-                            </div>
-                            <div class="topic-progress-bar">
-                                <div class="progress" style="width: 52%"></div>
-                            </div>
-                            <span class="topic-percentage">52%</span>
-                        </div>
-                        <div class="topic-item">
-                            <div class="topic-info">
-                                <img src="/img/maths-icon.png" alt="Maths">
-                                <span>MATHS</span>
-                            </div>
-                            <div class="topic-progress-bar">
-                                <div class="progress" style="width: 38%"></div>
-                            </div>
-                            <span class="topic-percentage">38%</span>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Points Card -->
-                <div class="points-card">
-                    <div class="points-content">
-                        <div class="points-info">
-                            <h3>Your Points</h3>
-                            <div class="points-value">2803</div>
-                            <p>Keep it up you are moving ahead</p>
-                        </div>
-                        <img src="/img/character.png" alt="Character" class="character-img">
-                    </div>
-                </div>
-            </div>
+        <section class="community-section" style="display: none;">
+            <!-- Community content -->
         </section>
 
-        <!-- Leaderboard Section -->
-        <div class="leaderboard-section" style="display: none;">
-            <!-- ... existing leaderboard content ... -->
-        </div>
+        <!-- Reports Section -->
+        <section class="reports-section" style="display: none;">
+            <!-- Reports content -->
+        </section>
     </main>
 
     <!-- Hamburger Menu Button -->
