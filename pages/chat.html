@@ -1,0 +1,1449 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Community Chat - Zynko</title>
+    <style>
+        /* Modern Rich Chat UI Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+    
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #f0f2f5;
+            color: #1a1a1a;
+        }
+    
+        .chat-container {
+            display: grid;
+            grid-template-columns: 1fr 320px;
+            height: 100vh;
+            background: linear-gradient(to bottom, #ffffff, #f8fafc);
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+            border-radius: 16px;
+            overflow: hidden;
+            max-width: 1600px;
+            margin: 0 auto;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+        }
+    
+        .chat-main {
+            display: flex;
+            flex-direction: column;
+            background: #ffffff;
+            position: relative;
+            height: 100vh;
+            overflow: hidden;
+        }
+    
+        .chat-header {
+            padding: 1.25rem 1.5rem;
+            background: linear-gradient(135deg, #f9961e, #f5ac0e);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            position: relative;
+            z-index: 10;
+        }
+    
+        .chat-header h2 {
+            font-size: 1.35rem;
+            font-weight: 600;
+            background: linear-gradient(to right, #ffffff, #e0e7ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+    
+        .header-actions {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+    
+        .back-btn {
+            padding: 0.6rem 1.2rem;
+            background: rgba(255,255,255,0.2);
+            border: 1px solid rgba(255,255,255,0.3);
+            border-radius: 12px;
+            color: white;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+            font-weight: 500;
+        }
+    
+        .back-btn:hover {
+            background: rgba(255,255,255,0.3);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+    
+        .chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+            background: linear-gradient(to bottom, #f8fafc, #f0f2f5);
+            position: relative;
+            height: calc(100vh - 140px);
+        }
+    
+        .message {
+            padding: 0.75rem 1rem;
+            background: #ffffff;
+            border-radius: 16px;
+            max-width: 65%;
+            position: relative;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            transition: all 0.3s ease;
+            animation: slideIn 0.3s ease;
+            margin-bottom: 0.5rem;
+        }
+    
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    
+        .message.own {
+            margin-left: auto;
+            background: linear-gradient(135deg, #ea9424de, #ffbb00c3);
+            color: white;
+            border-top-right-radius: 4px;
+            padding: 0.6rem 0.875rem;
+        }
+    
+        .message.own .message-content,
+        .message.own .sender-name,
+        .message.own .timestamp {
+            color: white;
+        }
+    
+        .message:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+        }
+    
+        .message-info {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 4px;
+        }
+    
+        .sender-name {
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+    
+        .admin-tag {
+            background: linear-gradient(135deg, #FF416C, #FF4B2B);
+            color: white;
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 500;
+            box-shadow: 0 2px 4px rgba(255,75,43,0.2);
+        }
+    
+        .timestamp {
+            font-size: 0.7rem;
+            color: #64748b;
+            margin-left: auto;
+        }
+    
+        .message-content {
+            line-height: 1.4;
+            font-size: 0.9rem;
+        }
+    
+        .chat-input {
+            padding: 1.25rem;
+            background: #ffffff;
+            border-top: 1px solid rgba(226,232,240,0.8);
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+            position: relative;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.05);
+        }
+    
+        .file-upload-btn {
+            padding: 0.75rem;
+            background: linear-gradient(135deg, #f0f2f5, #e5e7eb);
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+        }
+    
+        .file-upload-btn:hover {
+            transform: translateY(-2px) scale(1.05);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+    
+        .chat-input input {
+            flex: 1;
+            padding: 0.9rem 1.25rem;
+            border: none;
+            background: #f0f2f5;
+            border-radius: 24px;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.05);
+        }
+    
+        .chat-input input:focus {
+            outline: none;
+            background: #e4e6eb;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
+        }
+    
+        #sendMessage {
+            padding: 0.9rem;
+            background: #FFB366;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 6px rgba(241, 170, 39, 0.3);
+        }
+    
+        #sendMessage:hover {
+            transform: translateY(-2px) scale(1.05);
+            box-shadow: 0 4px 12px rgba(247, 160, 9, 0.4);
+        }
+    
+        /* Members sidebar */
+        .members-sidebar {
+            padding: 1.5rem;
+            background: linear-gradient(to bottom, #ffffff, #f8fafc);
+            height: 100vh;
+            overflow-y: auto;
+            border-left: 1px solid rgba(226,232,240,0.8);
+            box-shadow: -2px 0 10px rgba(0,0,0,0.05);
+        }
+    
+        .members-header {
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid rgba(226,232,240,0.8);
+        }
+    
+        .members-header h3 {
+            color: #1a1a1a;
+            font-size: 1.2rem;
+            font-weight: 600;
+            background: linear-gradient(135deg, #1a1a1a, #4a5568);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+    
+        .member-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+    
+        .member-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 1rem;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+            background: white;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+        }
+    
+        .member-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            background: linear-gradient(to right, #ffffff, #f8fafc);
+        }
+    
+        .online-status {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #cbd5e1;
+            transition: all 0.3s ease;
+        }
+    
+        .online-status.online {
+            background: linear-gradient(135deg, #22c55e, #16a34a);
+            box-shadow: 0 0 0 3px rgba(34,197,94,0.2);
+            animation: pulse 2s infinite;
+        }
+    
+        @keyframes pulse {
+            0% {
+                box-shadow: 0 0 0 0 rgba(34,197,94,0.4);
+            }
+            70% {
+                box-shadow: 0 0 0 6px rgba(34,197,94,0);
+            }
+            100% {
+                box-shadow: 0 0 0 0 rgba(34,197,94,0);
+            }
+        }
+    
+        /* Message reactions */
+        .message-reactions {
+            margin-top: 6px;
+            gap: 6px;
+        }
+    
+        .reaction {
+            padding: 3px 8px;
+            background: linear-gradient(to bottom, #f8fafc, #f0f2f5);
+            border-radius: 20px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            border: none;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+    
+        .reaction:hover {
+            transform: translateY(-2px) scale(1.05);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+    
+        .reaction.active {
+            background: linear-gradient(135deg, #e3f2fd, #bbdefb);
+            color: #0084ff;
+            box-shadow: 0 2px 6px rgba(0,132,255,0.2);
+        }
+    
+        /* File attachments */
+        .message-file {
+            margin-top: 12px;
+            max-width: 300px;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+        }
+    
+        .message-file:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+    
+        .message-file img {
+            max-width: 100%;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+        }
+    
+        .pdf-preview {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 1rem;
+            background: linear-gradient(to right, #f8fafc, #f0f2f5);
+            border-radius: 12px;
+            border: 1px solid rgba(226,232,240,0.8);
+            transition: all 0.3s ease;
+        }
+    
+        .pdf-preview:hover {
+            background: linear-gradient(to right, #f1f5f9, #e5e7eb);
+            border-color: #cbd5e1;
+            transform: translateY(-2px);
+        }
+    
+        .delete-message {
+            padding: 5px 10px;
+            background: linear-gradient(135deg, #fee2e2, #fecaca);
+            color: #ef4444;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.75rem;
+            margin-top: 8px;
+            transition: all 0.3s ease;
+            opacity: 0;
+            box-shadow: 0 2px 4px rgba(239,68,68,0.2);
+        }
+    
+        .message:hover .delete-message {
+            opacity: 1;
+        }
+    
+        .delete-message:hover {
+            background: linear-gradient(135deg, #fecaca, #fca5a5);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 8px rgba(239,68,68,0.3);
+        }
+    
+        /* Custom scrollbar */
+        .chat-messages::-webkit-scrollbar {
+            width: 6px;
+        }
+    
+        .chat-messages::-webkit-scrollbar-track {
+            background: transparent;
+        }
+    
+        .chat-messages::-webkit-scrollbar-thumb {
+            background: linear-gradient(to bottom, #cbd5e1, #94a3b8);
+            border-radius: 3px;
+        }
+    
+        .chat-messages::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(to bottom, #94a3b8, #64748b);
+        }
+    
+        /* Search toggle */
+        .search-toggle {
+            padding: 0.6rem;
+            background: rgba(255,255,255,0.2);
+            border: 1px solid rgba(255,255,255,0.3);
+            border-radius: 50%;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+    
+        .search-toggle:hover {
+            background: rgba(255,255,255,0.3);
+            transform: translateY(-2px);
+        }
+    
+        .search-bar {
+            padding: 0.75rem 1rem;
+            background: #ffffff;
+            border-bottom: 1px solid rgba(226,232,240,0.8);
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            transform: translateY(-100%);
+            transition: transform 0.3s ease;
+            position: absolute;
+            top: 73px;
+            left: 0;
+            right: 0;
+            z-index: 9;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+        }
+    
+        .search-bar.active {
+            transform: translateY(0);
+        }
+    
+        .search-bar input {
+            flex: 1;
+            padding: 0.75rem 1rem;
+            border: none;
+            background: #f0f2f5;
+            border-radius: 24px;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+        }
+    
+        .search-bar input:focus {
+            outline: none;
+            background: #e4e6eb;
+        }
+    
+        .close-search {
+            padding: 0.5rem;
+            background: #f0f2f5;
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+    
+        .close-search:hover {
+            background: #e4e6eb;
+            transform: scale(1.1);
+        }
+    
+        /* Members toggle in desktop */
+        .members-toggle {
+            display: none;
+        }
+    
+        /* Responsive styles */
+        @media (max-width: 768px) {
+            .chat-container {
+                grid-template-columns: 1fr;
+                margin: 0;
+                border-radius: 0;
+            }
+    
+            .members-toggle {
+                display: block;
+                padding: 0.5rem;
+                background: rgba(255,255,255,0.2);
+                border: 1px solid rgba(255,255,255,0.3);
+                border-radius: 50%;
+                cursor: pointer;
+                transition: all 0.3s ease;
+            }
+    
+            .members-toggle:hover {
+                background: rgba(255,255,255,0.3);
+                transform: translateY(-2px);
+            }
+    
+            .members-sidebar {
+                position: fixed;
+                right: -320px;
+                top: 0;
+                width: 320px;
+                height: 100vh;
+                transition: right 0.3s ease;
+                z-index: 1000;
+                box-shadow: -2px 0 10px rgba(0,0,0,0.1);
+            }
+    
+            .members-sidebar.active {
+                right: 0;
+            }
+    
+            .overlay {
+                display: none;
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background: rgba(0,0,0,0.5);
+                z-index: 999;
+                backdrop-filter: blur(4px);
+            }
+    
+            .overlay.active {
+                display: block;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="chat-container">
+        <div class="chat-main">
+            <div class="chat-header">
+                <h2 class="community-name">Community Name</h2>
+                <div class="header-actions">
+                    <button class="search-toggle" onclick="toggleSearch()">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="11" cy="11" r="8"></circle>
+                            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                        </svg>
+                    </button>
+                    <button class="members-toggle">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                            <circle cx="9" cy="7" r="4"></circle>
+                            <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                            <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                        </svg>
+                    </button>
+                    <button class="back-btn">Back to Communities</button>
+                </div>
+            </div>
+
+            <div class="search-bar">
+                <input type="text" placeholder="Search messages...">
+                <button class="close-search" onclick="toggleSearch()">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                </button>
+            </div>
+
+            <div id="messagesList" class="chat-messages">
+                <!-- Messages will be added here dynamically -->
+            </div>
+
+            <div class="chat-input">
+                <label for="fileInput" class="file-upload-btn">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                        <polyline points="17 8 12 3 7 8"/>
+                        <line x1="12" y1="3" x2="12" y2="15"/>
+                    </svg>
+                </label>
+                <input type="file" id="fileInput" accept="image/*,.pdf" style="display: none;">
+                <input type="text" placeholder="Type a message..." id="messageInput">
+                <button id="sendMessage">Send</button>
+            </div>
+        </div>
+
+        <div class="members-sidebar">
+            <div class="members-header">
+                <h3>Members</h3>
+            </div>
+            <ul class="member-list" id="membersList">
+                <!-- Members will be added here dynamically -->
+            </ul>
+        </div>
+        <div class="overlay"></div>
+    </div>
+
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/11.4.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/11.4.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/11.4.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/11.4.0/firebase-database-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/11.4.0/firebase-storage-compat.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        // Initialize Firebase (use your config)
+        const firebaseConfig = {
+            apiKey: "AIzaSyC7XhJxAz5iSTff0TlEPiNwdtQm1iWpwpM",
+            authDomain: "zynko-34cac.firebaseapp.com",
+            databaseURL: "https://zynko-34cac-default-rtdb.firebaseio.com",
+            projectId: "zynko-34cac",
+            storageBucket: "zynko-34cac.firebasestorage.app",
+            messagingSenderId: "94736983827",
+            appId: "1:94736983827:web:a65fe1ce827fb6e3975ce6"
+        };
+
+        firebase.initializeApp(firebaseConfig);
+
+        // Add these lines for explicit Storage initialization
+        const storage = firebase.storage();
+        console.log('Storage bucket:', storage.ref().bucket); // This should match your Firebase project
+
+        const db = firebase.firestore();
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            try {
+                // Wait for auth state to be ready
+                await new Promise((resolve) => {
+                    const unsubscribe = firebase.auth().onAuthStateChanged((user) => {
+                        unsubscribe();
+                        resolve(user);
+                    });
+                });
+
+                // Get community info from sessionStorage
+                const communityData = JSON.parse(sessionStorage.getItem('currentCommunity'));
+                const currentUser = firebase.auth().currentUser;
+                
+                if (!communityData || !currentUser) {
+                    alert('Session expired or not authenticated. Please try again.');
+                    window.location.href = '/pages/dashboard.html';
+                    return;
+                }
+
+                // Set community name in header
+                const communityNameElement = document.querySelector('.community-name');
+                if (communityNameElement) {
+                    communityNameElement.textContent = communityData.name;
+                }
+
+                // Add back button functionality
+                const backBtn = document.querySelector('.back-btn');
+                if (backBtn) {
+                    backBtn.addEventListener('click', () => {
+                        window.location.href = '/pages/dashboard.html';
+                    });
+                }
+
+                // Get message list element
+                const messagesList = document.getElementById('messagesList');
+                if (!messagesList) {
+                    console.error('Messages list element not found');
+                    return;
+                }
+
+                // Initialize Firebase references
+                const messagesRef = db.collection('communities').doc(communityData.id).collection('messages');
+                const query = messagesRef.orderBy('timestamp', 'asc').limit(50);
+
+                // Load and display messages
+                query.onSnapshot(async snapshot => {
+                    for (const change of snapshot.docChanges()) {
+                        const message = change.doc.data();
+                        const messageId = change.doc.id;
+                        
+                        if (change.type === 'added') {
+                            const messageElement = await createMessageElement(message, messageId);
+                            messagesList.appendChild(messageElement);
+                            // Auto scroll to bottom on new message
+                            messagesList.scrollTop = messagesList.scrollHeight;
+                        }
+                        else if (change.type === 'modified') {
+                            const existingMsg = document.querySelector(`[data-message-id="${messageId}"]`);
+                            if (existingMsg) {
+                                existingMsg.replaceWith(await createMessageElement(message, messageId));
+                            }
+                        }
+                        else if (change.type === 'removed') {
+                            const msgToRemove = document.querySelector(`[data-message-id="${messageId}"]`);
+                            if (msgToRemove) msgToRemove.remove();
+                        }
+                    }
+                }, error => {
+                    console.error('Error loading messages:', error);
+                    alert('Error loading messages. Please refresh the page.');
+                });
+
+                // Send message functionality
+                const messageInput = document.getElementById('messageInput');
+                const sendButton = document.getElementById('sendMessage');
+
+                // Get user's profile data
+                async function getUserName(uid) {
+                    try {
+                        const userDoc = await db.collection('students').doc(uid).get();
+                        if (userDoc.exists) {
+                            return userDoc.data().name;
+                        }
+                        return 'Anonymous';
+                    } catch (error) {
+                        console.error('Error getting user name:', error);
+                        return 'Anonymous';
+                    }
+                }
+
+                async function sendMessage() {
+                    const content = messageInput.value.trim();
+                    if (!content) return;
+
+                    const userName = await getUserName(currentUser.uid);
+
+                    try {
+                        await messagesRef.add({
+                            content,
+                            senderId: currentUser.uid,
+                            senderName: userName,
+                            timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+                            reactions: {}
+                        });
+
+                        messageInput.value = '';
+                    } catch (error) {
+                        console.error('Error sending message:', error);
+                    }
+                }
+
+                sendButton.addEventListener('click', sendMessage);
+                messageInput.addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter' && !e.shiftKey) {
+                        e.preventDefault();
+                        sendMessage();
+                    }
+                });
+
+                // Create message element helper function
+                async function createMessageElement(message, messageId) {
+                    const div = document.createElement('div');
+                    div.className = `message ${message.senderId === currentUser.uid ? 'own' : ''}`;
+                    div.dataset.messageId = messageId;
+                    div.dataset.senderId = message.senderId;
+
+                    const time = message.timestamp ? new Date(message.timestamp.toDate()).toLocaleTimeString() : '';
+                    
+                    // Get community data to check if user is admin
+                    let isAdmin = false;
+                    try {
+                        const communityRef = db.collection('communities').doc(communityData.id);
+                        const doc = await communityRef.get();
+                        isAdmin = doc.data().createdBy === currentUser.uid;
+                    } catch (error) {
+                        console.error('Error checking admin status:', error);
+                    }
+
+                    let fileHTML = '';
+                    if (message.file) {
+                        if (message.file.type.startsWith('image/')) {
+                            fileHTML = `
+                                <div class="message-file">
+                                    <img src="${message.file.url}" alt="Shared image" loading="lazy">
+                                </div>
+                            `;
+                        } else if (message.file.type === 'application/pdf') {
+                            fileHTML = `
+                                <div class="message-file">
+                                    <div class="pdf-preview">
+                                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                                            <polyline points="14 2 14 8 20 8"></polyline>
+                                            <line x1="12" y1="18" x2="12" y2="12"></line>
+                                        </svg>
+                                        <a href="${message.file.url}" target="_blank">${message.file.name}</a>
+                                    </div>
+                                </div>
+                            `;
+                        }
+                    }
+
+                    div.innerHTML = `
+                        <div class="message-info">
+                            <span class="sender-name">${message.senderName}</span>
+                            ${message.senderId === communityData.createdBy ? '<span class="admin-tag">Admin</span>' : ''}
+                            <span class="timestamp">${time}</span>
+                        </div>
+                        ${message.content ? `<div class="message-content">${message.content}</div>` : ''}
+                        ${fileHTML}
+                        <div class="message-reactions">
+                            <button class="reaction" data-reaction="👍">👍 ${Object.keys(message.reactions || {}).filter(uid => message.reactions[uid] === '👍').length}</button>
+                            <button class="reaction" data-reaction="❤️">❤️ ${Object.keys(message.reactions || {}).filter(uid => message.reactions[uid] === '❤️').length}</button>
+                        </div>
+                        ${(message.senderId === currentUser.uid || isAdmin) ? 
+                            '<button class="delete-message">Delete</button>' : ''}
+                    `;
+
+                    // Add reaction handlers
+                    div.querySelectorAll('.reaction').forEach(btn => {
+                        btn.addEventListener('click', () => handleReaction(messageId, btn.dataset.reaction));
+                    });
+
+                    // Add delete handler
+                    const deleteBtn = div.querySelector('.delete-message');
+                    if (deleteBtn) {
+                        deleteBtn.addEventListener('click', async () => {
+                            // Check if user is admin or message owner before showing delete confirmation
+                            if (message.senderId !== currentUser.uid && !isAdmin) {
+                                await Swal.fire({
+                                    title: 'Permission Denied',
+                                    text: 'Only admins can delete other users\' messages',
+                                    icon: 'error',
+                                    confirmButtonColor: '#FF9B3F',
+                                    background: '#ffffff',
+                                    borderRadius: '12px'
+                                });
+                                return;
+                            }
+                            handleDelete(messageId);
+                        });
+                    }
+
+                    return div;
+                }
+
+                // Handle reactions
+                async function handleReaction(messageId, reaction) {
+                    try {
+                        const messageRef = messagesRef.doc(messageId);
+                        const doc = await messageRef.get();
+                        const reactions = doc.data().reactions || {};
+
+                        if (reactions[currentUser.uid] === reaction) {
+                            // Remove reaction
+                            delete reactions[currentUser.uid];
+                        } else {
+                            // Add/update reaction
+                            reactions[currentUser.uid] = reaction;
+                        }
+
+                        await messageRef.update({ reactions });
+                    } catch (error) {
+                        console.error('Error updating reaction:', error);
+                    }
+                }
+
+                // Handle message deletion
+                async function handleDelete(messageId) {
+                    const result = await Swal.fire({
+                        title: 'Delete Message?',
+                        text: 'This action cannot be undone',
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: '#FF9B3F',
+                        cancelButtonColor: '#cbd5e1',
+                        confirmButtonText: 'Yes, delete it!',
+                        cancelButtonText: 'Cancel',
+                        background: '#ffffff',
+                        borderRadius: '12px'
+                    });
+
+                    if (result.isConfirmed) {
+                        try {
+                            // Get the message data first
+                            const messageDoc = await messagesRef.doc(messageId).get();
+                            const messageData = messageDoc.data();
+
+                            // If message has a file, delete it from storage first
+                            if (messageData.file && messageData.file.url) {
+                                // Get file path from URL
+                                const fileUrl = messageData.file.url;
+                                const fileRef = firebase.storage().refFromURL(fileUrl);
+                                
+                                // Delete the file from storage
+                                await fileRef.delete();
+                            }
+
+                            // Then delete the message from Firestore
+                            await messagesRef.doc(messageId).delete();
+
+                            Swal.fire({
+                                title: 'Deleted!',
+                                text: 'Message and associated files have been deleted',
+                                icon: 'success',
+                                confirmButtonColor: '#FF9B3F',
+                                timer: 1500,
+                                background: '#ffffff',
+                                borderRadius: '12px'
+                            });
+                        } catch (error) {
+                            console.error('Error deleting message:', error);
+                            Swal.fire({
+                                title: 'Error!',
+                                text: 'Failed to delete message or associated files',
+                                icon: 'error',
+                                confirmButtonColor: '#FF9B3F',
+                                background: '#ffffff',
+                                borderRadius: '12px'
+                            });
+                        }
+                    }
+                }
+
+                // Online status tracking
+                const statusRef = db.collection('status');
+                let onlineStatusRef;
+                let userStatusRef;
+
+                // Create a reference to the special '.info/connected' path in Realtime Database
+                const rtdb = firebase.database();
+                const connectedRef = rtdb.ref('.info/connected');
+
+                // Set user online when they open chat
+                async function setUserOnlineStatus() {
+                    try {
+                        const userName = await getUserName(currentUser.uid);
+
+                        // Set up Realtime Database reference
+                        userStatusRef = rtdb.ref(`/status/${currentUser.uid}`);
+                        onlineStatusRef = statusRef.doc(currentUser.uid);
+
+                        // Monitor connection state
+                        connectedRef.on('value', async (snap) => {
+                            if (snap.val() === true) {
+                                // User is online
+                                await userStatusRef.onDisconnect().set({
+                                    online: false,
+                                    lastSeen: firebase.database.ServerValue.TIMESTAMP,
+                                    displayName: userName
+                                });
+
+                                await userStatusRef.set({
+                                    online: true,
+                                    lastSeen: firebase.database.ServerValue.TIMESTAMP,
+                                    displayName: userName
+                                });
+
+                                await onlineStatusRef.set({
+                                    online: true,
+                                    lastSeen: firebase.firestore.FieldValue.serverTimestamp(),
+                                    displayName: userName
+                                });
+                            }
+                        });
+                    } catch (error) {
+                        console.error('Error updating online status:', error);
+                    }
+                }
+
+                // Update online status when window/tab closes
+                window.addEventListener('beforeunload', async () => {
+                    if (userStatusRef) {
+                        await userStatusRef.set({
+                            online: false,
+                            lastSeen: firebase.database.ServerValue.TIMESTAMP
+                        });
+                        await onlineStatusRef.set({
+                            online: false,
+                            lastSeen: firebase.firestore.FieldValue.serverTimestamp()
+                        });
+                    }
+                });
+
+                // Set initial online status
+                setUserOnlineStatus();
+
+                // Load and update members list with online status
+                const communityRef = db.collection('communities').doc(communityData.id);
+                const membersList = document.getElementById('membersList');
+
+                // Get community members and their online status
+                async function updateMembersList() {
+                    if (!membersList) {
+                        console.error('Members list element not found');
+                        return;
+                    }
+
+                    const doc = await communityRef.get();
+                    const members = doc.data().members;
+                    const createdBy = doc.data().createdBy;
+
+                    membersList.innerHTML = '';
+
+                    // Get online status for all members
+                    const uniqueUsers = [...new Set([...members, createdBy])];
+                    
+                    // First fetch all user names to avoid race conditions
+                    const userNames = {};
+                    for (const userId of uniqueUsers) {
+                        userNames[userId] = await getUserName(userId);
+                    }
+                    
+                    // Listen to realtime status updates
+                    uniqueUsers.forEach(userId => {
+                        rtdb.ref(`/status/${userId}`).on('value', async (snap) => {
+                            const status = snap.val() || { online: false };
+                            const userName = userNames[userId];
+                            const memberElement = document.querySelector(`[data-member-id="${userId}"]`);
+                            
+                            if (!memberElement) {
+                                const li = document.createElement('li');
+                                li.className = 'member-item';
+                                li.dataset.memberId = userId;
+                                li.innerHTML = `
+                                    <span class="online-status ${status.online ? 'online' : ''}"></span>
+                                    <span class="member-name">${userName}</span>
+                                    ${userId === createdBy ? '<span class="admin-tag">Admin</span>' : ''}
+                                `;
+                                membersList.appendChild(li);
+                            } else {
+                                const statusDot = memberElement.querySelector('.online-status');
+                                statusDot.className = `online-status ${status.online ? 'online' : ''}`;
+                                const nameSpan = memberElement.querySelector('.member-name');
+                                nameSpan.textContent = userName;
+                            }
+                        });
+                    });
+                }
+
+                // Initial members list update
+                updateMembersList();
+
+                // Add typing indicator
+                let typingTimeout;
+                const typingRef = db.collection('communities').doc(communityData.id).collection('typing');
+
+                messageInput.addEventListener('input', async () => {
+                    clearTimeout(typingTimeout);
+                    
+                    const userName = await getUserName(currentUser.uid);
+                    
+                    // Set typing status
+                    typingRef.doc(currentUser.uid).set({
+                        displayName: userName,
+                        timestamp: firebase.firestore.FieldValue.serverTimestamp()
+                    });
+
+                    // Clear typing status after 2 seconds
+                    typingTimeout = setTimeout(() => {
+                        typingRef.doc(currentUser.uid).delete();
+                    }, 2000);
+                });
+
+                // Show typing indicators
+                const typingIndicator = document.createElement('div');
+                typingIndicator.className = 'typing-indicator';
+                messagesList.after(typingIndicator);
+
+                typingRef.onSnapshot(snapshot => {
+                    const now = Date.now();
+                    const typing = [];
+
+                    snapshot.forEach(doc => {
+                        const data = doc.data();
+                        // Only show typing indicator if timestamp is within last 2 seconds
+                        if (data.timestamp && now - data.timestamp.toDate().getTime() < 2000) {
+                            typing.push(data.displayName);
+                        }
+                    });
+
+                    if (typing.length > 0) {
+                        typingIndicator.textContent = `${typing.join(', ')} ${typing.length === 1 ? 'is' : 'are'} typing...`;
+                        typingIndicator.style.display = 'block';
+                    } else {
+                        typingIndicator.style.display = 'none';
+                    }
+                });
+
+                // Initialize Firebase Storage
+                const storage = firebase.storage();
+
+                // File upload handling
+                const fileInput = document.getElementById('fileInput');
+                
+                fileInput.addEventListener('change', async (e) => {
+                    // Add these debug logs
+                    console.log('Debug Info:', {
+                        currentUser: firebase.auth().currentUser?.uid,
+                        communityId: communityData.id,
+                        isAuthenticated: !!firebase.auth().currentUser,
+                        storage: !!firebase.storage()
+                    });
+                    
+                    const file = e.target.files[0];
+                    if (!file) return;
+
+                    try {
+                        // Initialize storage reference
+                        const storage = firebase.storage();
+                        const storageRef = storage.ref();
+                        
+                        // Create file path and reference
+                        const fileName = `${Date.now()}_${file.name}`;
+                        const filePath = `communities/${communityData.id}/files/${fileName}`;
+                        console.log('Uploading to path:', filePath);
+                        
+                        const fileRef = storageRef.child(filePath);
+
+                        // Upload file
+                        const uploadTask = fileRef.put(file);
+
+                        uploadTask.on('state_changed',
+                            (snapshot) => {
+                                const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+                                console.log('Upload progress:', progress);
+                            },
+                            (error) => {
+                                console.error('Upload error details:', {
+                                    code: error.code,
+                                    message: error.message,
+                                    serverResponse: error.serverResponse,
+                                    name: error.name
+                                });
+                                
+                                Swal.fire({
+                                    title: 'Upload Failed',
+                                    text: error.message,
+                                    icon: 'error',
+                                    confirmButtonColor: '#FF9B3F'
+                                });
+                            },
+                            async () => {
+                                try {
+                                    const downloadURL = await fileRef.getDownloadURL();
+                                    console.log('Upload successful, URL:', downloadURL);
+                                    
+                                    // Add to messages collection
+                                    const userName = await getUserName(currentUser.uid);
+                                    await messagesRef.add({
+                                        content: '',
+                                        senderId: currentUser.uid,
+                                        senderName: userName,
+                                        timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+                                        reactions: {},
+                                        file: {
+                                            url: downloadURL,
+                                            type: file.type,
+                                            name: file.name
+                                        }
+                                    });
+
+                                    fileInput.value = '';
+                                } catch (err) {
+                                    console.error('Error in success handler:', err);
+                                }
+                            }
+                        );
+                    } catch (error) {
+                        console.error('Error in file upload:', error);
+                    }
+                });
+
+                // Add this right after your existing debug info
+                const debugCommunityRef = firebase.firestore().collection('communities').doc(communityData.id);
+                debugCommunityRef.get().then(doc => {
+                    console.log('Community Data:', {
+                        exists: doc.exists,
+                        data: doc.data(),
+                        members: doc.data()?.members,
+                        currentUserInMembers: doc.data()?.members?.includes(firebase.auth().currentUser?.uid)
+                    });
+                }).catch(error => {
+                    console.error('Error fetching community:', error);
+                });
+            } catch (error) {
+                console.error('Error initializing chat:', error);
+                alert('Failed to initialize chat. Please try again.');
+                window.close();
+            }
+        });
+
+        // Add mobile menu handlers
+        const membersToggle = document.querySelector('.members-toggle');
+        const membersSidebar = document.querySelector('.members-sidebar');
+        const overlay = document.querySelector('.overlay');
+
+        membersToggle.addEventListener('click', () => {
+            membersSidebar.classList.toggle('active');
+            overlay.classList.toggle('active');
+        });
+
+        overlay.addEventListener('click', () => {
+            membersSidebar.classList.remove('active');
+            overlay.classList.remove('active');
+        });
+
+        // Close sidebar on window resize if we're back to desktop size
+        window.addEventListener('resize', () => {
+            if (window.innerWidth > 768) {
+                membersSidebar.classList.remove('active');
+                overlay.classList.remove('active');
+            }
+        });
+
+        // Add this JavaScript function
+        function toggleSearch() {
+            const searchBar = document.querySelector('.search-bar');
+            searchBar.classList.toggle('active');
+            if (searchBar.classList.contains('active')) {
+                searchBar.querySelector('input').focus();
+            }
+        }
+
+        // new improved functions for better UI and functionality
+        // Add this search functionality code
+        function initializeSearch() {
+            const searchInput = document.querySelector('.search-bar input');
+            const messagesList = document.querySelector('.chat-messages');
+            let originalMessages = [];
+            let debounceTimer;
+
+            // Store original message positions
+            function storeOriginalMessages() {
+                originalMessages = Array.from(messagesList.children);
+            }
+
+            // Highlight matching text
+            function highlightText(text, searchTerm) {
+                if (!searchTerm) return text;
+                const regex = new RegExp(`(${searchTerm})`, 'gi');
+                return text.replace(regex, '<mark class="highlight">$1</mark>');
+            }
+
+            // Search messages
+            function searchMessages(searchTerm) {
+                if (!originalMessages.length) {
+                    storeOriginalMessages();
+                }
+
+                // Clear current messages
+                messagesList.innerHTML = '';
+
+                if (!searchTerm) {
+                    // Restore original messages if search is empty
+                    originalMessages.forEach(msg => messagesList.appendChild(msg.cloneNode(true)));
+                    return;
+                }
+
+                // Filter and highlight matching messages
+                const matchingMessages = originalMessages.filter(msg => {
+                    const content = msg.querySelector('.message-content')?.textContent || '';
+                    const senderName = msg.querySelector('.sender-name')?.textContent || '';
+                    const fileName = msg.querySelector('.pdf-preview a')?.textContent || '';
+                    
+                    return content.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                           senderName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                           fileName.toLowerCase().includes(searchTerm.toLowerCase());
+                });
+
+                // Create and display highlighted messages
+                matchingMessages.forEach(msg => {
+                    const msgClone = msg.cloneNode(true);
+                    
+                    // Highlight message content
+                    const contentEl = msgClone.querySelector('.message-content');
+                    if (contentEl) {
+                        const originalContent = contentEl.textContent;
+                        contentEl.innerHTML = highlightText(originalContent, searchTerm);
+                    }
+
+                    // Highlight sender name
+                    const senderEl = msgClone.querySelector('.sender-name');
+                    if (senderEl) {
+                        const originalName = senderEl.textContent;
+                        senderEl.innerHTML = highlightText(originalName, searchTerm);
+                    }
+
+                    // Highlight file name
+                    const fileEl = msgClone.querySelector('.pdf-preview a');
+                    if (fileEl) {
+                        const originalFileName = fileEl.textContent;
+                        fileEl.innerHTML = highlightText(originalFileName, searchTerm);
+                    }
+
+                    messagesList.appendChild(msgClone);
+                });
+
+                // Scroll to first result
+                if (matchingMessages.length > 0) {
+                    messagesList.scrollTop = 0;
+                }
+
+                // Update search results count
+                updateSearchCount(matchingMessages.length);
+            }
+
+            // Update search results count
+            function updateSearchCount(count) {
+                const searchInfo = document.querySelector('.search-info') || 
+                    document.createElement('div');
+                searchInfo.className = 'search-info';
+                searchInfo.textContent = count > 0 ? 
+                    `Found ${count} matching message${count === 1 ? '' : 's'}` : 
+                    'No matching messages';
+
+                const searchBar = document.querySelector('.search-bar');
+                if (!searchBar.querySelector('.search-info')) {
+                    searchBar.insertBefore(searchInfo, searchBar.querySelector('.close-search'));
+                }
+            }
+
+            // Add search input handler with debounce
+            searchInput.addEventListener('input', (e) => {
+                clearTimeout(debounceTimer);
+                debounceTimer = setTimeout(() => {
+                    searchMessages(e.target.value.trim());
+                }, 300);
+            });
+
+            // Store original messages when search is first opened
+            document.querySelector('.search-toggle').addEventListener('click', () => {
+                if (!originalMessages.length) {
+                    storeOriginalMessages();
+                }
+            });
+
+            // Restore original messages when search is closed
+            document.querySelector('.close-search').addEventListener('click', () => {
+                searchInput.value = '';
+                searchMessages('');
+                const searchInfo = document.querySelector('.search-info');
+                if (searchInfo) searchInfo.remove();
+            });
+        }
+
+        // Add this CSS for search highlighting
+        const style = document.createElement('style');
+        style.textContent = `
+            .highlight {
+                background: #fef08a;
+                border-radius: 2px;
+                padding: 0 2px;
+                color: #854d0e;
+            }
+
+            .search-info {
+                color: #64748b;
+                font-size: 0.875rem;
+                margin-right: 10px;
+                padding: 4px 8px;
+                background: #f1f5f9;
+                border-radius: 12px;
+            }
+
+            .search-bar {
+                justify-content: space-between;
+            }
+        `;
+        document.head.appendChild(style);
+
+        // Initialize search when the page loads
+        document.addEventListener('DOMContentLoaded', initializeSearch);
+
+        // Add this function to generate consistent colors for usernames
+        function generateUserColor(userId) {
+            const colors = [
+                '#FF6B6B', // coral red
+                '#4ECDC4', // turquoise
+                '#45B7D1', // sky blue
+                '#96CEB4', // sage green
+                '#9B59B6', // purple
+                '#F39C12', // orange
+                '#1ABC9C', // emerald
+                '#D35400', // pumpkin
+                '#26A69A', // teal
+                '#5E35B1', // deep purple
+                '#FF7043', // deep orange
+                '#66BB6A', // green
+                '#EC407A', // pink
+                '#7E57C2', // indigo
+                '#FFA726'  // amber
+            ];
+            
+            // Use userId to consistently pick a color
+            const index = Array.from(userId).reduce((acc, char) => acc + char.charCodeAt(0), 0);
+            return colors[index % colors.length];
+        }
+
+        // Add this CSS for colorful usernames
+        const userColorStyle = document.createElement('style');
+        userColorStyle.textContent = `
+            .sender-name {
+                font-size: 0.8rem;
+                font-weight: 600;
+                transition: all 0.3s ease;
+            }
+
+            .message.own .sender-name {
+                color: white !important; /* Always white for own messages */
+            }
+        `;
+        document.head.appendChild(userColorStyle);
+
+        // Modify the message creation to add colors
+        // Add this where you create messages (in your createMessageElement function)
+        function applyUserColors() {
+            const messages = document.querySelectorAll('.message');
+            messages.forEach(message => {
+                const senderElement = message.querySelector('.sender-name');
+                const senderId = message.dataset.senderId; // Make sure you're setting this attribute when creating messages
+                if (senderElement && senderId) {
+                    senderElement.style.color = generateUserColor(senderId);
+                }
+            });
+        }
+
+        // Call this function after messages are loaded and when new messages arrive
+        // Add this to your message creation/loading logic
+        document.addEventListener('DOMContentLoaded', () => {
+            applyUserColors();
+            // If you're using real-time updates, call it after new messages are added
+            // For example, in your message listener:
+            messagesRef.onSnapshot(() => {
+                applyUserColors();
+            });
+        });
+    </script>
+</body>
+</html> 

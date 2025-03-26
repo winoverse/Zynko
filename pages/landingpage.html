@@ -1,0 +1,2750 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zynko - Your One-Stop Hub for Smarter Learning</title>
+    <script src="https://unpkg.com/scrollreveal"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        /* Navbar Styles */
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 5%;
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.4);
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .logo img {
+            height: 45px;
+            width: auto;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: #333;
+            position: relative;
+            padding: 5px 0;
+            transition: color 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            color: #FF6B00;
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: 0;
+            left: 0;
+            background-color: #FF6B00;
+            transition: width 0.3s ease;
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        .auth-buttons {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
+
+        .sign-up {
+            color: #FF6B00;
+            text-decoration: none;
+            font-size: 1rem;
+            font-weight: 500;
+            padding: 0.5rem 1.2rem;
+            border-radius: 25px;
+            transition: all 0.3s ease;
+            background: rgba(255, 107, 0, 0.08);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+        }
+
+        .log-in {
+            background: rgba(255, 107, 0, 0.95);
+            color: white;
+            padding: 0.5rem 1.2rem;
+            border-radius: 25px;
+            text-decoration: none;
+            font-size: 1rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            box-shadow: 0 4px 15px rgba(255, 107, 0, 0.1);
+        }
+
+        .sign-up:hover {
+            background: rgba(255, 107, 0, 0.2);
+        }
+
+        .log-in:hover {
+            background: rgba(255, 107, 0, 1);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(255, 107, 0, 0.2);
+        }
+
+        /* Mobile Menu Styles */
+        .menu-toggle {
+            display: none;
+            cursor: pointer;
+            z-index: 1000;
+        }
+
+        .menu-toggle span {
+            display: block;
+            width: 25px;
+            height: 2px;
+            background-color: #333;
+            margin: 5px 0;
+            transition: 0.3s;
+        }
+
+        .mobile-menu {
+            display: none;
+            position: fixed;
+            top: 0;
+            right: -100%;
+            width: 80%;
+            height: 100vh;
+            background: #ffffff; /* Solid white background */
+            padding: 80px 40px;
+            transition: 0.3s ease;
+            z-index: 999;
+            border-left: 1px solid rgba(0, 0, 0, 0.1);
+            box-shadow: -4px 0 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .mobile-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5); /* Darker overlay */
+            z-index: 998;
+        }
+
+        .mobile-menu a {
+            display: block;
+            padding: 15px 0;
+            color: #333;
+            text-decoration: none;
+            font-size: 1.1rem;
+            border-bottom: 1px solid #eee;
+            transition: all 0.3s ease;
+        }
+
+        .mobile-menu a:hover {
+            color: #FF6B00;
+            transform: translateX(10px);
+            background: #FFF5EB;
+            padding: 15px 10px;
+            border-radius: 8px;
+            margin: 0 -10px;
+        }
+
+        .mobile-auth {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+            display: flex;
+            gap: 1rem;
+        }
+
+        .mobile-signup {
+            background: rgba(255, 107, 0, 0.08);
+            color: #FF6B00 !important;
+            border-radius: 25px;
+            padding: 10px 20px !important;
+            border: none !important;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+        }
+
+        .mobile-login {
+            background: rgba(255, 107, 0, 0.95);
+            color: white !important;
+            padding: 10px 20px !important;
+            border-radius: 25px;
+            border: none !important;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+
+        .mobile-signup:hover {
+            background: rgba(255, 107, 0, 0.2);
+        }
+
+        .mobile-login:hover {
+            background: rgba(255, 107, 0, 1);
+            transform: translateY(-2px);
+        }
+
+        @media screen and (max-width: 768px) {
+            .nav-links, .auth-buttons {
+                display: none;
+            }
+
+            .menu-toggle {
+                display: block;
+            }
+
+            .mobile-menu {
+                display: block;
+            }
+
+            .mobile-menu.active {
+                right: 0;
+            }
+
+            .mobile-overlay.active {
+                display: block;
+            }
+
+            .menu-toggle.active span:nth-child(1) {
+                transform: rotate(45deg) translate(5px, 5px);
+            }
+
+            .menu-toggle.active span:nth-child(2) {
+                opacity: 0;
+            }
+
+            .menu-toggle.active span:nth-child(3) {
+                transform: rotate(-45deg) translate(7px, -7px);
+            }
+
+            .navbar {
+                background: rgba(255, 255, 255, 0.85);
+                backdrop-filter: blur(12px);
+                -webkit-backdrop-filter: blur(12px);
+            }
+
+            .mobile-signup {
+                background: rgba(255, 107, 0, 0.08);
+                backdrop-filter: blur(10px);
+                -webkit-backdrop-filter: blur(10px);
+            }
+
+            .mobile-login {
+                background: rgba(255, 107, 0, 0.95);
+                backdrop-filter: blur(10px);
+                -webkit-backdrop-filter: blur(10px);
+            }
+        }
+
+        /* Hero Section Styles */
+        .hero {
+            display: flex;
+            padding: 2rem 5%;
+            align-items: center;
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .hero-content {
+            flex: 1;
+        }
+
+        .hero-tag {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .hero-tag img {
+            width: 24px;
+        }
+
+        .hero-tag span {
+            color: #FF6B00;
+            font-family: 'Nunito', sans-serif;
+        }
+
+        .hero h1 {
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+            line-height: 1.2;
+            font-family: 'Nunito', sans-serif;
+            font-weight: 700;
+        }
+
+        .hero h1 .highlight {
+            color: #FF6B00;
+        }
+
+        .hero p {
+            color: #666;
+            margin-bottom: 2rem;
+            line-height: 1.6;
+            font-family: 'Nunito', sans-serif;
+            font-size: 1.1rem;
+        }
+
+        .get-started {
+            background-color: #FF6B00;
+            color: white;
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            text-decoration: none;
+            display: inline-block;
+            font-weight: bold;
+            font-family: 'Nunito', sans-serif;
+            transition: all 0.3s ease;
+        }
+
+        .get-started:hover {
+            background-color: #FF9100;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(255, 107, 0, 0.2);
+        }
+
+        .hero-image {
+            flex: 1;
+            position: relative;
+        }
+
+        .hero-image img {
+            width: 100%;
+            max-width: 500px;
+        }
+
+        /* Add these media queries at the end of your style section */
+        
+        /* Tablet Devices */
+        @media screen and (max-width: 1024px) {
+            .hero h1 {
+                font-size: 3rem;
+            }
+
+            .hero-image img {
+                max-width: 400px;
+            }
+        }
+
+        /* Mobile Devices */
+        @media screen and (max-width: 768px) {
+            .navbar {
+                padding: 1rem 5%;
+                background: rgba(255, 255, 255, 0.95);
+            }
+
+            .nav-links {
+                flex-wrap: wrap;
+                justify-content: center;
+                gap: 1rem;
+            }
+
+            .auth-buttons {
+                margin-top: 2rem;
+                flex-direction: column;
+                width: 100%;
+                gap: 1rem;
+            }
+
+            .sign-up, .log-in {
+                width: 100%;
+                text-align: center;
+                padding: 0.8rem 1.5rem;
+            }
+
+            .hero {
+                flex-direction: column;
+                padding: 2rem 3%;
+                text-align: center;
+            }
+
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+
+            .hero-tag {
+                justify-content: center;
+            }
+
+            .hero p {
+                font-size: 0.9rem;
+            }
+
+            .get-started {
+                padding: 0.8rem 1.8rem;
+            }
+
+            .hero-image {
+                margin-top: 2rem;
+            }
+
+            .hero-image img {
+                max-width: 100%;
+            }
+        }
+
+        /* Small Mobile Devices */
+        @media screen and (max-width: 480px) {
+            .navbar {
+                padding: 1rem 2%;
+            }
+
+            .logo img {
+                height: 35px;
+            }
+
+            .nav-links {
+                gap: 0.8rem;
+                font-size: 0.9rem;
+            }
+
+            .auth-buttons {
+                gap: 1rem;
+            }
+
+            .sign-up, .log-in {
+                padding: 0.4rem 1rem;
+                font-size: 0.9rem;
+            }
+
+            .hero {
+                padding: 1.5rem 2%;
+            }
+
+            .hero h1 {
+                font-size: 2rem;
+            }
+
+            .hero-tag {
+                font-size: 0.9rem;
+            }
+
+            .hero-tag img {
+                width: 20px;
+            }
+
+            .get-started {
+                padding: 0.7rem 1.5rem;
+                font-size: 0.9rem;
+            }
+        }
+
+        /* For very small devices */
+        @media screen and (max-width: 320px) {
+            .nav-links {
+                font-size: 0.8rem;
+                gap: 0.6rem;
+            }
+
+            .hero h1 {
+                font-size: 1.8rem;
+            }
+
+            .hero p {
+                font-size: 0.8rem;
+            }
+        }
+
+        /* Stats Section Styles */
+        .stats-section {
+            padding: 6rem 5%;
+            text-align: center;
+            background-color: #fff;
+            position: relative;
+        }
+
+        .stats-header {
+            font-size: 3.5rem;
+            color: #333;
+            margin-bottom: 4rem;
+            font-family: 'Nunito', sans-serif;
+        }
+
+        .stats-header .highlight {
+            color: #FF6B00;
+            font-weight: 600;
+            display: inline-block;
+            font-family: 'Nunito', sans-serif;
+            letter-spacing: 0.5px;
+        }
+
+        .loved-by {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1.5rem;
+            margin-bottom: 4rem;
+            font-size: 2rem;
+            padding-bottom: 3rem;
+            text-align: center;
+            max-width: 1000px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .loved-by .group {
+            display: flex;
+            text-align: center;
+            align-items: center;
+            justify-content: center;
+            gap: 1.5rem;
+        }
+
+        .loved-by img {
+            width: 120px;
+            height: 80px;
+            border-radius: 8px;
+            object-fit: cover;
+        }
+
+        .loved-by .highlight {
+            color: #FF6B00;
+            font-weight: 500;
+        }
+
+        .stats-container {
+            position: relative;
+            max-width: 1000px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 3rem;
+        }
+
+        .india-map {
+            width: 100%;
+            max-width: 550px;
+            margin: 0 auto;
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            aspect-ratio: 1;
+            padding: 0.5rem;
+        }
+
+        .india-map img {
+            width: 95%;
+            max-height: 500px;
+            object-fit: contain;
+            position: relative;
+            z-index: 2;
+            transition: transform 0.5s ease;
+        }
+
+        .india-map:hover img {
+            transform: scale(1.02);
+        }
+
+        .india-map::before {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 243, 234, 0.6);
+            border-radius: 50%;
+            z-index: 1;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        .india-map::after {
+            content: 'ZYNKO AI';
+            position: absolute;
+            color: rgba(0, 0, 0, 0.3);
+            font-size: calc(0.8rem + 0.5vw);
+            font-weight: 700;
+            z-index: 3;
+            top: 48%;
+            left: 45%;
+            transform: translate(-50%, -50%);
+            pointer-events: none;
+            text-align: center;
+            white-space: nowrap;
+            width: 40%;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            animation: fadeInOut 3s ease-in-out infinite;
+            letter-spacing: 1px;
+            padding: 5px;
+        }
+
+        /* Adding new circle */
+        .india-map .circle-bg {
+            content: '';
+            position: absolute;
+            width: 85%;
+            height: 85%;
+            background: rgba(255, 243, 234, 0.8);
+            border-radius: 50%;
+            z-index: 1;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            animation: pulse-reverse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0% {
+                transform: translate(-50%, -50%) scale(1);
+                opacity: 0.6;
+            }
+            50% {
+                transform: translate(-50%, -50%) scale(1.02);
+                opacity: 0.8;
+            }
+            100% {
+                transform: translate(-50%, -50%) scale(1);
+                opacity: 0.6;
+            }
+        }
+
+        @keyframes pulse-reverse {
+            0% {
+                transform: translate(-50%, -50%) scale(1);
+                opacity: 0.8;
+            }
+            50% {
+                transform: translate(-50%, -50%) scale(0.98);
+                opacity: 0.6;
+            }
+            100% {
+                transform: translate(-50%, -50%) scale(1);
+                opacity: 0.8;
+            }
+        }
+
+        @keyframes fadeInOut {
+            0% {
+                opacity: 0.4;
+            }
+            50% {
+                opacity: 0.6;
+            }
+            100% {
+                opacity: 0.4;
+            }
+        }
+
+        /* Responsive Styles */
+        @media screen and (max-width: 1200px) {
+            .stats-header {
+                font-size: 3rem;
+            }
+            
+            .india-map {
+                max-width: 500px;
+            }
+        }
+
+        /* Update Stats Section Mobile Styles */
+        @media screen and (max-width: 768px) {
+            .stats-section {
+                padding: 4rem 3%;
+            }
+
+            .stats-header {
+                font-size: 2.5rem;
+                margin-bottom: 3rem;
+            }
+
+            .loved-by {
+                align-items: center;
+                text-align: center;
+            }
+
+            .loved-by .group {
+                justify-content: center;
+            }
+
+            .india-map {
+                max-width: 400px;
+            }
+            
+            .india-map::after {
+                font-size: calc(0.7rem + 0.5vw);
+                top: 47%;
+                left: 44%;
+            }
+        }
+
+        @media screen and (max-width: 480px) {
+            .stats-header {
+                font-size: 2rem;
+            }
+
+            .loved-by {
+                font-size: 1.5rem;
+            }
+
+            .india-map {
+                max-width: 350px;
+            }
+            
+            .india-map::after {
+                font-size: calc(0.6rem + 0.5vw);
+                top: 46%;
+                left: 43%;
+            }
+        }
+
+        /* AI Tutor Section Styles */
+        .ai-tutor-section {
+            padding-top: 2rem;
+            padding-bottom: 6rem;
+            padding-left: 5%;
+            padding-right: 5%;
+            background-color: #fff;
+            text-align: center;
+        }
+
+        .tutor-block {
+            margin-top: 8rem; /* Space between blocks */
+        }
+
+        .tutor-block h2 {
+            font-size: 3.5rem;
+            margin-bottom: 3rem;
+            line-height: 1.2;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .tutor-block h2 span {
+            color: #FF6B00;
+            display: block; /* Makes the orange text go to next line */
+        }
+
+        .tutor-block h2 .smaller-text {
+            font-size: 0.9em;
+            display: block;
+            margin-top: 0.5rem;
+        }
+
+        .ai-tutor-tagline {
+            color: #FF6B00;
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+        }
+
+        .ai-tutor-heading {
+            max-width: 800px;
+            margin: 0 auto 4rem;
+        }
+
+        .ai-tutor-heading h2 {
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+            line-height: 1.2;
+        }
+
+        .ai-tutor-heading h2 span {
+            color: #FF6B00;
+        }
+
+        .ui-components-display {
+            max-width: 1000px;
+            margin: 0 auto;
+            border-radius: 20px;
+            padding: 1rem;
+        }
+
+        .ui-components-display img {
+            width: 100%;
+            height: auto;
+            border-radius: 10px;
+        }
+
+        /* Update mobile styles */
+        @media screen and (max-width: 768px) {
+            .tutor-block {
+                margin-top: 6rem;
+            }
+
+            .tutor-block h2 {
+                font-size: 2.5rem;
+            }
+
+            .ai-tutor-section {
+                padding-top: 1rem;
+                padding-bottom: 4rem;
+                padding-left: 3%;
+                padding-right: 3%;
+            }
+
+            .ui-components-display {
+                padding: 0.5rem;
+            }
+
+            .tutor-block h2 .smaller-text {
+                font-size: 0.75em;
+            }
+        }
+
+        @media screen and (max-width: 480px) {
+            .tutor-block {
+                margin-top: 4rem;
+            }
+
+            .tutor-block h2 {
+                font-size: 2rem;
+            }
+
+            .ai-tutor-heading h2 {
+                font-size: 2rem;
+            }
+
+            .ai-tutor-tagline {
+                font-size: 1rem;
+            }
+        }
+
+        /* Custom Fit Block Styles */
+        .curriculum-cards {
+            text-align: center;
+            padding: 6rem 5%;
+            background-color: #fff;
+        }
+
+        .curriculum-cards h2 {
+            font-size: 3.5rem;
+            margin-bottom: 4rem;
+            line-height: 1.2;
+        }
+
+        .curriculum-cards h2 .text-line {
+            display: block;
+            opacity: 0;
+            animation: fadeInUp 0.5s ease forwards;
+            margin-bottom: 0.5rem; /* Add space between lines */
+        }
+
+        .curriculum-cards h2 .highlight {
+            color: #FF6B00;
+        }
+
+        .curriculum-cards h2 .text-line:nth-child(1) {
+            animation-delay: 0s;
+        }
+
+        .curriculum-cards h2 .text-line:nth-child(2) {
+            animation-delay: 0.5s;
+        }
+
+        .curriculum-cards h2 .text-line:nth-child(3) {
+            animation-delay: 1s;
+        }
+
+        /* Add back the animation keyframes */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .curriculum-cards-container {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .curriculum-card {
+            background: #FFF5EB;
+            border-radius: 12px;
+            padding: 2.5rem;
+            text-align: center;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 200px;
+        }
+
+        /* Updated background colors to match design */
+        .card-math {
+            background-color: #FFF5EB;
+        }
+
+        .card-science {
+            background-color: #FFE9E9;
+        }
+
+        .card-english {
+            background-color: #EBF5FF;
+        }
+
+        .card-social {
+            background-color: #EBFFF1;
+        }
+
+        .card-physics {
+            background-color: #FFF5EB;
+        }
+
+        .card-biology {
+            background-color: #EBF5FF;
+        }
+
+        .curriculum-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.05);
+        }
+
+        .card-icon {
+            margin-bottom: 1.5rem;
+        }
+
+        .card-icon svg {
+            width: 32px;
+            height: 32px;
+            stroke: #FF6B00;
+            stroke-width: 2;
+        }
+
+        .card-title {
+            font-size: 1.25rem;
+            color: #333;
+            font-weight: 500;
+            margin: 0;
+        }
+
+        /* Update mobile styles for curriculum cards */
+        @media screen and (max-width: 768px) {
+            .curriculum-cards {
+                padding: 4rem 3%;
+            }
+
+            .curriculum-cards h2 {
+                font-size: 2.5rem;
+                margin-bottom: 3rem;
+            }
+
+            /* Remove the row structure and make it one continuous grid */
+            .curriculum-cards-row {
+                display: grid;
+                grid-template-columns: repeat(2, 1fr);
+                gap: 1.2rem;
+                max-width: 500px;
+                margin: 0 auto 1.2rem;
+            }
+
+            /* Remove margin-bottom from the first row */
+            .curriculum-cards-row:first-of-type {
+                margin-bottom: 0;
+            }
+
+            /* Combine both rows into one container */
+            .curriculum-cards-container {
+                display: grid;
+                grid-template-columns: repeat(2, 1fr);
+                gap: 1.2rem;
+                max-width: 500px;
+                margin: 0 auto;
+            }
+        }
+
+        /* Small mobile styles */
+        @media screen and (max-width: 480px) {
+            .curriculum-cards h2 {
+                font-size: 2rem;
+            }
+
+            .curriculum-cards-row {
+                gap: 1rem;
+                max-width: 400px;
+            }
+
+            .curriculum-card {
+                padding: 1.5rem;
+                min-height: 140px;
+            }
+
+            .card-icon svg {
+                width: 28px;
+                height: 28px;
+            }
+
+            .card-title {
+                font-size: 1rem;
+            }
+        }
+
+        /* Very small devices */
+        @media screen and (max-width: 360px) {
+            .curriculum-cards-row {
+                gap: 0.8rem;
+            }
+
+            .curriculum-card {
+                padding: 1.2rem;
+                min-height: 120px;
+            }
+
+            .card-icon svg {
+                width: 24px;
+                height: 24px;
+            }
+
+            .card-title {
+                font-size: 0.9rem;
+            }
+        }
+
+        /* Features Block Styles */
+        .features-block {
+            padding: 6rem 5%;
+            text-align: center;
+            background-color: #fff;
+        }
+
+        .features-block h2 {
+            font-size: 3.5rem;
+            margin-bottom: 4rem;
+            color: #333;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .feature-card {
+            padding: 2rem;
+            border-radius: 12px;
+            text-align: center;
+            transition: transform 0.3s ease;
+        }
+
+        .feature-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1rem;
+        }
+
+        .feature-icon svg {
+            width: 24px;
+            height: 24px;
+            color: white;
+        }
+
+        .feature-title {
+            font-size: 1.1rem;
+            color: #333;
+            margin-top: 1rem;
+            font-weight: 500;
+        }
+
+        /* Feature card variations */
+        .feature-orange {
+            background-color: #FFF5EB;
+        }
+        .feature-orange .feature-icon {
+            background-color: #FF6B00;
+        }
+
+        .feature-yellow {
+            background-color: #FFF9EB;
+        }
+        .feature-yellow .feature-icon {
+            background-color: #FFB800;
+        }
+
+        .feature-blue {
+            background-color: #EBF5FF;
+        }
+        .feature-blue .feature-icon {
+            background-color: #0066FF;
+        }
+
+        .feature-purple {
+            background-color: #F5EBFF;
+        }
+        .feature-purple .feature-icon {
+            background-color: #6B00FF;
+        }
+
+        .feature-light-blue {
+            background-color: #EBF8FF;
+        }
+        .feature-light-blue .feature-icon {
+            background-color: #00B2FF;
+        }
+
+        .feature-violet {
+            background-color: #EBEFFF;
+        }
+        .feature-violet .feature-icon {
+            background-color: #4B6BFF;
+        }
+
+        /* Update mobile styles for feature cards */
+        @media screen and (max-width: 768px) {
+            .features-block h2 {
+                font-size: 2.5rem;
+                margin-bottom: 3rem;
+            }
+
+            .features-grid {
+                grid-template-columns: repeat(2, 1fr); /* Show 2 cards per row */
+                gap: 1rem;
+            }
+
+            .feature-card {
+                padding: 1.5rem;
+            }
+        }
+
+        /* FAQ Section Styles */
+        .faq-section {
+            padding: 6rem 5%;
+            background-color: #fff;
+        }
+
+        .faq-section h2 {
+            font-size: 4rem;
+            text-align: center;
+            margin-bottom: 4rem;
+            color: #333;
+        }
+
+        .faq-container {
+            display: flex;
+            gap: 4rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .faq-categories {
+            flex: 0 0 200px;
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+
+        .faq-category {
+            cursor: pointer;
+            padding: 1rem;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .faq-category h3 {
+            font-size: 1.2rem;
+            color: #333;
+            transition: color 0.3s ease;
+        }
+
+        .faq-category:hover h3 {
+            color: #FF6B00;
+        }
+
+        .faq-category.active h3 {
+            color: #FF6B00;
+        }
+
+        .faq-category::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            bottom: -3px;
+            width: 0;
+            height: 2px;
+            background-color: #FF6B00;
+            transition: width 0.3s ease;
+        }
+
+        .faq-category:hover::after,
+        .faq-category.active::after {
+            width: 100%;
+        }
+
+        .faq-questions {
+            flex: 1;
+        }
+
+        .questions-group {
+            display: none;
+        }
+
+        .questions-group.active {
+            display: block;
+        }
+
+        .faq-item {
+            border-bottom: 1px solid #eee;
+            padding: 1.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .faq-question {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 1.1rem;
+            color: #333;
+            transition: color 0.3s ease;
+        }
+
+        .faq-question svg {
+            width: 20px;
+            height: 20px;
+            transition: transform 0.3s ease;
+        }
+
+        .faq-answer {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease, margin-top 0.3s ease;
+            color: #666;
+            line-height: 1.6;
+        }
+
+        .faq-item:hover {
+            background-color: #FFF5EB;
+        }
+
+        .faq-item.active .faq-question {
+            color: #FF6B00;
+        }
+
+        .faq-item.active .faq-question svg {
+            transform: rotate(180deg);
+            color: #FF6B00;
+        }
+
+        .faq-item.active .faq-answer {
+            max-height: 500px;
+            margin-top: 1rem;
+        }
+
+        /* Update FAQ Mobile Styles */
+        @media screen and (max-width: 768px) {
+            .faq-section {
+                padding: 4rem 3%;
+            }
+
+            .faq-section h2 {
+                font-size: 2.8rem;
+                margin-bottom: 2rem;
+            }
+
+            .faq-container {
+                flex-direction: column;
+                gap: 2rem;
+            }
+
+            .faq-categories {
+                flex: none;
+                flex-direction: row;
+                justify-content: center;
+                gap: 2rem;
+                padding-bottom: 1rem;
+                border-bottom: 1px solid #eee;
+            }
+
+            .faq-category {
+                flex: 0 0 auto;
+                text-align: center;
+                padding: 0.5rem 1rem;
+            }
+
+            .faq-category h3 {
+                font-size: 1.1rem;
+                margin-bottom: 0;
+            }
+
+            .faq-category::after {
+                bottom: -2px;
+            }
+
+            .faq-questions {
+                padding: 0;
+            }
+
+            .faq-item {
+                padding: 1.2rem;
+                border-radius: 8px;
+                margin-bottom: 0.5rem;
+                border: 1px solid #eee;
+            }
+
+            .faq-question {
+                font-size: 1rem;
+                padding-right: 2rem;
+                position: relative;
+            }
+
+            .faq-question svg {
+                width: 18px;
+                height: 18px;
+                position: absolute;
+                right: 0;
+                top: 50%;
+                transform: translateY(-50%);
+            }
+
+            .faq-answer {
+                font-size: 0.95rem;
+                line-height: 1.5;
+            }
+
+            .faq-item.active .faq-answer {
+                margin-top: 1rem;
+                padding-top: 1rem;
+                border-top: 1px solid #eee;
+            }
+        }
+
+        /* Very small devices */
+        @media screen and (max-width: 480px) {
+            .faq-section h2 {
+                font-size: 2.4rem;
+            }
+
+            .faq-categories {
+                gap: 1.5rem;
+            }
+
+            .faq-category h3 {
+                font-size: 1rem;
+            }
+
+            .faq-item {
+                padding: 1rem;
+            }
+
+            .faq-question {
+                font-size: 0.95rem;
+            }
+
+            .faq-answer {
+                font-size: 0.9rem;
+            }
+        }
+
+        /* CTA Section Styles */
+        .cta-section {
+            padding: 4rem 5%;
+            background-color: #FFF5EB;
+            text-align: center;
+            border-radius: 20px;
+            max-width: 1200px;
+            margin: 4rem auto;
+        }
+
+        .cta-section h2 {
+            font-size: 3.5rem;
+            color: #333;
+            margin-bottom: 1rem;
+        }
+
+        .cta-section h2 span {
+            color: #FF6B00;
+        }
+
+        .cta-section p {
+            font-size: 1.5rem;
+            color: #666;
+            margin-bottom: 2rem;
+        }
+
+        .cta-buttons {
+            display: flex;
+            gap: 1.5rem;
+            justify-content: center;
+        }
+
+        .cta-signup {
+            padding: 1rem 2.5rem;
+            background-color: transparent;
+            color: #FF6B00;
+            border: 2px solid #FF6B00;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: 500;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .cta-signup:hover {
+            background-color: #FF6B00;
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .cta-login {
+            padding: 1rem 2.5rem;
+            background-color: #FF6B00;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: 500;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .cta-login:hover {
+            background-color: #e65100;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(255, 107, 0, 0.2);
+        }
+
+        /* Mobile styles */
+        @media screen and (max-width: 768px) {
+            .cta-section {
+                margin: 3rem auto;
+                padding: 3rem 5%;
+            }
+
+            .cta-section h2 {
+                font-size: 2.5rem;
+            }
+
+            .cta-section p {
+                font-size: 1.2rem;
+            }
+        }
+
+        @media screen and (max-width: 480px) {
+            .cta-section {
+                margin: 2rem auto;
+                padding: 2rem 5%;
+            }
+
+            .cta-section h2 {
+                font-size: 2rem;
+            }
+
+            .cta-section p {
+                font-size: 1rem;
+            }
+
+            .cta-buttons {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .cta-signup, .cta-login {
+                width: 100%;
+                text-align: center;
+            }
+        }
+
+        /* Footer Styles */
+        .footer {
+            background: linear-gradient(180deg, #ffffff 0%, #f8f9fa 100%);
+            padding: 6rem 5% 2rem;
+            border-top: 1px solid rgba(255, 107, 0, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .footer::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, #FF6B00, #FFB800);
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 3rem;
+            position: relative;
+        }
+
+        .footer-column h3 {
+            font-size: 1.3rem;
+            color: #333;
+            margin-bottom: 1.8rem;
+            font-weight: bold;
+            position: relative;
+            display: inline-block;
+        }
+
+        .footer-column h3::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            bottom: -8px;
+            width: 40px;
+            height: 3px;
+            background: linear-gradient(90deg, #FF6B00, #FFB800);
+            transition: width 0.3s ease;
+        }
+
+        .footer-column:hover h3::after {
+            width: 100%;
+        }
+
+        .footer-links {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .footer-links a {
+            color: #666;
+            text-decoration: none;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+            position: relative;
+            width: fit-content;
+            padding: 2px 0;
+        }
+
+        .footer-links a::before {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 1px;
+            background: #FF6B00;
+            bottom: 0;
+            left: 0;
+            transform: scaleX(0);
+            transform-origin: right;
+            transition: transform 0.3s ease;
+        }
+
+        .footer-links a:hover {
+            color: #FF6B00;
+            transform: translateX(8px);
+        }
+
+        .footer-links a:hover::before {
+            transform: scaleX(1);
+            transform-origin: left;
+        }
+
+        .footer-logo-container {
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+        }
+
+        .footer-logo {
+            max-width: 180px;
+            height: auto;
+            transition: transform 0.3s ease;
+            filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.1));
+        }
+
+        .footer-logo:hover {
+            transform: translateY(-5px);
+        }
+
+        .footer-bottom {
+            max-width: 1200px;
+            margin: 3rem auto 0;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .footer-bottom p {
+            color: #333;
+            font-size: 0.9rem;
+            font-weight: 700;
+            font-family: 'Nunito', sans-serif;
+            letter-spacing: 0.5px;
+        }
+
+        /* Mobile styles */
+        @media screen and (max-width: 768px) {
+            .footer {
+                padding: 4rem 3% 2rem;
+            }
+
+            .footer-content {
+                grid-template-columns: 1fr 1fr;
+                gap: 2rem;
+            }
+
+            .footer-logo-container {
+                grid-column: span 2;
+                justify-content: center;
+                margin-top: 2rem;
+            }
+
+            .footer-column h3 {
+                font-size: 1.2rem;
+                margin-bottom: 1.5rem;
+            }
+        }
+
+        @media screen and (max-width: 480px) {
+            .footer-content {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+
+            .footer-logo-container {
+                grid-column: span 1;
+            }
+
+            .footer-bottom p {
+                font-size: 0.85rem;
+            }
+        }
+
+        /* Add margin to body to account for fixed navbar */
+        body {
+            padding-top: 80px;
+        }
+
+        /* Update AI Assistant Styles */
+        .ai-assistant-button {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            z-index: 1000;
+            cursor: pointer;
+        }
+
+        .ai-icon {
+            width: 80px;  /* Size of the image */
+            height: 80px;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            filter: drop-shadow(0 4px 15px rgba(255, 107, 0, 0.3));
+        }
+
+        .ai-assistant-button:hover .ai-icon {
+            transform: translateY(-5px) rotate(15deg);
+            filter: drop-shadow(0 8px 20px rgba(255, 107, 0, 0.4));
+        }
+
+        .ai-tooltip {
+            position: absolute;
+            bottom: 100px;
+            right: 0;
+            background: white;
+            padding: 15px 20px;
+            border-radius: 16px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            font-size: 0.95rem;
+            color: #333;
+            width: 250px;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(10px);
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255, 107, 0, 0.1);
+        }
+
+        .ai-tooltip::before {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            right: 25px;
+            width: 16px;
+            height: 16px;
+            background: white;
+            transform: rotate(45deg);
+            border-right: 1px solid rgba(255, 107, 0, 0.1);
+            border-bottom: 1px solid rgba(255, 107, 0, 0.1);
+        }
+
+        .ai-assistant-button:hover .ai-tooltip {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        /* Mobile responsiveness */
+        @media screen and (max-width: 768px) {
+            .ai-assistant-button {
+                bottom: 20px;
+                right: 20px;
+            }
+
+            .ai-icon {
+                width: 65px;
+                height: 65px;
+            }
+
+            .ai-tooltip {
+                width: 200px;
+                font-size: 0.85rem;
+                padding: 12px 16px;
+            }
+        }
+
+        /* Add this after the AI assistant button */
+        .ai-chat-container {
+            position: fixed;
+            bottom: 100px;
+            right: 30px;
+            width: 350px;
+            height: 400px;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            display: flex;
+            flex-direction: column;
+            z-index: 999;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(20px);
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255, 107, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .ai-chat-container.active {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        .ai-chat-header {
+            padding: 15px 20px;
+            background: linear-gradient(135deg, #FF6B00, #FFB800);
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .ai-chat-title {
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        .ai-chat-close {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 0;
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .ai-chat-close:hover {
+            transform: scale(1.1);
+        }
+
+        .ai-chat-messages {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            background: #f8f9fa;
+        }
+
+        .ai-message {
+            background: white;
+            padding: 12px 16px;
+            border-radius: 15px;
+            margin-bottom: 10px;
+            max-width: 85%;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+            line-height: 1.4;
+            font-size: 0.95rem;
+        }
+
+        .user-message {
+            background: linear-gradient(135deg, #FF6B00, #FFB800);
+            color: white;
+            margin-left: auto;
+            border-top-right-radius: 4px;
+        }
+
+        .ai-chat-input {
+            padding: 15px;
+            display: flex;
+            gap: 10px;
+            background: white;
+            border-top: 1px solid rgba(0, 0, 0, 0.1);
+        }
+
+        #ai-input {
+            flex: 1;
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            border-radius: 25px;
+            padding: 8px 15px;
+            font-size: 0.95rem;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        #ai-input:focus {
+            border-color: #FF6B00;
+            box-shadow: 0 0 0 2px rgba(255, 107, 0, 0.1);
+        }
+
+        .ai-send-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: none;
+            background: linear-gradient(135deg, #FF6B00, #FFB800);
+            color: white;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .ai-send-btn:hover {
+            transform: scale(1.05);
+        }
+
+        .ai-send-btn svg {
+            width: 20px;
+            height: 20px;
+        }
+
+        /* Mobile responsiveness */
+        @media screen and (max-width: 768px) {
+            .ai-chat-container {
+                width: calc(100% - 40px);
+                height: 400px;
+                bottom: 90px;
+                right: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="logo">
+            <img src="/img/zynko-logo.png" alt="Zynko Logo">
+        </div>
+        <div class="nav-links">
+            <a href="#">Home</a>
+            <a href="#">Courses</a>
+            <a href="#">Explore</a>
+            <a href="#">FAQ</a>
+            <a href="#">About Us</a>
+        </div>
+        <div class="auth-buttons">
+            <a href="/pages/authform.html" class="sign-up">Sign up</a>
+            <a href="/pages/authform.html" class="log-in">Log in</a>
+        </div>
+        <div class="menu-toggle">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+        <div class="mobile-menu">
+            <a href="#">Home</a>
+            <a href="#">Courses</a>
+            <a href="#">Explore</a>
+            <a href="#">FAQ</a>
+            <a href="#">About Us</a>
+            <div class="mobile-auth">
+                <a href="/pages/authform.html" class="mobile-signup">Sign up</a>
+                <a href="/pages/authform.html" class="mobile-login">Log in</a>
+            </div>
+        </div>
+        <div class="mobile-overlay"></div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-content">
+            <div class="hero-tag">
+                <img src="/img/bulb-icon.png" alt="Bulb Icon">
+                <span>Your One-Stop Hub for Smarter Learning</span>
+            </div>
+            <h1>
+                <span class="highlight">Free Learning,</span><br>
+                Easy Access
+            </h1>
+            <p>Transform your learning with our AI-powered, next-gen education platform! Designed for students, we bring you a digital-first experience with cutting-edge technology, personalized lessons, and high-quality resources—all for free. Learn smarter, explore limitless possibilities, 
+            and shape your future with the power of modern education! 📚💡</p>
+            <a href="/pages/authform.html" class="get-started">Get started !</a>
+        </div>
+        <div class="hero-image">
+            <img src="/img/student-reading.png" alt="Student Reading">
+        </div>
+    </section>
+
+    <!-- Stats Section -->
+    <section class="stats-section">
+        <h2 class="stats-header"><span class="highlight">One Platform, Limitless Learning!</span></h2>
+        
+        <div class="loved-by">
+            <div class="group">
+                <span>Loved by</span>
+                <img src="/img/students-group.png" alt="Students">
+                <span class="highlight">Students</span>
+            </div>
+        </div>
+
+        <div class="stats-container">
+            <div class="india-map">
+                <div class="circle-bg"></div>
+                <img src="/img/india-map.png" alt="India Map">
+            </div>
+        </div>
+    </section>
+
+    <!-- AI Tutor Section -->
+    <section class="ai-tutor-section">
+        <div class="ai-tutor-heading">
+            <p class="ai-tutor-tagline">Empowering India's youth, reshaping the next generation</p>
+            <h2>An AI tutor in the pocket of <span>every Indian child</span></h2>
+        </div>
+        <div class="ui-components-display">
+            <img src="/img/Chatbot-ui.png" alt="AI Tutor Interface Components">
+        </div>
+
+        <!-- New Tutor Block -->
+        <div class="tutor-block">
+            <h2><span>From books to bytes </span>The Future of Learning</h2>
+            <div class="ui-components-display">
+                <img src="/img/dashboard.png" alt="AI Tutor Interface Components">
+            </div>
+        </div>
+
+        <!-- New Community Block -->
+        <div class="tutor-block">
+            <h2>
+                A Space for Every Learner,
+                <span class="smaller-text">A Group for Every Dream</span>
+            </h2>
+            <div class="ui-components-display">
+                <img src="/img/communities.png" alt="Community Interface Components">
+            </div>
+        </div>
+    </section>
+
+    <!-- Custom Fit Block -->
+    <section class="curriculum-cards">
+        <h2>
+            <span class="text-line"><span class="highlight">100% custom-fit</span></span>
+            <span class="text-line">to</span>
+            <span class="text-line">your curriculum</span>
+        </h2>
+        <div class="curriculum-cards-container">
+            <!-- All cards in one container -->
+            <div class="curriculum-card card-math">
+                <div class="card-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+                        <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+                    </svg>
+                </div>
+                <h3 class="card-title">Math</h3>
+            </div>
+            <div class="curriculum-card card-science">
+                <div class="card-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <path d="M10 2v7.31"></path>
+                        <path d="M14 9.3V2"></path>
+                        <path d="M8.5 2h7"></path>
+                        <path d="M14 9.3a6.5 6.5 0 1 1-4 0"></path>
+                    </svg>
+                </div>
+                <h3 class="card-title">Science</h3>
+            </div>
+            <div class="curriculum-card card-english">
+                <div class="card-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <path d="M4 7V4h16v3"></path>
+                        <path d="M9 20h6"></path>
+                        <path d="M12 4v16"></path>
+                    </svg>
+                </div>
+                <h3 class="card-title">English</h3>
+            </div>
+            <div class="curriculum-card card-social">
+                <div class="card-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <path d="M2 12h20"></path>
+                        <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+                    </svg>
+                </div>
+                <h3 class="card-title">Social Studies</h3>
+            </div>
+            <div class="curriculum-card card-physics">
+                <div class="card-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <rect x="4" y="4" width="16" height="16" rx="2"></rect>
+                        <path d="M9 9h6v6H9z"></path>
+                    </svg>
+                </div>
+                <h3 class="card-title">Physics</h3>
+            </div>
+            <div class="curriculum-card card-biology">
+                <div class="card-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <path d="M12 2L2 7l10 5 10-5-10-5z"></path>
+                        <path d="M2 17l10 5 10-5"></path>
+                        <path d="M2 12l10 5 10-5"></path>
+                    </svg>
+                </div>
+                <h3 class="card-title">Biology</h3>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Block -->
+    <section class="features-block">
+        <h2>And there's even more...</h2>
+        <div class="features-grid">
+            <div class="feature-card feature-orange">
+                <div class="feature-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <path d="M3 3h18v18H3z M8 12h8 M12 8v8"/>
+                    </svg>
+                </div>
+                <div class="feature-title">Questions sorted by topic</div>
+            </div>
+            <div class="feature-card feature-yellow">
+                <div class="feature-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/>
+                    </svg>
+                </div>
+                <div class="feature-title">Save questions for review</div>
+            </div>
+            <div class="feature-card feature-blue">
+                <div class="feature-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4 M7 10l5 5 5-5 M12 15V3"/>
+                    </svg>
+                </div>
+                <div class="feature-title">Create decks of flashcards</div>
+            </div>
+            <div class="feature-card feature-purple">
+                <div class="feature-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20 M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
+                    </svg>
+                </div>
+                <div class="feature-title">Generate practice exams</div>
+            </div>
+            <div class="feature-card feature-light-blue">
+                <div class="feature-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <path d="M12 2H2v10h10V2z M12 12H2v10h10V12z M22 2h-10v10h10V2z M22 12h-10v10h10V12z"/>
+                    </svg>
+                </div>
+                <div class="feature-title">Mobile friendly layout</div>
+            </div>
+            <div class="feature-card feature-violet">
+                <div class="feature-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <path d="M3 6h18 M3 12h18 M3 18h18"/>
+                    </svg>
+                </div>
+                <div class="feature-title">Group questions with collections</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ Section -->
+    <section class="faq-section">
+        <h2>FAQs</h2>
+        <div class="faq-container">
+            <div class="faq-categories">
+                <div class="faq-category active" data-category="general">
+                    <h3>General</h3>
+                </div>
+                <div class="faq-category" data-category="using">
+                    <h3>Using Zynko AI</h3>
+                </div>
+            </div>
+            <div class="faq-questions">
+                <!-- General Questions -->
+                <div class="questions-group active" id="general-questions">
+                    <div class="faq-item">
+                        <div class="faq-question">
+                            <span>What is Zynko AI?</span>
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                <path d="M19 9l-7 7-7-7"/>
+                            </svg>
+                        </div>
+                        <div class="faq-answer">
+                            Zynko AI is an innovative educational platform that provides personalized learning experiences through artificial intelligence. It helps students learn at their own pace with customized content and practice materials.
+                        </div>
+                    </div>
+                    <div class="faq-item">
+                        <div class="faq-question">
+                            <span>What subjects does Zynko AI cover?</span>
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                <path d="M19 9l-7 7-7-7"/>
+                            </svg>
+                        </div>
+                        <div class="faq-answer">
+                            Zynko AI covers a wide range of subjects including Mathematics, Science, English, Social Studies, Physics, Biology, and many more. Our curriculum is constantly expanding to meet educational needs.
+                        </div>
+                    </div>
+                    <div class="faq-item">
+                        <div class="faq-question">
+                            <span>Is Zynko AI free?</span>
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                <path d="M19 9l-7 7-7-7"/>
+                            </svg>
+                        </div>
+                        <div class="faq-answer">
+                            Yes, Zynko AI is completely free to use. We believe in making quality education accessible to everyone, regardless of their financial situation.
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Using Zynko AI Questions -->
+                <div class="questions-group" id="using-questions">
+                    <div class="faq-item">
+                        <div class="faq-question">
+                            <span>How do I get started with Zynko AI?</span>
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                <path d="M19 9l-7 7-7-7"/>
+                            </svg>
+                        </div>
+                        <div class="faq-answer">
+                            Getting started with Zynko AI is easy! Simply sign up for a free account and you can immediately begin exploring our learning resources and AI-powered features.
+                        </div>
+                    </div>
+                    <div class="faq-item">
+                        <div class="faq-question">
+                            <span>How can Zynko AI help me learn?</span>
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                <path d="M19 9l-7 7-7-7"/>
+                            </svg>
+                        </div>
+                        <div class="faq-answer">
+                            Zynko AI provides personalized learning paths, adaptive content, and interactive exercises tailored to your learning style and pace.
+                        </div>
+                    </div>
+                    <div class="faq-item">
+                        <div class="faq-question">
+                            <span>What can the AI Tutor do?</span>
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                <path d="M19 9l-7 7-7-7"/>
+                            </svg>
+                        </div>
+                        <div class="faq-answer">
+                            Our AI Tutor can explain concepts, answer questions, provide practice problems, and give instant feedback on your work.
+                        </div>
+                    </div>
+                    <div class="faq-item">
+                        <div class="faq-question">
+                            <span>Can I set mock exams on Zynko AI?</span>
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                <path d="M19 9l-7 7-7-7"/>
+                            </svg>
+                        </div>
+                        <div class="faq-answer">
+                            Yes! You can create and take mock exams that simulate real test conditions and receive detailed performance analysis.
+                        </div>
+                    </div>
+                    <div class="faq-item">
+                        <div class="faq-question">
+                            <span>What are Zynko AI flashcards?</span>
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                <path d="M19 9l-7 7-7-7"/>
+                            </svg>
+                        </div>
+                        <div class="faq-answer">
+                            Zynko AI flashcards are digital study aids that help you memorize and review key concepts efficiently.
+                        </div>
+                    </div>
+                    <div class="faq-item">
+                        <div class="faq-question">
+                            <span>How do I create flashcards on Zynko AI?</span>
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                <path d="M19 9l-7 7-7-7"/>
+                            </svg>
+                        </div>
+                        <div class="faq-answer">
+                            You can easily create flashcards by selecting topics or generating them automatically from your study materials.
+                        </div>
+                    </div>
+                    <div class="faq-item">
+                        <div class="faq-question">
+                            <span>What are the benefits of using Zynko AI flashcards?</span>
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                <path d="M19 9l-7 7-7-7"/>
+                            </svg>
+                        </div>
+                        <div class="faq-answer">
+                            Zynko AI flashcards adapt to your learning progress, focus on areas where you need more practice, and provide spaced repetition for better retention.
+                        </div>
+                    </div>
+                    <div class="faq-item">
+                        <div class="faq-question">
+                            <span>Can I share my flashcards with others?</span>
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                <path d="M19 9l-7 7-7-7"/>
+                            </svg>
+                        </div>
+                        <div class="faq-answer">
+                            Yes, you can share your flashcard decks with friends or study groups to collaborate and learn together.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta-section">
+        <h2>Ready to ace your exams?</h2>
+        <p>Get started today</p>
+        <div class="cta-buttons">
+            <a href="/pages/authform.html" class="cta-signup">Sign up</a>
+            <a href="/pages/authform.html" class="cta-login">Log in</a>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-column" data-aos="fade-up" data-aos-delay="100">
+                <h3>Subjects</h3>
+                <div class="footer-links">
+                    <a href="#">Mathematics</a>
+                    <a href="#">Science</a>
+                    <a href="#">Social Studies</a>
+                    <a href="#">Computer Science</a>
+                    <a href="#">Language Studies</a>
+                    <a href="#">Business & Economics</a>
+                    <a href="#">Arts & Creativity</a>
+                    <a href="#">Environmental Science</a>
+                    <a href="#">Technical Studies</a>
+                    <a href="#">Vocational Studies</a>
+                </div>
+            </div>
+            <div class="footer-column" data-aos="fade-up" data-aos-delay="200">
+                <h3>Extra Learning</h3>
+                <div class="footer-links">
+                    <a href="#">Coding & Programming</a>
+                    <a href="#">Career Guidance</a>
+                    <a href="#">Soft Skills & Communication</a>
+                </div>
+            </div>
+            <div class="footer-column" data-aos="fade-up" data-aos-delay="300">
+                <h3>About Us</h3>
+                <div class="footer-links">
+                    <a href="#">Contact Support</a>
+                    <a href="#">Terms & Conditions</a>
+                    <a href="#">Privacy Policy</a>
+                </div>
+            </div>
+            <div class="footer-logo-container" data-aos="fade-up" data-aos-delay="400">
+                <img src="/img/zynko-logo.png" alt="Zynko Logo" class="footer-logo">
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>© 2022 - 2024 Zynko.ai | Empowering Education Through Innovation</p>
+        </div>
+    </footer>
+
+    <!-- Update the AI assistant button HTML -->
+    <div class="ai-assistant-button">
+        <div class="ai-tooltip">Hey hi, I'm your AI Assistant and I will guide you about Zynko! 👋</div>
+        <img src="/img/AI-ui.png" alt="AI Assistant" class="ai-icon">
+    </div>
+
+    <!-- Add this after the AI assistant button -->
+    <div class="ai-chat-container">
+        <div class="ai-chat-header">
+            <div class="ai-chat-title">AI Assistant</div>
+            <button class="ai-chat-close">×</button>
+        </div>
+        <div class="ai-chat-messages">
+            <!-- Messages will appear here -->
+            <div class="ai-message">
+                Hi! I'm your AI assistant. How can I help you today? 👋
+            </div>
+        </div>
+        <div class="ai-chat-input">
+            <input type="text" placeholder="Type your message..." id="ai-input">
+            <button class="ai-send-btn">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/>
+                </svg>
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // Initialize ScrollReveal with default config
+        const sr = ScrollReveal({
+            origin: 'bottom',
+            distance: '60px',
+            duration: 1500,
+            delay: 300,
+            reset: false,
+            mobile: true,
+            viewFactor: 0.2,
+            easing: 'cubic-bezier(0.4, 0, 0.2, 1)'
+        });
+
+        // Hero Section
+        sr.reveal('.hero-content', {
+            origin: 'left',
+            distance: '100px',
+            duration: 2000
+        });
+        sr.reveal('.hero-image', {
+            origin: 'right',
+            distance: '100px',
+            delay: 500
+        });
+
+        // Stats Section
+        sr.reveal('.stats-header', {
+            origin: 'top',
+            delay: 400
+        });
+        sr.reveal('.loved-by', {
+            delay: 600
+        });
+        sr.reveal('.india-map', {
+            origin: 'right',
+            delay: 1000
+        });
+
+        // AI Tutor Section
+        sr.reveal('.ai-tutor-heading', {
+            origin: 'top'
+        });
+        sr.reveal('.ui-components-display', {
+            origin: 'bottom',
+            delay: 300
+        });
+        sr.reveal('.tutor-block', {
+            origin: 'bottom',
+            delay: 400
+        });
+
+        // Curriculum Cards
+        sr.reveal('.curriculum-cards h2', {
+            origin: 'top'
+        });
+        sr.reveal('.curriculum-card', {
+            origin: 'bottom',
+            interval: 300,
+            distance: '50px'
+        });
+
+        // Features Block
+        sr.reveal('.features-block h2', {
+            origin: 'top'
+        });
+        sr.reveal('.feature-card', {
+            origin: 'bottom',
+            interval: 300,
+            distance: '40px'
+        });
+
+        // FAQ Section
+        sr.reveal('.faq-section h2', {
+            origin: 'top'
+        });
+        sr.reveal('.faq-categories', {
+            origin: 'left',
+            delay: 300
+        });
+        sr.reveal('.faq-questions', {
+            origin: 'right',
+            delay: 400
+        });
+
+        // CTA Section
+        sr.reveal('.cta-section', {
+            origin: 'bottom',
+            distance: '30px'
+        });
+
+        // FAQ Functionality
+        const faqCategories = document.querySelectorAll('.faq-category');
+        const questionGroups = document.querySelectorAll('.questions-group');
+        const faqItems = document.querySelectorAll('.faq-item');
+
+        // Category switching
+        faqCategories.forEach(category => {
+            category.addEventListener('click', () => {
+                // Remove active class from all categories and question groups
+                faqCategories.forEach(cat => cat.classList.remove('active'));
+                questionGroups.forEach(group => group.classList.remove('active'));
+
+                // Add active class to clicked category and corresponding question group
+                category.classList.add('active');
+                const groupId = `${category.dataset.category}-questions`;
+                document.getElementById(groupId).classList.add('active');
+
+                // Close all FAQ items when switching categories
+                faqItems.forEach(item => item.classList.remove('active'));
+            });
+        });
+
+        // FAQ item toggle
+        faqItems.forEach(item => {
+            item.addEventListener('click', () => {
+                const isActive = item.classList.contains('active');
+                
+                // Close all other items
+                faqItems.forEach(otherItem => {
+                    if (otherItem !== item) {
+                        otherItem.classList.remove('active');
+                    }
+                });
+
+                // Toggle current item
+                item.classList.toggle('active');
+            });
+        });
+
+        // Hamburger Menu Functionality
+        const menuToggle = document.querySelector('.menu-toggle');
+        const mobileMenu = document.querySelector('.mobile-menu');
+        const mobileOverlay = document.querySelector('.mobile-overlay');
+        
+        menuToggle.addEventListener('click', () => {
+            menuToggle.classList.toggle('active');
+            mobileMenu.classList.toggle('active');
+            mobileOverlay.classList.toggle('active');
+            document.body.style.overflow = mobileMenu.classList.contains('active') ? 'hidden' : '';
+        });
+
+        mobileOverlay.addEventListener('click', () => {
+            menuToggle.classList.remove('active');
+            mobileMenu.classList.remove('active');
+            mobileOverlay.classList.remove('active');
+            document.body.style.overflow = '';
+        });
+
+        // Number Counter Animation
+        function animateValue(element, start, end, duration) {
+            // Ensure we're working with numbers
+            start = Number(start);
+            end = Number(end);
+            
+            // Get the suffix if it exists (k or +)
+            const suffix = element.getAttribute('data-suffix') || '';
+            
+            // Calculate the change in value
+            const range = end - start;
+            
+            // Calculate the step time for smooth animation
+            const minFrame = 50;
+            let stepTime = Math.abs(Math.floor(duration / range));
+            stepTime = Math.max(stepTime, minFrame);
+
+            // Current value and timeStart for animation
+            let current = start;
+            let timeStart = null;
+
+            // Animation function
+            function step(timestamp) {
+                if (!timeStart) timeStart = timestamp;
+                
+                const progress = Math.min((timestamp - timeStart) / duration, 1);
+                
+                // Use easeOutQuad for smoother animation
+                const easeProgress = 1 - (1 - progress) * (1 - progress);
+                current = Math.floor(start + (range * easeProgress));
+                
+                // Update the element with proper formatting and suffix
+                element.textContent = current.toLocaleString() + suffix;
+
+                if (progress < 1) {
+                    window.requestAnimationFrame(step);
+                }
+            }
+
+            window.requestAnimationFrame(step);
+        }
+
+        // Intersection Observer to trigger animation when element is in view
+        const observerOptions = {
+            root: null,
+            rootMargin: '0px',
+            threshold: 0.1
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const element = entry.target;
+                    const finalValue = element.getAttribute('data-value');
+                    animateValue(element, 0, finalValue, 2000); // 2000ms duration
+                    observer.unobserve(element); // Only animate once
+                }
+            });
+        }, observerOptions);
+
+        // Select all stats numbers and observe them
+        document.querySelectorAll('.stat-number').forEach(stat => {
+            observer.observe(stat);
+        });
+
+        // Add this to your existing script section
+        document.addEventListener('DOMContentLoaded', function() {
+            const aiButton = document.querySelector('.ai-assistant-button');
+            const chatContainer = document.querySelector('.ai-chat-container');
+            const closeButton = document.querySelector('.ai-chat-close');
+            const sendButton = document.querySelector('.ai-send-btn');
+            const input = document.getElementById('ai-input');
+            const messagesContainer = document.querySelector('.ai-chat-messages');
+
+            // Toggle chat interface
+            aiButton.addEventListener('click', () => {
+                chatContainer.classList.add('active');
+            });
+
+            closeButton.addEventListener('click', () => {
+                chatContainer.classList.remove('active');
+            });
+
+            // Expanded responses object with more context-specific answers
+            const responses = {
+                // General questions about Zynko
+                'what is zynko': 'Zynko is your one-stop hub for smarter learning! We\'re an AI-powered education platform that combines personalized learning, interactive content, and cutting-edge technology to make education accessible and engaging for everyone! 📚✨',
+                'who are you': 'I\'m your AI assistant at Zynko! I can help you explore our platform, learn about our features, and guide you through your educational journey. Ask me anything about our services! 🤖',
+                
+                // Expanded Features and Services
+                'features': 'Zynko offers a comprehensive set of features:\n• AI-powered personalized learning\n• Interactive study materials\n• Practice questions and mock tests\n• Subject-specific resources\n• Community learning\n• Progress tracking\n• Real-time doubt solving\n• Study schedules\n• Performance analytics\n• Mobile learning support\n• And much more! 🚀',
+                
+                // Expanded Subjects List
+                'subjects': 'We offer a wide range of subjects:\n• Mathematics\n• Science\n• English\n• Social Studies\n• Physics\n• Biology\n• Computer Science\n• Language Studies\n• Business & Economics\n• Arts & Creativity\n• Environmental Science\n• Technical Studies\n• Vocational Studies\nAll with personalized learning paths! 📖',
+                
+                // Extra Learning Options
+                'extra learning': 'Beyond regular subjects, we offer:\n• Coding & Programming\n• Career Guidance\n• Soft Skills & Communication\n• Leadership Development\n• Project Management\n• Digital Skills\nPerfect for holistic development! 🌟',
+                
+                // Study Tools and Features
+                'study tools': 'Our comprehensive study tools include:\n• AI-powered flashcards\n• Interactive practice tests\n• Custom question banks\n• Progress tracking dashboard\n• Study schedule planner\n• Notes organization system\n• Mock exam simulator\n• Performance analytics\n• Resource library\nAll designed to optimize your learning! 📚',
+                
+                // Mock Tests and Exams
+                'mock tests': 'Yes! Our mock test feature includes:\n• Real exam simulations\n• Timed assessments\n• Detailed performance analysis\n• Personalized feedback\n• Progress tracking\n• Difficulty levels adjustment\nPerfect for exam preparation! 📝',
+                
+                // AI Tutor Capabilities
+                'ai tutor': 'Our advanced AI tutor offers:\n• 24/7 doubt solving\n• Personalized learning paths\n• Adaptive content delivery\n• Interactive problem solving\n• Real-time feedback\n• Progress monitoring\n• Concept explanations\n• Practice recommendations\nLike having a personal tutor anytime! 🎓',
+                
+                // Community Features
+                'community': 'Join our vibrant learning community:\n• Connect with fellow students\n• Join study groups\n• Participate in discussions\n• Share resources\n• Collaborative learning\n• Peer support\n• Expert interactions\nLearn together, grow together! 👥',
+                
+                // Pricing Information
+                'pricing': 'Great news! Zynko is completely FREE! We believe in:\n• No hidden charges\n• Full feature access\n• Unlimited learning resources\n• Free community access\n• Regular updates\nQuality education should be accessible to everyone! 🎉',
+                
+                // Getting Started
+                'get started': 'Starting with Zynko is easy:\n1. Click the "Sign Up" button\n2. Create your account\n3. Choose your subjects\n4. Set your learning goals\n5. Start your learning journey\nNeed help? I\'m here to guide you! 🌟',
+                
+                // Support and Help
+                'help': 'We\'re here to support you:\n• 24/7 AI assistance\n• Technical support team\n• Community help\n• FAQ section\n• Video tutorials\n• Learning guides\n• Email support\nJust let me know what you need! 🤝'
+            };
+
+            // Expanded keywords mapping
+            const keywords = {
+                // General inquiries
+                'about': 'what is zynko',
+                'platform': 'what is zynko',
+                'introduction': 'what is zynko',
+                
+                // Features and tools
+                'features': 'features',
+                'offer': 'features',
+                'provide': 'features',
+                'tools': 'study tools',
+                'resources': 'study tools',
+                'materials': 'study tools',
+                
+                // Subjects and courses
+                'subjects': 'subjects',
+                'courses': 'subjects',
+                'topics': 'subjects',
+                'curriculum': 'subjects',
+                'study': 'subjects',
+                
+                // Extra learning
+                'extra': 'extra learning',
+                'additional': 'extra learning',
+                'skills': 'extra learning',
+                'coding': 'extra learning',
+                'programming': 'extra learning',
+                
+                // Tests and exams
+                'test': 'mock tests',
+                'exam': 'mock tests',
+                'practice': 'mock tests',
+                'assessment': 'mock tests',
+                'quiz': 'mock tests',
+                
+                // AI Tutor
+                'tutor': 'ai tutor',
+                'teacher': 'ai tutor',
+                'mentor': 'ai tutor',
+                'guide': 'ai tutor',
+                'explain': 'ai tutor',
+                'learn': 'ai tutor',
+                
+                // Community
+                'community': 'community',
+                'group': 'community',
+                'connect': 'community',
+                'together': 'community',
+                'social': 'community',
+                'collaborate': 'community',
+                
+                // Pricing
+                'price': 'pricing',
+                'cost': 'pricing',
+                'free': 'pricing',
+                'payment': 'pricing',
+                'subscription': 'pricing',
+                
+                // Getting started
+                'start': 'get started',
+                'begin': 'get started',
+                'register': 'get started',
+                'signup': 'get started',
+                'join': 'get started',
+                'account': 'get started',
+                
+                // Help and support
+                'help': 'help',
+                'support': 'help',
+                'assist': 'help',
+                'guidance': 'help',
+                'contact': 'help',
+                'issue': 'help',
+                'problem': 'help'
+            };
+
+            // Function to find best matching response
+            function findBestResponse(userInput) {
+                const input = userInput.toLowerCase();
+                
+                // Direct matches
+                for (let key in responses) {
+                    if (input.includes(key)) {
+                        return responses[key];
+                    }
+                }
+                
+                // Keywords mapping
+                for (let keyword in keywords) {
+                    if (input.includes(keyword)) {
+                        return responses[keywords[keyword]];
+                    }
+                }
+                
+                // Default response if no match found
+                return "I'm here to help you learn about Zynko! You can ask me about:\n• What Zynko is\n• Our features\n• Available subjects\n• How to get started\n• Our community\n• Study tools\n• AI tutor\n• And more! 🤗";
+            }
+
+            // Update sendMessage function
+            function sendMessage() {
+                const message = input.value.trim();
+                if (message) {
+                    // Add user message
+                    const userMessage = document.createElement('div');
+                    userMessage.className = 'ai-message user-message';
+                    userMessage.textContent = message;
+                    messagesContainer.appendChild(userMessage);
+
+                    // Clear input
+                    input.value = '';
+
+                    // Scroll to bottom
+                    messagesContainer.scrollTop = messagesContainer.scrollHeight;
+
+                    // Add AI response with typing effect
+                    const aiMessage = document.createElement('div');
+                    aiMessage.className = 'ai-message';
+                    messagesContainer.appendChild(aiMessage);
+
+                    // Get AI response
+                    const response = findBestResponse(message);
+
+                    // Simulate typing effect
+                    let i = 0;
+                    const typingSpeed = 30; // milliseconds per character
+                    function typeWriter() {
+                        if (i < response.length) {
+                            aiMessage.textContent += response.charAt(i);
+                            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+                            i++;
+                            setTimeout(typeWriter, typingSpeed);
+                        }
+                    }
+
+                    // Add typing indicator
+                    setTimeout(() => {
+                        typeWriter();
+                    }, 500);
+                }
+            }
+
+            // Send message on button click
+            sendButton.addEventListener('click', sendMessage);
+
+            // Send message on Enter key
+            input.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    sendMessage();
+                }
+            });
+        });
+    </script>
+</body>
+</html>

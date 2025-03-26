@@ -1,0 +1,3280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zynko Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background: #f5f5f5;
+            min-height: 100vh;
+        }
+
+        /* Sidebar Styles */
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 250px;
+            height: 100vh;
+            background: #FF9B3F;
+            padding: 2rem 1rem;
+            overflow-y: auto;
+            scrollbar-width: thin;
+            scrollbar-color: rgba(255, 255, 255, 0.3) transparent;
+        }
+
+        .logo {
+            margin-bottom: 3rem;
+            text-align: center;
+        }
+
+        .logo img {
+            width: 80px;
+            height: auto;
+            margin: 0 auto;
+            display: block;
+        }
+
+        .nav-links {
+            list-style: none;
+            padding-bottom: 1rem;
+        }
+
+        .nav-item {
+            margin-bottom: 1rem;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            padding: 0.8rem 1rem;
+            color: white;
+            text-decoration: none;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .nav-link:hover, .nav-link.active {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .nav-link svg {
+            width: 20px;
+            height: 20px;
+            margin-right: 10px;
+        }
+
+        /* Main Content Styles */
+        .main-content {
+            margin-left: 250px;
+            padding: 2rem;
+            background-size: cover;
+            background-image: url('/img/dashboard-bg.jpg');
+            background-repeat: no-repeat;
+            background-position: center;
+            position: relative;
+            min-height: 100vh;
+        }
+
+        .main-content::before {
+            position: absolute;
+            content: '';
+            left: 0;
+            top: 0;
+            bottom: 0;
+            right: 0;
+            z-index: 0;
+            background: rgba(255, 255, 255, 0.70); /* Adjusted opacity here - lower value = more visible background */
+        }
+
+        .header, .welcome-banner, .subjects-section {
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Maximum Glassmorphism Header Styles */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding: 1.2rem 2.5rem;
+            
+            /* Maximum transparency glassmorphism */
+            background: rgba(255, 255, 255, 0);
+            backdrop-filter: blur(30px);
+            -webkit-backdrop-filter: blur(30px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+            
+            border-radius: 24px;
+            position: relative;
+            z-index: 2;
+            transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            overflow: hidden;
+        }
+
+        .header:hover {
+            background: rgba(255, 255, 255, 0.12);
+            box-shadow: 0 15px 50px rgba(0, 0, 0, 0.2);
+            transform: translateY(-5px);
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0) 100%);
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        .header::after {
+            content: '';
+            position: absolute;
+            height: 200%;
+            width: 200%;
+            top: -50%;
+            left: -50%;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0) 70%);
+            transform: rotate(30deg);
+            z-index: -2;
+        }
+
+        .header-logo {
+            height: 50px;
+            display: flex;
+            align-items: center;
+        }
+
+        .header-logo-img {
+            height: 100%;
+            width: auto;
+            object-fit: contain;
+        }
+
+        /* Update user profile for maximum glassmorphism */
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 1.2rem;
+            padding: 0.6rem 1.2rem;
+            
+            /* Maximum transparency glassmorphism */
+            background: rgba(255, 255, 255, 0.12);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            
+            border-radius: 50px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .user-profile:hover {
+            background: rgba(255, 255, 255, 0.18);
+            box-shadow: 0 12px 35px rgba(0, 0, 0, 0.18);
+            transform: translateY(-5px) scale(1.02);
+        }
+
+        .user-profile::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 50%;
+            background: linear-gradient(to bottom, rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0));
+            border-radius: 50px 50px 0 0;
+            z-index: -1;
+        }
+
+        .user-avatar {
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            background: #FF9B3F;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 1.2rem;
+            box-shadow: 0 2px 8px rgba(255, 155, 63, 0.3);
+        }
+
+        .user-info {
+            text-align: left;
+            padding-right: 0.5rem;
+        }
+
+        .user-name {
+            font-weight: 700;
+            color: #333;
+            font-size: 0.95rem;
+            margin-bottom: 2px;
+            text-shadow: 0 1px 2px rgba(255, 255, 255, 0.5);
+        }
+
+        .user-class {
+            color: #555;
+            font-size: 0.8rem;
+            text-shadow: 0 1px 1px rgba(255, 255, 255, 0.3);
+        }
+
+        /* Update notification icon for maximum glassmorphism */
+        .notification-icon {
+            cursor: pointer;
+            background: rgba(255, 155, 63, 0.15);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 155, 63, 0.15);
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            margin-left: 0.5rem;
+            box-shadow: 0 6px 20px rgba(255, 155, 63, 0.12);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .notification-icon:hover {
+            background: rgba(255, 155, 63, 0.2);
+            transform: scale(1.2) translateY(-3px);
+            box-shadow: 0 10px 30px rgba(255, 155, 63, 0.2);
+        }
+
+        .notification-icon::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0) 70%);
+            z-index: -1;
+        }
+
+        .notification-icon svg {
+            width: 20px;
+            height: 20px;
+            color: #FF9B3F;
+        }
+
+        /* Welcome Banner */
+        .welcome-banner {
+            background: #FFB366;
+            border-radius: 20px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            position: relative;
+            overflow: hidden;
+            height: 160px;
+        }
+
+        .welcome-text {
+            color: white;
+            position: relative;
+            z-index: 1;
+        }
+
+        .welcome-text h2 {
+            font-size: 1.8rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .welcome-text p {
+            opacity: 0.9;
+            font-size: 1rem;
+        }
+
+        .banner-image {
+            position: absolute;
+            right: 70px;
+            height: 220px;
+            width: auto;
+            z-index: 1;
+            transform: translateY(-148px);
+        }
+
+        .banner-date {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+        }
+
+        /* Subjects Grid */
+        .subjects-section h3 {
+            color: #333;
+            margin-bottom: 1.5rem;
+        }
+
+        .subjects-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .subject-card {
+            background: white;
+            border-radius: 15px;
+            padding: 1.5rem;
+            text-align: center;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+            border: 2px solid transparent;
+        }
+
+        .subject-card:hover {
+            transform: translateY(-5px);
+            border-color: #FF9B3F;
+        }
+
+        .subject-icon {
+            width: 60px;
+            height: 60px;
+            margin-bottom: 1rem;
+        }
+
+        .subject-name {
+            color: #333;
+            font-weight: 500;
+        }
+
+        /* Custom scrollbar for webkit browsers (Chrome, Safari, Edge) */
+        .sidebar::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .sidebar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .sidebar::-webkit-scrollbar-thumb {
+            background-color: rgba(255, 255, 255, 0.3);
+            border-radius: 3px;
+        }
+
+        /* Update mobile styles */
+        @media (max-width: 768px) {
+            /* Sidebar styles */
+            .sidebar {
+                transform: translateX(-100%);
+                left: 0;
+                width: 250px;
+                height: 100vh;
+                transition: transform 0.3s ease;
+                padding: 2rem 1rem;
+                z-index: 1000;
+            }
+
+            .sidebar.active {
+                transform: translateX(0);
+            }
+
+            /* Hamburger styles */
+            .hamburger {
+                display: block;
+                position: fixed;
+                left: 20px;
+                top: 20px;
+                z-index: 1001;
+                background: none;
+                border: none;
+                cursor: pointer;
+                padding: 0;
+            }
+
+            .hamburger span {
+                display: block;
+                width: 25px;
+                height: 3px;
+                background: #FF9B3F;
+                margin: 5px 0;
+                transition: all 0.3s ease;
+                border-radius: 3px;
+            }
+
+            /* Hamburger Animation */
+            .hamburger.active span:nth-child(1) {
+                transform: rotate(45deg) translate(6px, 6px);
+                background: #ffffff;
+            }
+
+            .hamburger.active span:nth-child(2) {
+                opacity: 0;
+                background: #ffffff;
+            }
+
+            .hamburger.active span:nth-child(3) {
+                transform: rotate(-45deg) translate(6px, -6px);
+                background: #ffffff;
+            }
+
+            .hamburger.active {
+                filter: drop-shadow(0px 0px 1px rgba(0, 0, 0, 0.5));
+            }
+
+            /* Main content adjustments */
+            .main-content {
+                margin-left: 0;
+                padding: 1rem;
+                padding-top: 70px;
+            }
+
+            /* Welcome Banner mobile styles */
+            .welcome-banner {
+                height: auto;
+                padding: 1.5rem;
+                position: relative;
+                overflow: hidden;
+            }
+
+            .banner-image {
+                position: absolute;
+                right: 0;
+                top: 50%;
+                transform: translateY(-50%);
+                height: 100%;
+                width: auto;
+                opacity: 0.3;
+                z-index: 1;
+            }
+
+            .welcome-text {
+                position: relative;
+                z-index: 2;
+                text-align: left;
+            }
+
+            .welcome-text h2 {
+                font-size: 1.5rem;
+                margin-bottom: 0.5rem;
+                color: white;
+                text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+            }
+
+            .main-content::before {
+                background: rgba(255, 255, 255, 0.98);
+            }
+
+            .user-profile {
+                padding: 0.4rem 0.8rem;
+                gap: 0.8rem;
+            }
+            
+            .user-avatar {
+                width: 36px;
+                height: 36px;
+                font-size: 1rem;
+            }
+            
+            .user-name {
+                font-size: 0.85rem;
+            }
+            
+            .user-class {
+                font-size: 0.75rem;
+            }
+            
+            .notification-icon {
+                width: 32px;
+                height: 32px;
+            }
+        }
+
+        /* Additional breakpoint for very small devices */
+        @media (max-width: 380px) {
+            .subjects-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .welcome-text h2 {
+                font-size: 1.3rem;
+            }
+
+            .banner-image {
+                height: 150px;
+            }
+        }
+
+        /* Add these onboarding styles before the mobile styles */
+
+        /* Onboarding styles */
+        .onboarding-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(8px);
+            z-index: 2000;
+            display: none;  /* Hide by default */
+            align-items: center;
+            justify-content: center;
+        }
+
+        .onboarding-container {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .onboarding-modal {
+            background: white;
+            width: 100%;
+            max-width: 600px;
+            padding: 2.5rem;
+            border-radius: 20px;
+            box-shadow: 0 5px 25px rgba(0, 0, 0, 0.1);
+            min-height: 280px;
+            margin-left: 150px;
+            position: relative;
+        }
+
+        /* Speech bubble triangle */
+        .onboarding-modal::before {
+            content: '';
+            position: absolute;
+            left: -20px;
+            top: 40px;
+            width: 0;
+            height: 0;
+            border-top: 20px solid transparent;
+            border-bottom: 20px solid transparent;
+            border-right: 20px solid white;
+        }
+
+        .onboarding-content {
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+        }
+
+        .onboarding-text h2 {
+            font-size: 1.3rem;
+            color: #333;
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+
+        .form-group {
+            margin-bottom: 1.2rem;
+            position: relative;
+        }
+
+        .form-group.select-group::after {
+            content: '';
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 0;
+            height: 0;
+            border-left: 5px solid transparent;
+            border-right: 5px solid transparent;
+            border-top: 5px solid #666;
+            pointer-events: none;
+        }
+
+        .continue-btn {
+            background: #FF9B3F;
+            color: white;
+            border: none;
+            padding: 0.7rem 2rem;
+            border-radius: 5px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            cursor: pointer;
+            margin: 0 auto;
+            display: block;
+            margin-top: 1rem;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 120px;
+        }
+
+        .continue-btn.loading {
+            background: #e68b38; /* Slightly darker when loading */
+            cursor: not-allowed;
+        }
+
+        .continue-btn.loading .btn-text {
+            display: none;
+        }
+
+        .continue-btn.loading .loading-spinner {
+            display: block;
+        }
+
+        /* Desktop image position */
+        .onboarding-image {
+            position: absolute;
+            left: -130px;
+            top: -50px;
+            width: 300px;
+            height: auto;
+            z-index: 1;
+        }
+
+        /* Mobile onboarding styles */
+        @media (max-width: 768px) {
+            .onboarding-overlay {
+                align-items: flex-start;
+                padding: 0;
+            }
+
+            .onboarding-container {
+                width: 100%;
+                position: relative;
+            }
+
+            .onboarding-modal {
+                width: 85%;
+                max-width: 300px;
+                margin-left: auto;
+                margin-right: 20px;
+                padding: 1.5rem;
+                min-height: auto;
+                margin-top: 20%;
+                border-radius: 15px;
+                position: relative;
+                z-index: 2002;
+            }
+
+            /* Fix image size and position */
+            .onboarding-image {
+                position: fixed;
+                left: 0px;
+                top: 20%;
+                width: 220px !important;
+                height: auto !important;
+                z-index: 2001;
+                padding-bottom: 40px;
+            }
+
+            .onboarding-image img {
+                width: 100%;
+                height: auto;
+                object-fit: contain;
+            }
+
+            .onboarding-content {
+                position: relative;
+                z-index: 2003;
+            }
+        }
+
+        /* Extra small devices */
+        @media (max-width: 360px) {
+            .onboarding-modal {
+                margin-right: 15px;
+                width: 90%;
+            }
+
+            .onboarding-image {
+                width: 180px !important;
+                left: -5px;
+                top: 18%;
+                padding-bottom: 30px;
+            }
+        }
+
+        /* Update form styles to match */
+        .form-input, 
+        .form-group select {
+            width: 100%;
+            padding: 0.7rem;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 0.9rem;
+            outline: none;
+            color: #666;
+            background: #f8f8f8;
+        }
+
+        .form-input:focus,
+        .form-group select:focus {
+            border-color: #FF9B3F;
+            background: white;
+        }
+
+        /* Style for select elements */
+        .form-group select {
+            cursor: pointer;
+            appearance: none; /* Remove default arrow */
+            padding-right: 2rem; /* Make space for custom arrow */
+        }
+
+        /* Custom arrow for select */
+        .form-group.select-group::after {
+            content: '';
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 0;
+            height: 0;
+            border-left: 5px solid transparent;
+            border-right: 5px solid transparent;
+            border-top: 5px solid #666;
+            pointer-events: none;
+        }
+
+        /* Add these loading styles */
+        .loading-spinner {
+            display: none;
+            width: 24px;
+            height: 24px;
+            border: 3px solid #fff;
+            border-radius: 50%;
+            border-top-color: transparent;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* Add loading overlay */
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: white;
+            z-index: 3000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .loading-overlay .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #FF9B3F;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        /* Community Styles */
+        .community-section {
+            position: relative;
+            z-index: 1;
+            padding: 20px;
+        }
+
+        .community-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .create-community-btn {
+            background: #FF9B3F;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .create-community-btn:hover {
+            background: #ff8c2f;
+        }
+
+        .communities-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .community-card {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .community-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .community-header .subject-icon {
+            width: 40px;
+            height: 40px;
+            object-fit: contain;
+        }
+
+        .community-info {
+            flex: 1;
+        }
+
+        .community-name {
+            font-weight: 600;
+            color: #333;
+            font-size: 1.1rem;
+            margin-bottom: 4px;
+        }
+
+        .community-subject {
+            color: #FF9B3F;
+            font-size: 0.9rem;
+        }
+
+        .community-date {
+            color: #666;
+            font-size: 0.9rem;
+            margin-bottom: 15px;
+        }
+
+        .community-description {
+            color: #333;
+            margin-bottom: 15px;
+            font-size: 0.95rem;
+        }
+
+        .community-members {
+            color: #666;
+            font-size: 0.9rem;
+            margin-bottom: 15px;
+        }
+
+        .join-btn {
+            background: #FF9B3F;
+            color: white;
+            border: none;
+            padding: 8px 20px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+
+        .join-btn.joined {
+            background: #666;
+        }
+
+        .join-btn.joined:hover {
+            background: #ff4444;
+        }
+
+        .join-btn:hover {
+            background: #ff8c2f;
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 500px;
+        }
+
+        .modal-content h2 {
+            color: #FF9B3F;
+            margin-bottom: 20px;
+        }
+
+        .modal textarea.form-input {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        /* Add these new styles */
+        .form-hint {
+            color: #666;
+            font-size: 0.8rem;
+            margin-top: 4px;
+            display: block;
+        }
+
+        .community-tags {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin: 10px 0;
+        }
+
+        .community-tag {
+            background: #fff3e6;
+            color: #FF9B3F;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+
+        /* Add field label styles */
+        .card-field {
+            margin-bottom: 12px;
+        }
+
+        .field-label {
+            color: #666;
+            font-size: 0.9rem;
+            font-weight: 500;
+            margin-right: 8px;
+        }
+
+        .field-value {
+            color: #333;
+            font-size: 0.95rem;
+        }
+
+        .delete-btn {
+            background: #ff4444;
+            color: white;
+            border: none;
+            padding: 8px 20px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+            margin-left: 10px;
+        }
+
+        .delete-btn:hover {
+            background: #cc0000;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .close-modal {
+            background: none;
+            border: none;
+            padding: 5px;
+            cursor: pointer;
+            color: #666;
+            transition: color 0.3s ease;
+        }
+
+        .close-modal:hover {
+            color: #333;
+        }
+
+        .continue-btn.loading .btn-text {
+            display: none;
+        }
+
+        .continue-btn.loading .loading-spinner {
+            display: block;
+        }
+
+        /* Add back the search bar styles */
+        .community-section .search-bar {
+            display: flex;
+            align-items: center;
+            background: white;
+            border-radius: 25px;
+            padding: 0.5rem 1rem;
+            width: 300px;
+        }
+
+        .community-section .search-bar input {
+            border: none;
+            outline: none;
+            width: 100%;
+            padding: 0.5rem;
+        }
+
+        .community-section .search-bar button {
+            background: #FF9B3F;
+            border: none;
+            padding: 0.5rem 1.5rem;
+            border-radius: 20px;
+            color: white;
+            cursor: pointer;
+        }
+
+        .community-section .search-bar button:hover {
+            background: #ff8c2f;
+        }
+
+        /* Add/Update responsive styles */
+        @media (max-width: 768px) {
+            .community-header {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 15px;
+            }
+
+            .header-actions {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .community-section .search-bar {
+                width: 100%;
+            }
+
+            .create-community-btn {
+                width: 100%;
+                text-align: center;
+            }
+
+            .communities-grid {
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+
+            .modal-content {
+                width: 95%;
+                margin: 10px;
+                padding: 20px;
+            }
+
+            .community-card {
+                padding: 15px;
+            }
+
+            .button-group {
+                display: flex;
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .button-group button {
+                width: 100%;
+                margin-left: 0;
+            }
+
+            .community-section {
+                padding: 10px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .community-header .subject-icon {
+                width: 30px;
+                height: 30px;
+            }
+
+            .community-name {
+                font-size: 1rem;
+            }
+
+            .field-label, .field-value {
+                font-size: 0.85rem;
+            }
+        }
+
+        /* Add this CSS for the button loading state */
+        .join-btn.loading {
+            position: relative;
+            color: transparent;
+            pointer-events: none;
+        }
+
+        .join-btn.loading::after {
+            content: '';
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            width: 16px;
+            height: 16px;
+            border: 2px solid #fff;
+            border-radius: 50%;
+            border-top-color: transparent;
+            transform: translate(-50%, -50%);
+            animation: spin 1s linear infinite;
+        }
+
+        /* Add keyframes for spin animation */
+        @keyframes spin {
+            from {
+                transform: translate(-50%, -50%) rotate(0deg);
+            }
+            to {
+                transform: translate(-50%, -50%) rotate(360deg);
+            }
+        }
+
+        .open-chat-btn {
+            background: #4CAF50;
+            color: white;
+            border: none;
+            padding: 8px 20px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+
+        .open-chat-btn:hover {
+            background: #45a049;
+        }
+
+        /* Add these new styles in the <style> section */
+        .subject-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .subject-content {
+            background: white;
+            padding: 2rem;
+            border-radius: 20px;
+            max-width: 500px;
+            width: 90%;
+            text-align: center;
+            position: relative;
+            animation: bounceIn 0.5s ease;
+        }
+
+        @keyframes bounceIn {
+            0% { transform: scale(0.3); opacity: 0; }
+            50% { transform: scale(1.05); }
+            70% { transform: scale(0.9); }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        .subject-content h2 {
+            color: #FF9B3F;
+            margin-bottom: 1.5rem;
+            font-size: 1.8rem;
+        }
+
+        .subject-content p {
+            color: #666;
+            margin-bottom: 2rem;
+            font-size: 1.1rem;
+        }
+
+        .lets-go-btn {
+            background: #FF9B3F;
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 25px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .lets-go-btn:hover {
+            transform: scale(1.05);
+            background: #ff8c2f;
+        }
+
+        .term-grid, .unit-grid, .lesson-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+        }
+
+        .term-card, .unit-card, .lesson-card {
+            background: #f8f8f8;
+            padding: 1.5rem;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .term-card:hover, .unit-card:hover, .lesson-card:hover {
+            transform: translateY(-5px);
+            border-color: #FF9B3F;
+            background: white;
+        }
+
+        .term-card.locked, .unit-card.locked, .lesson-card.locked {
+            opacity: 0.7;
+            cursor: not-allowed;
+        }
+
+        .lock-icon {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            color: #666;
+        }
+
+        .back-btn {
+            background: #666;
+            color: white;
+            border: none;
+            padding: 8px 20px;
+            border-radius: 20px;
+            cursor: pointer;
+            margin-bottom: 1.5rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .back-btn:hover {
+            background: #555;
+        }
+
+        /* Add these animations */
+        @keyframes floatAnimation {
+            0% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0); }
+        }
+
+        .subject-icon {
+            animation: floatAnimation 3s ease-in-out infinite;
+        }
+
+        /* Add these styles for the leaderboard */
+        .leaderboard-section {
+            position: relative;
+            z-index: 1;
+            padding: 1rem 0;
+        }
+        
+        .leaderboard-container {
+            background: linear-gradient(to bottom, #8BC34A, #689F38);
+            border-radius: 20px;
+            padding: 2rem;
+            max-width: 600px;
+            margin: 0 auto;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+            position: relative;
+            overflow: hidden;
+            border: 12px solid #A67C52;
+        }
+        
+        .leaderboard-container::before,
+        .leaderboard-container::after {
+            content: '';
+            position: absolute;
+            width: 40px;
+            height: 100%;
+            background: #A67C52;
+            top: 0;
+        }
+        
+        .leaderboard-container::before {
+            left: -12px;
+        }
+        
+        .leaderboard-container::after {
+            right: -12px;
+        }
+        
+        .leaderboard-header {
+            background: #8D6E63;
+            margin: -2rem -2rem 1.5rem -2rem;
+            padding: 1.5rem 2rem;
+            border-bottom: 6px solid #A67C52;
+            color: white;
+            text-align: center;
+            position: relative;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+        
+        .leaderboard-header h2 {
+            font-size: 2rem;
+            margin: 0;
+            color: #FFF59D;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            font-weight: bold;
+        }
+        
+        .leaderboard-timer {
+            position: absolute;
+            bottom: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #F9A825;
+            padding: 0.5rem 1.5rem;
+            border-radius: 30px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: white;
+            font-weight: bold;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            border: 2px solid #FBC02D;
+        }
+        
+        .leaderboard-body {
+            background: #FFFFFF;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+        
+        .leaderboard-item {
+            display: flex;
+            align-items: center;
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid #E0E0E0;
+            transition: all 0.3s ease;
+        }
+        
+        .leaderboard-item:last-child {
+            border-bottom: none;
+        }
+        
+        .leaderboard-item:hover {
+            transform: translateX(5px);
+        }
+        
+        .rank {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 1.2rem;
+            margin-right: 1rem;
+        }
+        
+        .rank-1 .rank {
+            background: #FFD700;
+            color: white;
+            box-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+        }
+        
+        .rank-2 .rank {
+            background: #C0C0C0;
+            color: white;
+        }
+        
+        .rank-3 .rank {
+            background: #CD7F32;
+            color: white;
+        }
+        
+        .rank-4 .rank {
+            background: #EEEEEE;
+            color: #757575;
+        }
+        
+        .rank-you {
+            background: #E8F5E9;
+        }
+        
+        .rank-you .rank {
+            background: #4CAF50;
+            color: white;
+        }
+        
+        .user-info {
+            display: flex;
+            align-items: center;
+            flex: 1;
+        }
+        
+        .user-avatar {
+            font-size: 1.5rem;
+            margin-right: 1rem;
+        }
+        
+        .user-name {
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+        
+        .score-info {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .trophy {
+            font-size: 1.2rem;
+        }
+        
+        .score {
+            background: #AA00FF;
+            color: white;
+            padding: 0.4rem 0.8rem;
+            border-radius: 20px;
+            font-weight: bold;
+        }
+        
+        /* Responsive styles */
+        @media (max-width: 768px) {
+            .leaderboard-container {
+                margin: 0 1rem;
+                padding: 1.5rem;
+            }
+            
+            .leaderboard-header h2 {
+                font-size: 1.5rem;
+            }
+            
+            .leaderboard-timer {
+                padding: 0.4rem 1rem;
+                font-size: 0.9rem;
+            }
+        }
+
+
+        /* Community Section Styles */
+.community-section {
+    padding: 20px;
+}
+
+.community-header {
+    margin-bottom: 25px;
+    padding-bottom: 15px;
+    border-bottom: 2px solid rgba(255, 107, 0, 0.1);
+}
+
+.community-header h2 {
+    font-size: 1.5rem;
+    color: #333;
+    margin-bottom: 15px;
+}
+
+.header-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 15px;
+}
+
+/* Search Bar Styles */
+.search-bar {
+    flex: 1;
+    display: flex;
+    gap: 10px;
+}
+
+.search-bar input {
+    flex: 1;
+    padding: 10px 15px;
+    border: 1px solid rgba(255, 107, 0, 0.2);
+    border-radius: 8px;
+    outline: none;
+    transition: all 0.3s ease;
+}
+
+.search-bar input:focus {
+    border-color: #FF6B00;
+    box-shadow: 0 0 0 2px rgba(255, 107, 0, 0.1);
+}
+
+/* Section Divider Styles */
+.community-section-divider {
+    margin: 40px 0 25px;
+    position: relative;
+    text-align: left;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.community-section-divider h2 {
+    font-size: 1.3rem;
+    color: #333;
+    margin: 0;
+}
+
+.community-section-divider::after {
+    content: '';
+    flex: 1;
+    height: 2px;
+    background: linear-gradient(to right, rgba(255, 107, 0, 0.2), transparent);
+    border-radius: 2px;
+}
+
+/* Communities Grid Styles */
+.communities-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 20px;
+    margin-bottom: 30px;
+}
+
+/* Create Community Button */
+.create-community-btn {
+    background: linear-gradient(135deg, #FF6B00, #FFB800);
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.3s ease;
+}
+
+.create-community-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(255, 107, 0, 0.2);
+}
+
+/* Community Card Styles */
+.community-card {
+    background: white;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.05);
+    transition: all 0.3s ease;
+    border: 1px solid rgba(255, 107, 0, 0.1);
+}
+
+.community-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(255, 107, 0, 0.1);
+}
+
+.community-card h3 {
+    color: #333;
+    margin-bottom: 10px;
+    font-size: 1.1rem;
+}
+
+.community-card p {
+    color: #666;
+    font-size: 0.9rem;
+    margin-bottom: 15px;
+}
+
+.community-stats {
+    display: flex;
+    gap: 15px;
+    font-size: 0.85rem;
+    color: #888;
+}
+
+.stat-item {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+/* Empty State Styles */
+.empty-state {
+    text-align: center;
+    padding: 30px;
+    color: #666;
+    background: rgba(255, 107, 0, 0.05);
+    border-radius: 12px;
+    margin: 10px 0;
+}
+
+.empty-state p {
+    margin: 10px 0;
+    font-size: 0.95rem;
+}
+
+/* Mobile Responsiveness */
+@media screen and (max-width: 768px) {
+    .header-actions {
+        flex-direction: column;
+    }
+    
+    .search-bar {
+        width: 100%;
+    }
+    
+    .create-community-btn {
+        width: 100%;
+        justify-content: center;
+    }
+    
+    .communities-grid {
+        grid-template-columns: 1fr;
+    }
+}
+.report-section {
+        padding: 2rem;
+    }
+
+    .report-header {
+        margin-bottom: 2rem;
+    }
+
+    .report-header h2 {
+        font-size: 1.5rem;
+        color: #333;
+        margin-bottom: 1rem;
+    }
+
+    .report-filters {
+        display: flex;
+        gap: 2rem;
+        margin-bottom: 2rem;
+    }
+
+    .filter-group {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .filter-group select {
+        padding: 0.5rem 1rem;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        background: white;
+    }
+
+    .report-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 2rem;
+        margin-bottom: 2rem;
+    }
+
+    .subject-progress-cards {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1rem;
+    }
+
+    .progress-card {
+        background: white;
+        padding: 1.5rem;
+        border-radius: 15px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+
+    .circular-progress {
+        position: relative;
+        width: 150px;
+        margin: 1rem auto;
+    }
+
+    .circular-chart {
+        width: 100%;
+        height: auto;
+    }
+
+    .percentage {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        font-size: 1.5rem;
+        font-weight: bold;
+        color: #333;
+    }
+
+    .progress-legend {
+        margin-top: 1rem;
+    }
+
+    .legend-item {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 0.5rem;
+    }
+
+    .dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        margin-right: 0.5rem;
+    }
+
+    .dot.completed {
+        background: #FFC107;
+    }
+
+    .dot.pending {
+        background: #ddd;
+    }
+
+    .activity-chart {
+        background: white;
+        padding: 1.5rem;
+        border-radius: 15px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+
+    .report-bottom-grid {
+        display: grid;
+        grid-template-columns: 2fr 1fr;
+        gap: 2rem;
+    }
+
+    .topics-covered {
+        background: white;
+        padding: 1.5rem;
+        border-radius: 15px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+
+    .subject-progress {
+        margin-top: 1rem;
+    }
+
+    .subject-item {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        margin-bottom: 1rem;
+    }
+
+    .subject-item img {
+        width: 30px;
+        height: 30px;
+    }
+
+    .progress-bar-container {
+        flex: 1;
+        height: 8px;
+        background: #eee;
+        border-radius: 4px;
+        overflow: hidden;
+    }
+
+    .progress-bar {
+        height: 100%;
+        background: #FF9B3F;
+        border-radius: 4px;
+    }
+
+    .points-card {
+        background: white;
+        padding: 1.5rem;
+        border-radius: 15px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        display: flex;
+        align-items: center;
+        gap: 1.5rem;
+    }
+
+    .points-avatar {
+        width: 100px;
+        height: auto;
+    }
+
+    .points-value {
+        font-size: 2.5rem;
+        font-weight: bold;
+        color: #FF9B3F;
+        margin: 0.5rem 0;
+    }
+
+    @media (max-width: 768px) {
+        .report-filters {
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .report-bottom-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+    </style>
+    <!-- Update Firebase SDK imports -->
+    <script src="https://www.gstatic.com/firebasejs/11.4.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/11.4.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/11.4.0/firebase-auth-compat.js"></script>
+
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyC7XhJxAz5iSTff0TlEPiNwdtQm1iWpwpM",
+            authDomain: "zynko-34cac.firebaseapp.com",
+            databaseURL: "https://zynko-34cac-default-rtdb.firebaseio.com",
+            projectId: "zynko-34cac",
+            storageBucket: "zynko-34cac.firebasestorage.app",
+            messagingSenderId: "94736983827",
+            appId: "1:94736983827:web:a65fe1ce827fb6e3975ce6"
+        };
+
+        // Initialize Firebase and get references
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+        const auth = firebase.auth();
+    </script>
+
+    <!-- Add SweetAlert -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <!-- Add Chart.js library before your closing </body> tag -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        // Add this function to check user data
+        async function checkUserData(userId) {
+            try {
+                const userDoc = await db.collection('students').doc(userId).get();
+                return userDoc.exists && userDoc.data().name && userDoc.data().board && userDoc.data().class;
+            } catch (error) {
+                console.error('Error checking user data:', error);
+                return false;
+            }
+        }
+
+        // Hamburger Menu functionality
+        document.addEventListener('DOMContentLoaded', () => {
+            const hamburger = document.querySelector('.hamburger');
+            const sidebar = document.querySelector('.sidebar');
+            const overlay = document.querySelector('.overlay');
+            
+            if (hamburger && sidebar && overlay) {
+                // Toggle menu on hamburger click
+                hamburger.addEventListener('click', () => {
+                    hamburger.classList.toggle('active');
+                    sidebar.classList.toggle('active');
+                    overlay.classList.toggle('active');
+                });
+
+                // Close menu when clicking overlay
+                overlay.addEventListener('click', () => {
+                    hamburger.classList.remove('active');
+                    sidebar.classList.remove('active');
+                    overlay.classList.remove('active');
+                });
+
+                // Close menu when clicking a link
+                document.querySelectorAll('.nav-link').forEach(link => {
+                    link.addEventListener('click', () => {
+                        hamburger.classList.remove('active');
+                        sidebar.classList.remove('active');
+                        overlay.classList.remove('active');
+                    });
+                });
+            }
+
+            // Update the logout handler
+            const logoutLink = document.querySelector('.nav-links li:last-child .nav-link');
+            if (logoutLink) {
+                logoutLink.addEventListener('click', async (e) => {
+                    e.preventDefault();
+                    
+                    const result = await Swal.fire({
+                        title: 'Are you sure?',
+                        text: "You will be logged out of your account",
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: '#FF9B3F',
+                        cancelButtonColor: '#666',
+                        confirmButtonText: 'Yes, logout',
+                        background: '#fff',
+                        color: '#333'
+                    });
+
+                    if (result.isConfirmed) {
+                        try {
+                            // Sign out from Firebase
+                            await firebase.auth().signOut();
+                            
+                            // Clear all localStorage data
+                            localStorage.clear();
+                            
+                            // Show success message
+                            await Toast.fire({
+                                icon: 'success',
+                                title: 'Logged out successfully!',
+                                background: '#fff',
+                                color: '#333',
+                                iconColor: '#FF9B3F'
+                            });
+
+                            // Redirect to auth page
+                            window.location.href = '/pages/authform.html';
+                        } catch (error) {
+                            console.error('Logout error:', error);
+                            await Swal.fire({
+                                icon: 'error',
+                                title: 'Logout Failed',
+                                text: 'There was an error logging out. Please try again.',
+                                confirmButtonColor: '#FF9B3F'
+                            });
+                        }
+                    }
+                });
+            }
+        });
+
+        // Sweet Alert Configuration
+        const Toast = Swal.mixin({
+            toast: true,
+            position: 'top-end',
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true,
+            didOpen: (toast) => {
+                toast.addEventListener('mouseenter', Swal.stopTimer)
+                toast.addEventListener('mouseleave', Swal.resumeTimer)
+            }
+        });
+
+        // Update the window load event handler
+        window.addEventListener('load', async function() {
+            // Format and display current date
+            const dateElement = document.getElementById('currentDate');
+            if (dateElement) {
+                const date = new Date();
+                const options = { year: 'numeric', month: 'long', day: 'numeric' };
+                dateElement.textContent = date.toLocaleDateString('en-US', options);
+            }
+
+            const loadingOverlay = document.getElementById('loadingOverlay');
+            const onboardingOverlay = document.getElementById('onboardingOverlay');
+            const userNameElements = document.querySelectorAll('.user-name');
+            const userClassElement = document.querySelector('.user-class');
+            const welcomeTextElement = document.querySelector('.welcome-text h2');
+            
+            try {
+                const userId = localStorage.getItem('userId');
+                
+                if (!userId) {
+                    window.location.href = '/pages/authform.html';
+                    return;
+                }
+
+                const hasUserData = await checkUserData(userId);
+                
+                if (!hasUserData) {
+                    onboardingOverlay.style.display = 'flex';
+                } else {
+                    // Get and display user data
+                    const userDoc = await db.collection('students').doc(userId).get();
+                    const userData = userDoc.data();
+                    
+                    // Update all instances of user name
+                    userNameElements.forEach(element => {
+                        if (element) element.textContent = userData.name;
+                    });
+                    
+                    // Update class if element exists
+                    if (userClassElement) {
+                        userClassElement.textContent = `Class ${userData.class}`;
+                    }
+                    
+                    // Update welcome text if element exists
+                    if (welcomeTextElement) {
+                        welcomeTextElement.textContent = `Welcome back, ${userData.name}!`;
+                    }
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                onboardingOverlay.style.display = 'flex';
+            } finally {
+                // Hide loading overlay when everything is done
+                loadingOverlay.style.display = 'none';
+            }
+        });
+
+        // Wrap form handler in DOMContentLoaded
+        document.addEventListener('DOMContentLoaded', () => {
+            const onboardingForm = document.getElementById('onboardingForm');
+            if (!onboardingForm) return;
+            
+            onboardingForm.addEventListener('submit', async function(e) {
+                e.preventDefault();
+                
+                const submitButton = this.querySelector('.continue-btn');
+                const userNameElements = document.querySelectorAll('.user-name');
+                const userClassElement = document.querySelector('.user-class');
+                const welcomeTextElement = document.querySelector('.welcome-text h2');
+                
+                submitButton.classList.add('loading');
+                submitButton.disabled = true;
+
+                try {
+                    const userId = localStorage.getItem('userId');
+                    if (!userId) {
+                        throw new Error('No user ID found');
+                    }
+
+                    const name = document.querySelector('input[type="text"]').value;
+                    const board = document.querySelector('select[name="board"]').value;
+                    const className = document.querySelector('select[name="class"]').value;
+
+                    // Save to Firebase with user's ID
+                    await db.collection('students').doc(userId).set({
+                        name: name,
+                        board: board,
+                        class: className,
+                        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                    });
+
+                    // Update dashboard UI with null checks
+                    // Update all instances of user name
+                    userNameElements.forEach(element => {
+                        if (element) element.textContent = name;
+                    });
+                    
+                    // Update class if element exists
+                    if (userClassElement) {
+                        userClassElement.textContent = `Class ${className}`;
+                    }
+                    
+                    // Update welcome text if element exists
+                    if (welcomeTextElement) {
+                        welcomeTextElement.textContent = `Welcome back, ${name}!`;
+                    }
+
+                    // Hide onboarding
+                    document.getElementById('onboardingOverlay').style.display = 'none';
+
+                    // Show success toast
+                    await Toast.fire({
+                        icon: 'success',
+                        title: 'Successfully registered!',
+                        background: '#fff',
+                        color: '#333',
+                        iconColor: '#FF9B3F'
+                    });
+
+                } catch (error) {
+                    console.error('Error saving data:', error);
+                    await Swal.fire({
+                        icon: 'error',
+                        title: 'Registration Failed',
+                        text: 'There was an error saving your information. Please try again.',
+                        confirmButtonColor: '#FF9B3F',
+                        background: '#fff',
+                        color: '#333'
+                    });
+                } finally {
+                    submitButton.classList.remove('loading');
+                    submitButton.disabled = false;
+                }
+            });
+        });
+
+        // Add this to your existing script
+        document.addEventListener('DOMContentLoaded', () => {
+            const communityLink = document.querySelector('.nav-link[title="Community"]');
+            const communitySection = document.querySelector('.community-section');
+            const mainSections = document.querySelectorAll('.main-content > section');
+            const createBtn = document.querySelector('.create-community-btn');
+            const modal = document.getElementById('createCommunityModal');
+            const searchInput = document.getElementById('communitySearch');
+
+            if (!communityLink || !communitySection || !createBtn || !searchInput) {
+                console.error('Required elements not found');
+                return;
+            }
+
+            // Function to update active nav link
+            function updateActiveNav(clickedLink) {
+                document.querySelectorAll('.nav-link').forEach(link => {
+                    link.classList.remove('active');
+                });
+                clickedLink.classList.add('active');
+            }
+
+            // Show community section when clicking community link
+            communityLink.addEventListener('click', (e) => {
+                e.preventDefault();
+                mainSections.forEach(section => section.style.display = 'none');
+                communitySection.style.display = 'block';
+                updateActiveNav(communityLink);
+                loadCommunities();
+            });
+
+            // Add click handler for dashboard link
+            const dashboardLink = document.querySelector('.nav-link[href="#"]:not([title])');
+            dashboardLink.addEventListener('click', (e) => {
+                e.preventDefault();
+                mainSections.forEach(section => section.style.display = 'block');
+                communitySection.style.display = 'none';
+                updateActiveNav(dashboardLink);
+            });
+
+            // Create community modal
+            createBtn.addEventListener('click', () => {
+                modal.style.display = 'flex';
+            });
+
+            // Close modal when clicking outside
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) {
+                    modal.style.display = 'none';
+                }
+            });
+
+            // Close modal button
+            const closeModalBtn = document.querySelector('.close-modal');
+            closeModalBtn.addEventListener('click', () => {
+                modal.style.display = 'none';
+                document.getElementById('createCommunityForm').reset();
+            });
+
+            // Handle community creation
+            document.getElementById('createCommunityForm').addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const formData = new FormData(e.target);
+                const communityName = formData.get('name');
+                const subject = formData.get('subject');
+                const submitBtn = e.target.querySelector('button[type="submit"]');
+                const currentUserId = firebase.auth().currentUser.uid;
+                
+                // Add loading state
+                submitBtn.classList.add('loading');
+                submitBtn.disabled = true;
+                
+                try {
+                    // Check if community name exists with the same subject
+                    const nameCheck = await db.collection('communities')
+                        .where('name', '==', communityName)
+                        .where('subject', '==', subject)
+                        .get();
+                    
+                    if (!nameCheck.empty) {
+                        await Swal.fire({
+                            icon: 'error',
+                            title: 'Community Already Exists in this Subject',
+                            text: 'A community with this name already exists for the selected subject. Please choose a different name or subject.',
+                            confirmButtonColor: '#FF9B3F'
+                        });
+                        return;
+                    }
+
+                    // Create community if name+subject combination is unique
+                    await db.collection('communities').add({
+                        name: communityName,
+                        subject: subject,
+                        description: formData.get('description'),
+                        createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+                        members: [currentUserId],
+                        createdBy: firebase.auth().currentUser.uid
+                    });
+
+                    modal.style.display = 'none';
+                    e.target.reset();
+                    loadCommunities();
+                    
+                    await Toast.fire({
+                        icon: 'success',
+                        title: 'Community created successfully!'
+                    });
+                } catch (error) {
+                    console.error('Error creating community:', error);
+                    await Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: 'Failed to create community'
+                    });
+                } finally {
+                    // Remove loading state
+                    submitBtn.classList.remove('loading');
+                    submitBtn.disabled = false;
+                }
+            });
+
+            // Search functionality
+            searchInput.addEventListener('input', debounce(() => {
+                const searchTerm = searchInput.value.toLowerCase();
+                const cards = document.querySelectorAll('.community-card');
+                
+                cards.forEach(card => {
+                    const text = card.textContent.toLowerCase();
+                    card.style.display = text.includes(searchTerm) ? 'block' : 'none';
+                });
+            }, 300));
+        });
+
+        // Load communities function
+        async function loadCommunities() {
+            const grid = document.getElementById('communitiesGrid');
+            const yourGrid = document.getElementById('yourCommunitiesGrid');
+            const joinedGrid = document.getElementById('joinedCommunitiesGrid');
+            grid.innerHTML = '';
+            yourGrid.innerHTML = '';
+            joinedGrid.innerHTML = '';
+            const currentUserId = firebase.auth().currentUser.uid;
+
+            try {
+                const snapshot = await db.collection('communities').orderBy('createdAt', 'desc').get();
+                
+                snapshot.forEach(doc => {
+                    const data = doc.data();
+                    const date = data.createdAt ? new Date(data.createdAt.toDate()).toLocaleDateString() : 'Recent';
+                    const subjectIcon = `/img/${data.subject.toLowerCase()}-icon.png`;
+                    const isJoined = data.members.includes(currentUserId);
+                    
+                    // Create the community card HTML
+                    const cardHtml = `
+                        <div class="community-card">
+                            <div class="community-header">
+                                <img src="${subjectIcon}" alt="${data.subject}" class="subject-icon">
+                                <div class="community-info">
+                                    <div class="community-name">${data.name}</div>
+                                    <div class="community-subject">${data.subject}</div>
+                                </div>
+                            </div>
+                            <div class="card-field">
+                                <span class="field-label">Created:</span>
+                                <span class="field-value">${date}</span>
+                            </div>
+                            <div class="card-field">
+                                <span class="field-label">Description:</span>
+                                <span class="field-value">${data.description}</span>
+                            </div>
+                            <div class="card-field">
+                                <span class="field-label">Members:</span>
+                                <span class="field-value">${data.members.length}</span>
+                            </div>
+                            <div class="button-group">
+                                ${data.createdBy !== currentUserId ? 
+                                    `<button class="join-btn ${isJoined ? 'joined' : ''}" data-id="${doc.id}">
+                                        ${isJoined ? 'Leave' : 'Join'}
+                                    </button>` : ''
+                                }
+                                ${isJoined ? 
+                                    `<button class="open-chat-btn" data-id="${doc.id}" data-name="${data.name}">
+                                        Open Chat
+                                    </button>` : ''
+                                }
+                                ${data.createdBy === currentUserId ? 
+                                    `<button class="delete-btn" data-id="${doc.id}">Delete</button>` : 
+                                    ''}
+                            </div>
+                        </div>
+                    `;
+
+                    // Add card to appropriate grid(s)
+                    if (data.createdBy === currentUserId) {
+                        yourGrid.innerHTML += cardHtml;
+                    }
+                    
+                    if (isJoined) {
+                        joinedGrid.innerHTML += cardHtml;
+                    }
+                    
+                    if (!isJoined && data.createdBy !== currentUserId) {
+                        grid.innerHTML += cardHtml;
+                    }
+                });
+
+                // Add join/leave event listeners
+                document.querySelectorAll('.join-btn').forEach(btn => {
+                    btn.addEventListener('click', async (e) => {
+                        const communityId = e.target.dataset.id;
+                        const isJoined = e.target.classList.contains('joined');
+                        const button = e.target;
+                        
+                        // Add loading state
+                        button.classList.add('loading');
+                        
+                        try {
+                            const communityRef = db.collection('communities').doc(communityId);
+                            const communityDoc = await communityRef.get();
+                            const members = communityDoc.data().members;
+
+                            if (isJoined) {
+                                // Leave community
+                                await communityRef.update({
+                                    members: members.filter(id => id !== currentUserId)
+                                });
+                                await Toast.fire({
+                                    icon: 'success',
+                                    title: 'Left the community'
+                                });
+                            } else {
+                                // Join community
+                                await communityRef.update({
+                                    members: [...members, currentUserId]
+                                });
+                                await Toast.fire({
+                                    icon: 'success',
+                                    title: 'Joined the community!'
+                                });
+                            }
+                            
+                            loadCommunities(); // Reload to update UI
+                        } catch (error) {
+                            console.error('Error updating membership:', error);
+                            await Swal.fire({
+                                icon: 'error',
+                                title: 'Error',
+                                text: 'Failed to update membership'
+                            });
+                            // Remove loading state if error occurs
+                            button.classList.remove('loading');
+                        }
+                    });
+                });
+
+                // Add delete event listeners
+                document.querySelectorAll('.delete-btn').forEach(btn => {
+                    btn.addEventListener('click', async (e) => {
+                        const communityId = e.target.dataset.id;
+                        
+                        const result = await Swal.fire({
+                            title: 'Are you sure?',
+                            text: "You won't be able to revert this!",
+                            icon: 'warning',
+                            showCancelButton: true,
+                            confirmButtonColor: '#ff4444',
+                            cancelButtonColor: '#999',
+                            confirmButtonText: 'Yes, delete it!'
+                        });
+
+                        if (result.isConfirmed) {
+                            try {
+                                await db.collection('communities').doc(communityId).delete();
+                                await Toast.fire({
+                                    icon: 'success',
+                                    title: 'Community deleted successfully!'
+                                });
+                                loadCommunities(); // Reload the communities
+                            } catch (error) {
+                                console.error('Error deleting community:', error);
+                                await Swal.fire({
+                                    icon: 'error',
+                                    title: 'Error',
+                                    text: 'Failed to delete community'
+                                });
+                            }
+                        }
+                    });
+                });
+
+                // Add open chat event listeners
+                document.querySelectorAll('.open-chat-btn').forEach(btn => {
+                    btn.addEventListener('click', async (e) => {
+                        const user = firebase.auth().currentUser;
+                        if (!user) {
+                            await Swal.fire({
+                                icon: 'error',
+                                title: 'Authentication Required',
+                                text: 'Please sign in to access the chat'
+                            });
+                            return;
+                        }
+
+                        const communityId = e.target.dataset.id;
+                        const communityName = e.target.dataset.name;
+                        
+                        // Store community info in sessionStorage
+                        sessionStorage.setItem('currentCommunity', JSON.stringify({
+                            id: communityId,
+                            name: communityName,
+                            userId: user.uid,
+                            userName: user.displayName || 'Anonymous'
+                        }));
+                        
+                        // Open chat in new window/tab
+                        window.location.href = '/pages/chat.html';
+                    });
+                });
+            } catch (error) {
+                console.error('Error loading communities:', error);
+            }
+        }
+
+        // Debounce helper function
+        function debounce(func, wait) {
+            let timeout;
+            return function executedFunction(...args) {
+                const later = () => {
+                    clearTimeout(timeout);
+                    func(...args);
+                };
+                clearTimeout(timeout);
+                timeout = setTimeout(later, wait);
+            };
+        }
+
+        // Add this to the existing script section
+        document.addEventListener('DOMContentLoaded', () => {
+            const subjectCards = document.querySelectorAll('.subject-card');
+            
+            subjectCards.forEach(card => {
+                card.addEventListener('click', () => {
+                    const subjectName = card.querySelector('.subject-name').textContent;
+                    showSubjectModal(subjectName);
+                });
+            });
+        });
+
+        function showSubjectModal(subject) {
+            const modal = document.createElement('div');
+            modal.className = 'subject-modal';
+            
+            if (subject.toLowerCase() === 'english') {
+                modal.innerHTML = `
+                    <div class="subject-content">
+                        <h2>Welcome to English!</h2>
+                        <p>Ready to embark on an exciting journey of learning English?</p>
+                        <button class="lets-go-btn" onclick="showTerms()">
+                            Let's Go! 
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                <path d="M5 12h14M12 5l7 7-7 7"/>
+                            </svg>
+                        </button>
+                    </div>
+                `;
+            } else {
+                modal.innerHTML = `
+                    <div class="subject-content">
+                        <h2>${subject}</h2>
+                        <p>This subject is coming soon! Please wait for exciting content.</p>
+                        <button class="lets-go-btn" onclick="closeModal(this)">
+                            Got it!
+                        </button>
+                    </div>
+                `;
+            }
+            
+            document.body.appendChild(modal);
+            setTimeout(() => modal.style.display = 'flex', 50);
+        }
+
+        function closeModal(element) {
+            const modal = element.closest('.subject-modal');
+            modal.style.display = 'none';
+            modal.remove();
+        }
+
+        function showTerms() {
+            const modal = document.querySelector('.subject-modal');
+            modal.innerHTML = `
+                <div class="subject-content">
+                    <button class="back-btn" onclick="showSubjectModal('English')">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                            <path d="M19 12H5M12 19l-7-7 7-7"/>
+                        </svg>
+                        Back
+                    </button>
+                    <h2>Select Term</h2>
+                    <div class="term-grid">
+                        <div class="term-card" onclick="showUnits(1)">
+                            <h3>Term 1</h3>
+                            <p>Units 1-3</p>
+                        </div>
+                        <div class="term-card locked">
+                            <h3>Term 2</h3>
+                            <p>Coming Soon</p>
+                            <span class="lock-icon">🔒</span>
+                        </div>
+                        <div class="term-card locked">
+                            <h3>Term 3</h3>
+                            <p>Coming Soon</p>
+                            <span class="lock-icon">🔒</span>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function showUnits(term) {
+            const modal = document.querySelector('.subject-modal');
+            modal.innerHTML = `
+                <div class="subject-content">
+                    <button class="back-btn" onclick="showTerms()">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                            <path d="M19 12H5M12 19l-7-7 7-7"/>
+                        </svg>
+                        Back
+                    </button>
+                    <h2>Term ${term} Units</h2>
+                    <div class="unit-grid">
+                        <div class="unit-card" onclick="showLessons(1)">
+                            <h3>Unit 1</h3>
+                            <p>Sea Life Adventures</p>
+                        </div>
+                        <div class="unit-card locked">
+                            <h3>Unit 2</h3>
+                            <p>Coming Soon</p>
+                            <span class="lock-icon">🔒</span>
+                        </div>
+                        <div class="unit-card locked">
+                            <h3>Unit 3</h3>
+                            <p>Coming Soon</p>
+                            <span class="lock-icon">🔒</span>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function showLessons(unit) {
+            const modal = document.querySelector('.subject-modal');
+            modal.innerHTML = `
+                <div class="subject-content">
+                    <button class="back-btn" onclick="showUnits(1)">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                            <path d="M19 12H5M12 19l-7-7 7-7"/>
+                        </svg>
+                        Back
+                    </button>
+                    <h2>Unit ${unit} Lessons</h2>
+                    <div class="lesson-grid">
+                        <div class="lesson-card" onclick="location.href='/pages/engunit1prose1.html'">
+                            <h3>Prose</h3>
+                            <p>Sea Turtles</p>
+                        </div>
+                        <div class="lesson-card" onclick="location.href='/pages/engunit1poem1.html'">
+                            <h3>Poem</h3>
+                            <p>The Crocodile</p>
+                        </div>
+                        <div class="lesson-card" onclick="location.href='/pages/engunit1supp1.html'">
+                            <h3>Supplementary</h3>
+                            <p>The Friendship</p>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Add this JavaScript code to handle the leaderboard display
+        document.addEventListener('DOMContentLoaded', function() {
+            // Get all nav links
+            const navLinks = document.querySelectorAll('.nav-link');
+            
+            // Add click event listeners to each nav link
+            navLinks.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    
+                    // Remove active class from all links
+                    navLinks.forEach(l => l.classList.remove('active'));
+                    
+                    // Add active class to clicked link
+                    this.classList.add('active');
+                    
+                    // Get the section to show based on link's data attribute or href
+                    const section = this.getAttribute('data-section') || this.getAttribute('href').substring(1);
+                    
+                    // Handle different sections
+                    if (section === 'leaderboard') {
+                        showLeaderboard();
+                    } else {
+                        // Hide leaderboard if showing another section
+                        const leaderboardSection = document.querySelector('.leaderboard-section');
+                        if (leaderboardSection) {
+                            leaderboardSection.style.display = 'none';
+                        }
+                        
+                        // Show subjects section for other links
+                        document.querySelector('.subjects-section').style.display = 'block';
+                    }
+                });
+            });
+            
+            // Function to show leaderboard
+            function showLeaderboard() {
+                // Hide subjects section
+                document.querySelector('.subjects-section').style.display = 'none';
+                
+                // Check if leaderboard section already exists
+                let leaderboardSection = document.querySelector('.leaderboard-section');
+                
+                if (!leaderboardSection) {
+                    // Create leaderboard section
+                    leaderboardSection = document.createElement('div');
+                    leaderboardSection.className = 'leaderboard-section';
+                    
+                    // Create leaderboard HTML
+                    leaderboardSection.innerHTML = `
+                        <div class="leaderboard-container">
+                            <div class="leaderboard-header">
+                                <h2>Leaderboard</h2>
+                                <div class="leaderboard-timer">
+                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <circle cx="12" cy="12" r="10"></circle>
+                                        <polyline points="12 6 12 12 16 14"></polyline>
+                                    </svg>
+                                    <span>10h 20m</span>
+                                </div>
+                            </div>
+                            <div class="leaderboard-body">
+                                <div class="leaderboard-item rank-1">
+                                    <div class="rank">1</div>
+                                    <div class="user-info">
+                                        <div class="user-avatar">👨‍🎓</div>
+                                        <div class="user-name">Angel</div>
+                                    </div>
+                                    <div class="score-info">
+                                        <div class="trophy">🏆</div>
+                                        <div class="score">265</div>
+                                    </div>
+                                </div>
+                                <div class="leaderboard-item rank-2">
+                                    <div class="rank">2</div>
+                                    <div class="user-info">
+                                        <div class="user-avatar">👨‍🎓</div>
+                                        <div class="user-name">Bob</div>
+                                    </div>
+                                    <div class="score-info">
+                                        <div class="trophy">🏆</div>
+                                        <div class="score">110</div>
+                                    </div>
+                                </div>
+                                <div class="leaderboard-item rank-3">
+                                    <div class="rank">3</div>
+                                    <div class="user-info">
+                                        <div class="user-avatar">👩‍🎓</div>
+                                        <div class="user-name">Melinda</div>
+                                    </div>
+                                    <div class="score-info">
+                                        <div class="trophy">🏆</div>
+                                        <div class="score">109</div>
+                                    </div>
+                                </div>
+                                <div class="leaderboard-item rank-4">
+                                    <div class="rank">4</div>
+                                    <div class="user-info">
+                                        <div class="user-avatar">👩‍🎓</div>
+                                        <div class="user-name">Kate</div>
+                                    </div>
+                                    <div class="score-info">
+                                        <div class="trophy">🏆</div>
+                                        <div class="score">106</div>
+                                    </div>
+                                </div>
+                                <div class="leaderboard-item rank-you">
+                                    <div class="rank">13</div>
+                                    <div class="user-info">
+                                        <div class="user-avatar">👨‍🎓</div>
+                                        <div class="user-name">You</div>
+                                    </div>
+                                    <div class="score-info">
+                                        <div class="trophy">🏆</div>
+                                        <div class="score">84</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    
+                    // Add leaderboard to main content
+                    document.querySelector('.main-content').appendChild(leaderboardSection);
+                } else {
+                    // Show existing leaderboard
+                    leaderboardSection.style.display = 'block';
+                }
+            }
+        });
+
+        // Add this to your existing JavaScript
+        document.addEventListener('DOMContentLoaded', () => {
+            const communityLink = document.querySelector('.nav-link[title="Community"]');
+            const subjectsSection = document.querySelector('.subjects-section');
+            const communitySection = document.querySelector('.community-section');
+            const leaderboardSection = document.querySelector('.leaderboard-section');
+            const reportSection = document.querySelector('.report-section');
+            const mainSections = document.querySelectorAll('.main-content > section');
+
+            // Function to hide all sections
+            function hideAllSections() {
+                mainSections.forEach(section => section.style.display = 'none');
+            }
+
+            // Handle community link click
+            if (communityLink) {
+                communityLink.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    hideAllSections();
+                    if (communitySection) {
+                        communitySection.style.display = 'block';
+                    }
+                    updateActiveNav(communityLink);
+                    loadCommunities();
+                });
+            }
+
+            // Handle dashboard/home link click
+            const dashboardLink = document.querySelector('.nav-link[href="#"]:not([title])');
+            if (dashboardLink) {
+                dashboardLink.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    hideAllSections();
+                    if (subjectsSection) {
+                        subjectsSection.style.display = 'block';
+                    }
+                    updateActiveNav(dashboardLink);
+                });
+            }
+
+            // Handle leaderboard link click
+            const leaderboardLink = document.querySelector('.nav-link[data-section="leaderboard"]');
+            if (leaderboardLink) {
+                leaderboardLink.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    hideAllSections();
+                    if (leaderboardSection) {
+                        leaderboardSection.style.display = 'block';
+                    }
+                    updateActiveNav(leaderboardLink);
+                });
+            }
+
+            // Handle report link click
+            const reportLink = document.querySelector('.nav-link[title="Report"]');
+            if (reportLink) {
+                reportLink.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    hideAllSections();
+                    if (reportSection) {
+                        reportSection.style.display = 'block';
+                    }
+                    updateActiveNav(reportLink);
+                    initActivityChart();
+                });
+            }
+
+            // Function to update active nav link
+            function updateActiveNav(clickedLink) {
+                document.querySelectorAll('.nav-link').forEach(link => {
+                    link.classList.remove('active');
+                });
+                clickedLink.classList.add('active');
+            }
+        });
+
+        // Initialize Chart.js for reports section
+        document.addEventListener('DOMContentLoaded', () => {
+    const reportLink = document.querySelector('.nav-link[title="Report"]');
+    const reportSection = document.querySelector('.report-section');
+    const subjectsSection = document.querySelector('.subjects-section');
+    const communitySection = document.querySelector('.community-section');
+
+    if (reportLink) {
+        reportLink.addEventListener('click', (e) => {
+            e.preventDefault();
+            
+            // Hide other sections
+            if (subjectsSection) subjectsSection.style.display = 'none';
+            if (communitySection) communitySection.style.display = 'none';
+            
+            // Show report section
+            if (reportSection) reportSection.style.display = 'block';
+            
+            // Update active state
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.classList.remove('active');
+            });
+            reportLink.classList.add('active');
+
+            // Initialize activity chart
+            initActivityChart();
+        });
+    }
+
+    function initActivityChart() {
+        const ctx = document.getElementById('activityChart').getContext('2d');
+        const months = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'];
+        const data = [100, 150, 120, 200, 180, 250, 220, 190, 250, 150, 200, 180];
+
+        new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: months,
+                datasets: [{
+                    data: data,
+                    backgroundColor: '#FF9B3F',
+                    borderRadius: 5,
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        grid: {
+                            display: true,
+                            color: '#f0f0f0'
+                        }
+                    },
+                    x: {
+                        grid: {
+                            display: false
+                        }
+                    }
+                }
+            }
+        });
+    }
+});
+    </script>
+    <script>
+        function redirectToZynkAI(event) {
+            event.preventDefault(); // Prevents the default link behavior
+            window.location.href = "/zynk ai/public/index.html"; // Redirects to the new URL
+        }
+    </script>
+</head>
+<body>
+    <!-- Update the HTML structure - Put this right after body tag -->
+    <div class="onboarding-overlay" id="onboardingOverlay">
+        <div class="onboarding-container">
+            <div class="onboarding-image">
+                <img src="/img/student-girl.png" alt="Student Guide">
+            </div>
+            <div class="onboarding-modal">
+                <div class="onboarding-content">
+                    <div class="onboarding-text">
+                        <h2>Before starting the journey, tell about yourself</h2>
+                    </div>
+                    <form id="onboardingForm">
+                        <div class="form-group">
+                            <input type="text" required placeholder="Enter your name *" class="form-input" name="name">
+                        </div>
+                        <div class="form-group select-group">
+                            <select required name="board">
+                                <option value="" disabled selected>Select your board *</option>
+                                <option value="state">State Board</option>
+                            </select>
+                        </div>
+                        <div class="form-group select-group">
+                            <select required name="class">
+                                <option value="" disabled selected>Select your class *</option>
+                                <option value="6">Class 6</option>
+                                <option value="7">Class 7</option>
+                                <option value="8">Class 8</option>
+                                <option value="9">Class 9</option>
+                                <option value="10">Class 10</option>
+                                <option value="11">Class 11</option>
+                                <option value="12">Class 12</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="continue-btn">
+                            <span class="btn-text">Continue</span>
+                            <div class="loading-spinner"></div>
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sidebar -->
+    <nav class="sidebar">
+        <div class="logo">
+            <img src="/img/zynko-sidebar.png" alt="Zynko Logo">
+        </div>
+        <ul class="nav-links">
+            <li class="nav-item">
+                <a href="#" class="nav-link active">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+                        <polyline points="9 22 9 12 15 12 15 22"/>
+                    </svg>
+                    Dashboard
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="#" class="nav-link" title="ZYNK AI" onclick="redirectToZynkAI(event)">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <rect x="6" y="4" width="12" height="12" rx="2"/>
+                        <path d="M3 10h3"/>
+                        <path d="M18 10h3"/>
+                        <rect x="8" y="16" width="8" height="4" rx="1"/>
+                        <circle cx="9" cy="9" r="1"/>
+                        <circle cx="15" cy="9" r="1"/>
+                        <path d="M9 13h6"/>
+                    </svg>
+                    Zynk AI
+                </a>
+            </li>
+            <!-- Add this to your sidebar navigation -->
+            <li class="nav-item">
+            <a href="#leaderboard" class="nav-link" data-section="leaderboard">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="18" y="3" width="4" height="18"></rect>
+                    <rect x="10" y="8" width="4" height="13"></rect>
+                    <rect x="2" y="13" width="4" height="8"></rect>
+                </svg>
+                Leaderboard
+            </a>
+            </li>
+            <li class="nav-item">
+                <a href="#" class="nav-link" title="Report">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                        <polyline points="14 2 14 8 20 8"/>
+                        <line x1="16" y1="13" x2="8" y2="13"/>
+                        <line x1="16" y1="17" x2="8" y2="17"/>
+                        <polyline points="10 9 9 9 8 9"/>
+                    </svg>
+                    Report
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="#" class="nav-link" title="Community">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+                        <circle cx="9" cy="7" r="4"/>
+                        <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+                        <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+                    </svg>
+                    Community
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="#" class="nav-link">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
+                        <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+                    </svg>
+                    Notifications
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="#" class="nav-link">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/>
+                        <line x1="4" y1="22" x2="4" y2="15"/>
+                    </svg>
+                    Schedule
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="#" class="nav-link">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+                        <polyline points="16 17 21 12 16 7"/>
+                        <line x1="21" y1="12" x2="9" y2="12"/>
+                    </svg>
+                    Logout
+                </a>
+            </li>
+        </ul>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-logo">
+                <img src="/img/zynko-logo.png" alt="Zynko" class="header-logo-img">
+            </div>
+            <div class="user-profile">
+                <div class="user-info">
+                    <div class="user-name">Jai shree</div>
+                    <div class="user-class">Class 7</div>
+                </div>
+                <svg class="notification-icon" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor">
+                    <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
+                    <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+                </svg>
+            </div>
+        </header>
+
+        <!-- Welcome Banner -->
+        <section class="welcome-banner">
+            <div class="welcome-text">
+                <div class="banner-date" id="currentDate"></div>
+                <h2>Welcome back, jai shree!</h2>
+                <p>Always stay updated in your student portal</p>
+            </div>
+            <img src="/img/student-avatar.png" alt="Student" class="banner-image">
+        </section>
+
+        <!-- Subjects Section -->
+        <section class="subjects-section">
+            <h3>Subjects</h3>
+            <div class="subjects-grid">
+                <div class="subject-card">
+                    <img src="/img/tamil-icon.png" alt="Tamil" class="subject-icon">
+                    <div class="subject-name">Tamil</div>
+                </div>
+                <div class="subject-card">
+                    <img src="/img/english-icon.png" alt="English" class="subject-icon">
+                    <div class="subject-name">English</div>
+                </div>
+                <div class="subject-card">
+                    <img src="/img/maths-icon.png" alt="Maths" class="subject-icon">
+                    <div class="subject-name">Maths</div>
+                </div>
+                <div class="subject-card">
+                    <img src="/img/science-icon.png" alt="Science" class="subject-icon">
+                    <div class="subject-name">Science</div>
+                </div>
+                <div class="subject-card">
+                    <img src="/img/social-icon.png" alt="Social" class="subject-icon">
+                    <div class="subject-name">Social</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Add this in the main-content section -->
+        <div class="community-section" style="display: none;">
+            <!-- Communities for You Section -->
+            <div class="community-section-divider">
+                <h2>Communities for You</h2>
+            </div>
+            <div class="header-actions">
+                <div class="search-bar">
+                    <input type="text" id="communitySearch" placeholder="Search communities...">
+                </div>
+                <button class="create-community-btn">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <path d="M12 5v14M5 12h14"/>
+                    </svg>
+                    Create a community
+                </button>
+            </div>
+            <div class="communities-grid" id="communitiesGrid">
+                <!-- Communities will be added here -->
+            </div>
+        
+            <!-- Your Communities Section -->
+            <div class="community-section-divider">
+                <h2>Your Communities</h2>
+            </div>
+            <div class="communities-grid" id="yourCommunitiesGrid">
+                <!-- Your created communities will be added here -->
+                <div class="empty-state">
+                    <p>You haven't created any communities yet</p>
+                    <button class="create-community-btn">Create your first community</button>
+                </div>
+            </div>
+        
+            <!-- Joined Communities Section -->
+            <div class="community-section-divider">
+                <h2>Joined Communities</h2>
+            </div>
+            <div class="communities-grid" id="joinedCommunitiesGrid">
+                <!-- Joined communities will be added here -->
+                <div class="empty-state">
+                    <p>You haven't joined any communities yet</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Add community modal -->
+        <div class="modal" id="createCommunityModal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2>Create Community</h2>
+                    <button type="button" class="close-modal">
+                        <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor">
+                            <line x1="18" y1="6" x2="6" y2="18"></line>
+                            <line x1="6" y1="6" x2="18" y2="18"></line>
+                        </svg>
+                    </button>
+                </div>
+                <form id="createCommunityForm">
+                    <div class="form-group">
+                        <input type="text" required placeholder="Enter community name" class="form-input" name="name">
+                    </div>
+                    <div class="form-group select-group">
+                        <select required name="subject">
+                            <option value="" disabled selected>Select subject</option>
+                            <option value="Tamil">Tamil</option>
+                            <option value="English">English</option>
+                            <option value="Maths">Maths</option>
+                            <option value="Science">Science</option>
+                            <option value="Social">Social</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <textarea required placeholder="Description of community" class="form-input" name="description"></textarea>
+                    </div>
+                    <button type="submit" class="continue-btn">
+                        <span class="btn-text">Create</span>
+                        <div class="loading-spinner"></div>
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <section class="report-section" style="display: none;">
+            <div class="report-header">
+                <h2>Student Reports</h2>
+                <div class="report-filters">
+                    <div class="filter-group">
+                        <label>Timeframe:</label>
+                        <select>
+                            <option>All-time</option>
+                            <option>Last 7 Days</option>
+                            <option>This Month</option>
+                            <option>This Year</option>
+                            <option>Custom</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label>People:</label>
+                        <select>
+                            <option>All</option>
+                            <option>Class 7</option>
+                            <option>Class 8</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label>Topic:</label>
+                        <select>
+                            <option>All</option>
+                            <option>Maths</option>
+                            <option>Science</option>
+                            <option>English</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        
+            <div class="report-grid">
+                <div class="subject-progress-cards">
+                    <div class="progress-card">
+                        <h3>MATHS</h3>
+                        <div class="circular-progress">
+                            <svg viewBox="0 0 36 36" class="circular-chart">
+                                <path d="M18 2.0845
+                                    a 15.9155 15.9155 0 0 1 0 31.831
+                                    a 15.9155 15.9155 0 0 1 0 -31.831"
+                                    stroke="#eee"
+                                    stroke-width="2"
+                                    fill="none"
+                                />
+                                <path d="M18 2.0845
+                                    a 15.9155 15.9155 0 0 1 0 31.831
+                                    a 15.9155 15.9155 0 0 1 0 -31.831"
+                                    stroke="#FFC107"
+                                    stroke-width="2"
+                                    fill="none"
+                                    stroke-dasharray="75, 100"
+                                />
+                            </svg>
+                            <div class="percentage">75%</div>
+                        </div>
+                        <div class="progress-legend">
+                            <div class="legend-item">
+                                <span class="dot completed"></span>
+                                <span>Completed</span>
+                                <span>75%</span>
+                            </div>
+                            <div class="legend-item">
+                                <span class="dot pending"></span>
+                                <span>Not Completed</span>
+                                <span>25%</span>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Repeat for Science and Computer with different percentages -->
+                </div>
+        
+                <div class="activity-chart">
+                    <h3>Activity</h3>
+                    <div class="chart-container">
+                        <canvas id="activityChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        
+            <div class="report-bottom-grid">
+                <div class="topics-covered">
+                    <h3>OVERALL TOPICS COVERED</h3>
+                    <div class="subject-progress">
+                        <div class="subject-item">
+                            <img src="/img/tamil-icon.png" alt="Tamil">
+                            <div class="progress-bar-container">
+                                <div class="progress-bar" style="width: 74%"></div>
+                            </div>
+                            <span>74%</span>
+                        </div>
+                        <div class="subject-item">
+                            <img src="/img/english-icon.png" alt="English">
+                            <div class="progress-bar-container">
+                                <div class="progress-bar" style="width: 52%"></div>
+                            </div>
+                            <span>52%</span>
+                        </div>
+                        <div class="subject-item">
+                            <img src="/img/maths-icon.png" alt="Maths">
+                            <div class="progress-bar-container">
+                                <div class="progress-bar" style="width: 38%"></div>
+                            </div>
+                            <span>38%</span>
+                        </div>
+                    </div>
+                </div>
+        
+                <div class="points-card">
+                    <img src="/img/student-avatar.png" alt="Student Avatar" class="points-avatar">
+                    <div class="points-info">
+                        <h3>Your Points</h3>
+                        <div class="points-value">2803</div>
+                        <p>Keep it up you are moving ahead</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Hamburger Menu Button -->
+    <button class="hamburger">
+        <span></span>
+        <span></span>
+        <span></span>
+    </button>
+
+    <!-- Overlay -->
+    <div class="overlay"></div>
+
+    <!-- Add loading overlay to HTML -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="spinner"></div>
+    </div>
+</body>
+</html> 
