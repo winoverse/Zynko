@@ -1,0 +1,607 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Educational Chatbot</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script type="module">
+        // Import Firebase modules
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-app.js";
+        import { getAuth } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-auth.js";
+        import { getFunctions, httpsCallable } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-functions.js";
+        import { getFirestore, doc, getDoc, setDoc, updateDoc, collection } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-firestore.js";
+        import { ChatService } from './services/chatService.js';
+
+        try {
+            // Your Firebase configuration
+            const firebaseConfig = {
+                apiKey: "AIzaSyC7XhJxAz5iSTff0TlEPiNwdtQm1iWpwpM",
+                authDomain: "zynko-34cac.firebaseapp.com",
+                databaseURL: "https://zynko-34cac-default-rtdb.firebaseio.com",
+                projectId: "zynko-34cac",
+                storageBucket: "zynko-34cac.firebasestorage.app",
+                messagingSenderId: "94736983827",
+                appId: "1:94736983827:web:a65fe1ce827fb6e3975ce6"
+            };
+
+            // Initialize Firebase
+            const app = initializeApp(firebaseConfig);
+            const auth = getAuth(app);
+            const functions = getFunctions(app);
+            const db = getFirestore(app);
+
+            // Make Firebase services available globally
+            window.db = db;
+            window.auth = auth;
+            window.functions = functions;
+            window.httpsCallable = httpsCallable;
+
+            // Make Firestore methods available globally
+            window.getFirestoreDoc = (path) => doc(db, ...path.split('/'));
+            window.getDocData = getDoc;
+            window.setDocData = setDoc;
+            window.updateDocData = updateDoc;
+            window.collection = collection;
+
+            // Create ChatService instance
+            const chatService = new ChatService(app);
+
+            // Make services available globally
+            window.chatService = chatService;
+
+            // Update the sendMessage function
+            window.sendMessage = async function(message) {
+                try {
+                    // Show user message and clear input immediately
+                    addMessageToChat('user', message);
+                    const messageInput = document.getElementById('messageInput');
+                    messageInput.value = '';
+                    messageInput.style.height = 'auto';
+                    showTypingIndicator();
+
+                    // Get or create userId
+                    let userId = localStorage.getItem('userId');
+                    if (!userId) {
+                        userId = 'user_' + Date.now();
+                        localStorage.setItem('userId', userId);
+                        
+                        // Create user document
+                        const userDocRef = window.getFirestoreDoc(`students/${userId}`);
+                        await window.setDocData(userDocRef, {
+                            termsAccepted: true,
+                            termsAcceptedDate: new Date().toISOString(),
+                            createdAt: new Date().toISOString(),
+                        });
+                        console.log('Created new user document:', userId);
+                    }
+
+                    console.log('Sending message with userId:', userId);
+                    
+                    // Call the Cloud Function
+                    const processQuery = httpsCallable(functions, 'processQuery');
+                    const result = await processQuery({
+                        type: 'text',
+                        content: message,
+                        userId: userId,
+                    });
+
+                    console.log('Received response:', result);
+                    
+                    // Hide typing indicator and show AI response
+                    hideTypingIndicator();
+                    addMessageToChat('ai', result.data.message);
+
+                } catch (error) {
+                    console.error('Error sending message:', error);
+                    hideTypingIndicator();
+                    addMessageToChat('ai', 'Sorry, I encountered an error processing your message.');
+                }
+            };
+
+            // Update checkTermsAcceptance function
+            window.checkTermsAcceptance = async function() {
+                try {
+                    // Get userId from localStorage
+                    const userId = localStorage.getItem('userId');
+                    if (!userId) {
+                        // If no userId in localStorage, create one and store it
+                        const newUserId = 'user_' + Date.now();
+                        localStorage.setItem('userId', newUserId);
+                        
+                        // Create initial document with terms not accepted
+                        const userDocRef = window.getFirestoreDoc(`students/${newUserId}`);
+                        await window.setDocData(userDocRef, {
+                            termsAccepted: false,
+                            termsAcceptedDate: new Date().toISOString()
+                        });
+                        return false;
+                    }
+
+                    // Check terms acceptance in Firestore
+                    const userDocRef = window.getFirestoreDoc(`students/${userId}`);
+                    const userDoc = await window.getDocData(userDocRef);
+                    
+                    if (!userDoc.exists()) {
+                        // Create document if it doesn't exist
+                        await window.setDocData(userDocRef, {
+                            termsAccepted: false,
+                            termsAcceptedDate: new Date().toISOString()
+                        });
+                        return false;
+                    }
+
+                    const userData = userDoc.data();
+                    return userData.termsAccepted === true;
+                } catch (error) {
+                    console.error('Error checking terms acceptance:', error);
+                    return false;
+                }
+            };
+
+            // Update updateTermsAcceptance function
+            window.updateTermsAcceptance = async function() {
+                try {
+                    const userId = localStorage.getItem('userId');
+                    if (!userId) {
+                        console.error('No user ID found');
+                        return;
+                    }
+
+                    const userDocRef = window.getFirestoreDoc(`students/${userId}`);
+                    await window.updateDocData(userDocRef, {
+                        termsAccepted: true,
+                        termsAcceptedDate: new Date().toISOString()
+                    });
+                } catch (error) {
+                    console.error('Error updating terms acceptance:', error);
+                }
+            };
+
+            // Initialize UI
+            document.addEventListener('DOMContentLoaded', () => {
+                initializeTermsUI();
+            });
+
+        } catch (error) {
+            console.error("Error initializing Firebase:", error);
+        }
+    </script>
+</head>
+<body>
+    <div class="gradient-overlay"></div>
+    
+    <!-- Landing Page Content -->
+    <div class="center-content" id="landingPage">
+        <div class="robot-icon">
+            <div class="torch-light"></div>
+            <img src="/img/zynko-logo.png" alt="AI Robot">
+        </div>
+        <div class="caption">
+            <h1>AI Educational Assistant</h1>
+            <p>Your personal learning companion</p>
+        </div>
+        
+        <div class="terms-section" id="termsSection">
+            <label class="terms-checkbox">
+                <input type="checkbox" id="termsCheckbox">
+                <span class="checkmark"></span>
+                <span class="terms-text">I agree to the <a href="#" class="terms-link">Terms & Conditions</a></span>
+            </label>
+            <button id="getStartedBtn" class="get-started-btn" disabled>Get Started</button>
+        </div>
+
+        <!-- Add continue button (initially hidden) -->
+        <div class="continue-section" id="continueSection" style="display: none;">
+            <button id="continueBtn" class="get-started-btn">Continue</button>
+        </div>
+    </div>
+
+    <!-- Chatbot Interface -->
+    <div class="chat-interface" id="chatInterface" style="display: none;">
+        <div class="chat-navbar">
+            <div class="nav-left">
+                <img src="/img/zynko-logo.png" alt="Zynk AI" class="nav-logo">
+            </div>
+            <div class="nav-right">
+                <button class="theme-toggle" id="themeToggle">
+                    <i class="fas fa-moon"></i>
+                </button>
+            </div>
+        </div>
+
+        <div class="chat-messages" id="chatMessages">
+            <div class="welcome-message">
+                <div class="welcome-icon">
+                    <div class="torch-light"></div>
+                    <img src="/robot-icon.png" alt="AI Robot">
+                </div>
+                <div class="welcome-text">
+                    <h2>Welcome to Zynk AI</h2>
+                    <p>Hi username ! I'm your AI learning assistant. How can I help you today?</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="chat-input-container">
+            <button class="upload-btn">
+                <i class="fas fa-paperclip"></i>
+                <input type="file" id="fileInput" accept="image/*,.pdf,.doc,.docx" hidden>
+            </button>
+            <textarea id="messageInput" placeholder="Type your message here..." rows="1"></textarea>
+            <button class="send-btn">
+                <i class="fas fa-paper-plane"></i>
+            </button>
+            <button class="voice-btn">
+                <i class="fas fa-microphone"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- Voice Recording Modal -->
+    <div class="voice-modal" id="voiceModal">
+        <div class="voice-modal-content">
+            <div class="wave-container">
+                <div class="wave-bars">
+                    <div class="bar"></div>
+                    <div class="bar"></div>
+                    <div class="bar"></div>
+                    <div class="bar"></div>
+                    <div class="bar"></div>
+                    <div class="bar"></div>
+                    <div class="bar"></div>
+                    <div class="bar"></div>
+                    <div class="bar"></div>
+                    <div class="bar"></div>
+                </div>
+            </div>
+            <div class="recording-status">
+                <span class="recording-dot"></span>
+                Recording...
+            </div>
+            <button class="stop-recording-btn" id="stopRecordingBtn">
+                <i class="fas fa-stop-circle"></i>
+                Stop Recording
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // Theme Toggle
+        const themeToggle = document.getElementById('themeToggle');
+        const body = document.body;
+        
+        themeToggle.addEventListener('click', () => {
+            body.classList.toggle('light-mode');
+            const icon = themeToggle.querySelector('i');
+            icon.classList.toggle('fa-moon');
+            icon.classList.toggle('fa-sun');
+        });
+
+        // Get Started Button with transitions
+        const getStartedBtn = document.getElementById('getStartedBtn');
+        const checkbox = document.getElementById('termsCheckbox');
+        const landingPage = document.getElementById('landingPage');
+        const chatInterface = document.getElementById('chatInterface');
+        
+        checkbox.addEventListener('change', function() {
+            getStartedBtn.disabled = !this.checked;
+        });
+
+        // Update the fetchAndDisplayUsername function
+        async function fetchAndDisplayUsername() {
+            try {
+                // Get userId from localStorage
+                const userId = localStorage.getItem('userId');
+                
+                if (!userId) {
+                    console.error('No user ID found in localStorage');
+                    return;
+                }
+
+                // Get user document from Firestore using our global methods
+                const userDocRef = window.getFirestoreDoc(`students/${userId}`);
+                const userDoc = await window.getDocData(userDocRef);
+                
+                if (userDoc.exists()) {
+                    const userData = userDoc.data();
+                    const username = userData.name || 'User'; // Fallback to 'User' if name is not found
+                    
+                    // Update the welcome message with the username
+                    const welcomeText = document.querySelector('.welcome-text p');
+                    welcomeText.textContent = `Hi ${username}! I'm your AI learning assistant. How can I help you today?`;
+                } else {
+                    console.error('No user document found');
+                }
+            } catch (error) {
+                console.error('Error fetching username:', error);
+            }
+        }
+
+        // Function to show appropriate button based on terms acceptance
+        async function initializeTermsUI() {
+            const termsSection = document.getElementById('termsSection');
+            const continueSection = document.getElementById('continueSection');
+            
+            const hasAcceptedTerms = await checkTermsAcceptance();
+            
+            if (hasAcceptedTerms) {
+                termsSection.style.display = 'none';
+                continueSection.style.display = 'block';
+            } else {
+                termsSection.style.display = 'block';
+                continueSection.style.display = 'none';
+            }
+        }
+
+        // Update the get started button click handler
+        getStartedBtn.addEventListener('click', async function() {
+            await updateTermsAcceptance();
+            startChatInterface();
+        });
+
+        // Add continue button click handler
+        document.getElementById('continueBtn').addEventListener('click', function() {
+            startChatInterface();
+        });
+
+        // Function to start chat interface
+        function startChatInterface() {
+            landingPage.classList.add('fade-out');
+            chatInterface.style.display = 'flex';
+            void chatInterface.offsetWidth;
+            chatInterface.classList.add('fade-in');
+            fetchAndDisplayUsername();
+            
+            setTimeout(() => {
+                landingPage.style.display = 'none';
+            }, 800);
+        }
+
+        // Add this to your existing script
+        const messageInput = document.getElementById('messageInput');
+
+        // Auto-expand textarea
+        messageInput.addEventListener('input', function() {
+            // Reset height to auto to get correct scrollHeight
+            this.style.height = 'auto';
+            
+            // Set new height based on content
+            this.style.height = (this.scrollHeight) + 'px';
+            
+            // Ensure it doesn't exceed max-height
+            if (this.scrollHeight > parseInt(getComputedStyle(this).maxHeight)) {
+                this.style.overflowY = 'auto';
+            } else {
+                this.style.overflowY = 'hidden';
+            }
+        });
+
+        // Reset height on input clear
+        messageInput.addEventListener('keydown', function(e) {
+            if (e.key === 'Backspace' || e.key === 'Delete') {
+                setTimeout(() => {
+                    if (this.value === '') {
+                        this.style.height = 'auto';
+                    }
+                }, 0);
+            }
+        });
+
+        // Add this to your existing script
+        document.getElementById('fileInput').addEventListener('change', function(e) {
+            // Here you can add file handling logic later
+            console.log('File selected:', e.target.files[0]);
+        });
+
+        function addMessageToChat(sender, content) {
+            const chatMessages = document.getElementById('chatMessages');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${sender}-message`;
+            
+            if (sender === 'ai') {
+                messageDiv.innerHTML = `
+                    <div class="message-avatar">
+                        <img src="/robot-icon.png" alt="AI">
+                    </div>
+                    <div class="message-content formatted-content">${content}</div>
+                `;
+            } else {
+                messageDiv.innerHTML = `
+                    <div class="message-content">${content}</div>
+                `;
+            }
+
+            chatMessages.appendChild(messageDiv);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        function showTypingIndicator() {
+            const chatMessages = document.getElementById('chatMessages');
+            const typingDiv = document.createElement('div');
+            typingDiv.className = 'message ai-message typing-indicator';
+            typingDiv.innerHTML = `
+                <div class="message-avatar">
+                    <img src="/robot-icon.png" alt="AI">
+                </div>
+                <div class="message-content">
+                    <div class="typing-dots">
+                        <span></span><span></span><span></span>
+                    </div>
+                </div>
+            `;
+            typingDiv.id = 'typingIndicator';
+            chatMessages.appendChild(typingDiv);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        function hideTypingIndicator() {
+            const typingIndicator = document.getElementById('typingIndicator');
+            if (typingIndicator) {
+                typingIndicator.remove();
+            }
+        }
+
+        // Update event listeners
+        document.querySelector('.send-btn').addEventListener('click', function() {
+            const messageInput = document.getElementById('messageInput');
+            const message = messageInput.value.trim();
+            if (message) {
+                window.sendMessage(message);
+                messageInput.value = '';
+                messageInput.style.height = 'auto';
+            }
+        });
+        
+        messageInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                const message = this.value.trim();
+                if (message) {
+                    window.sendMessage(message);
+                    this.value = '';
+                    this.style.height = 'auto';
+                }
+            }
+        });
+
+        // Voice recording functionality
+        const voiceBtn = document.querySelector('.voice-btn');
+        const voiceModal = document.getElementById('voiceModal');
+        const stopRecordingBtn = document.getElementById('stopRecordingBtn');
+        let mediaRecorder = null;
+        let audioChunks = [];
+        let isRecording = false;
+
+        function showVoiceModal() {
+            voiceModal.style.display = 'flex'; // Set display before adding show class
+            // Small delay to ensure display is set before animation
+            setTimeout(() => {
+                voiceModal.classList.add('show');
+            }, 10);
+        }
+
+        function hideVoiceModal() {
+            voiceModal.classList.remove('show');
+            // Wait for animation to complete before hiding
+            setTimeout(() => {
+                voiceModal.style.display = 'none';
+                // Reset audio chunks
+                audioChunks = [];
+            }, 300);
+        }
+
+        voiceBtn.addEventListener('click', async () => {
+            try {
+                if (!isRecording) {
+                    // Start recording
+                    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                    mediaRecorder = new MediaRecorder(stream, {
+                        mimeType: 'audio/webm;codecs=opus',
+                        audioBitsPerSecond: 48000
+                    });
+                    
+                    audioChunks = [];
+                    
+                    mediaRecorder.ondataavailable = (event) => {
+                        audioChunks.push(event.data);
+                    };
+
+                    mediaRecorder.onstop = async () => {
+                        hideVoiceModal();
+                        await processAudioRecording();
+                        // Clean up
+                        mediaRecorder.stream.getTracks().forEach(track => track.stop());
+                        mediaRecorder = null;
+                    };
+
+                    mediaRecorder.start();
+                    isRecording = true;
+                    showVoiceModal();
+                    voiceBtn.classList.add('recording');
+                }
+            } catch (error) {
+                console.error('Error accessing microphone:', error);
+                addMessageToChat('ai', 'Sorry, I couldn\'t access the microphone.');
+                // Reset state on error
+                isRecording = false;
+                voiceBtn.classList.remove('recording');
+                hideVoiceModal();
+            }
+        });
+
+        stopRecordingBtn.addEventListener('click', () => {
+            if (isRecording && mediaRecorder) {
+                isRecording = false;
+                voiceBtn.classList.remove('recording');
+                mediaRecorder.stop();
+            }
+        });
+
+        async function processAudioRecording() {
+            if (audioChunks.length === 0) {
+                console.error('No audio data available');
+                return;
+            }
+
+            try {
+                const audioBlob = new Blob(audioChunks, { type: 'audio/webm;codecs=opus' });
+                const reader = new FileReader();
+                
+                reader.onloadend = async () => {
+                    const base64Audio = reader.result.split(',')[1];
+                    addMessageToChat('user', '🎤 Voice message sent');
+                    showTypingIndicator();
+
+                    try {
+                        const processQuery = window.httpsCallable(window.functions, 'processQuery');
+                        const result = await processQuery({
+                            type: 'voice',
+                            content: base64Audio,
+                            userId: localStorage.getItem('userId'),
+                        });
+
+                        hideTypingIndicator();
+                        
+                        if (result.data.transcription) {
+                            addMessageToChat('user', `🎤 "${result.data.transcription}"`);
+                        }
+                        addMessageToChat('ai', result.data.message);
+                    } catch (error) {
+                        console.error('Error processing voice:', error);
+                        hideTypingIndicator();
+                        addMessageToChat('ai', 'Sorry, I had trouble processing your voice message.');
+                    }
+                };
+                reader.readAsDataURL(audioBlob);
+            } catch (error) {
+                console.error('Error processing audio:', error);
+                hideTypingIndicator();
+                addMessageToChat('ai', 'Sorry, I had trouble processing your voice message.');
+            } finally {
+                // Clean up
+                audioChunks = [];
+            }
+        }
+
+        // Add image input handling
+        const fileInput = document.getElementById('fileInput');
+        fileInput.addEventListener('change', async (e) => {
+            const file = e.target.files[0];
+            if (file && file.type.startsWith('image/')) {
+                showTypingIndicator();
+                try {
+                    const response = await chatService.sendImageQuery(file);
+                    hideTypingIndicator();
+                    addMessageToChat('ai', response.message);
+                } catch (error) {
+                    console.error('Error processing image:', error);
+                    hideTypingIndicator();
+                    addMessageToChat('ai', 'Sorry, I had trouble processing your image.');
+                }
+            }
+        });
+    </script>
+</body>
+</html> 
