@@ -57,7 +57,7 @@ Our mission aligns with **UN SDG 4**: *Ensure inclusive and equitable quality ed
 ## 🛠️ **Tech Stack**
 
 ### 📌 **Frontend**
-- ![HTML](https://img.shields.io/badge/HTML-239120?style=for-the-badge&logo=html5&logoColor=white)
+- ![HTML](https://img.shields.io/badge/HTML-E34F26?style=for-the-badge&logo=html5&logoColor=white)
 - ![CSS](https://img.shields.io/badge/CSS-1572B6?style=for-the-badge&logo=css3&logoColor=white)
 - ![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black)
 - ![SweetAlert](https://img.shields.io/badge/SweetAlert-FFB900?style=for-the-badge)
@@ -67,12 +67,12 @@ Our mission aligns with **UN SDG 4**: *Ensure inclusive and equitable quality ed
 
 ### 🛢️ **Database**
 - ![Firebase](https://img.shields.io/badge/Firebase-FFCA28?style=for-the-badge&logo=firebase&logoColor=white)
-- ![Firestore](https://img.shields.io/badge/Firestore-FFCA28?style=for-the-badge&logo=firebase&logoColor=white)
+- ![Firestore](https://img.shields.io/badge/Firestore-FFA000?style=for-the-badge&logo=firebase&logoColor=white)
 - ![Realtime Database](https://img.shields.io/badge/Realtime%20Database-FFCA28?style=for-the-badge&logo=firebase&logoColor=white)
 
 ### 🤖 **AI & APIs**
-- ![Gemini API](https://img.shields.io/badge/Gemini%20API-blue?style=for-the-badge)
-- ![Vertex AI](https://img.shields.io/badge/Vertex%20AI-blue?style=for-the-badge)
+- ![Gemini API](https://img.shields.io/badge/Gemini%20API-4285F4?style=for-the-badge)
+- ![Vertex AI](https://img.shields.io/badge/Vertex%20AI-34A853?style=for-the-badge)
 - ![Dialogflow CX](https://img.shields.io/badge/Dialogflow%20CX-FF9800?style=for-the-badge&logo=dialogflow&logoColor=white)
 - ![Text to Speech](https://img.shields.io/badge/Text%20to%20Speech-4285F4?style=for-the-badge)
 - ![Speech to Text](https://img.shields.io/badge/Speech%20to%20Text-4285F4?style=for-the-badge)
