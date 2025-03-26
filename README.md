@@ -90,11 +90,7 @@ Experience Zynko at: [zynko.netlify.app](https://zynko.netlify.app)
 
 ---
 
-## 🤝 **Contributors**
 
-Developed solely by **[Your Name]**.
-
----
 
 ## 📸 **Screenshots**
 
@@ -104,7 +100,7 @@ Developed solely by **[Your Name]**.
 
 ## 📧 **Contact**
 
-For any inquiries or feedback, feel free to reach out via email: **your-email@example.com**
+For any inquiries or feedback, feel free to reach out via email: **winoverse2025@gmail.com**
 
 ---
 
