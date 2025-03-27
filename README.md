@@ -113,7 +113,7 @@ Experience Zynko at: [zynko.netlify.app](https://zynko.netlify.app)
 ![Study group](./img/communities.png)
 
 ### 🏠 **Chatbot**
-![chatbot](./img/chatbot-ui.png)
+![chatbot](./img/Chatbot-ui.png)
 
 ---
 
