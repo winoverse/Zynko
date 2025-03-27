@@ -106,7 +106,8 @@ Experience Zynko at: [zynko.netlify.app](https://zynko.netlify.app)
 
 ## 📸 **Screenshots**
 
-*(Add screenshots here when available)*
+### 🏠 **Dashboard**
+![Dashboard](./img/dashboard.png)
 
 ---
 
