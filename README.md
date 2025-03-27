@@ -10,10 +10,9 @@ In today's digital age, educational resources remain unequally distributed. Zynk
 - Encourages engagement with gamified quizzes and rewards.
 - Promotes collaboration via community discussions.
 
-<p align="center" style="background-color:#F3F4F6; padding:10px; border-radius:8px;">
-🎯 <strong>Our mission aligns with <a href="https://sdgs.un.org/goals/goal4">UN SDG 4</a>:</strong>  
-Ensure inclusive and equitable quality education and promote lifelong learning opportunities for all.
-</p>
+> 🎯 **Our mission aligns with [UN SDG 4](https://sdgs.un.org/goals/goal4):**  
+> *Ensure inclusive and equitable quality education and promote lifelong learning opportunities for all.*
+
 
 ---
 
