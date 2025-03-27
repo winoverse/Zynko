@@ -94,8 +94,13 @@ Experience Zynko at: [zynko.netlify.app](https://zynko.netlify.app)
 
 - Expansion to include **CBSE curriculum** and additional state boards.
 - Support for **Grades 1 to 12** with adaptive learning paths.
-- Enhanced AI capabilities for improved personalized learning.
+- Immersive Learning – AR/VR simulations, interactive 3D models, and gamified education.
 - Additional gamification features and expanded community options.
+- Enhanced Accessibility – Offline mode, multilingual support, and AI-driven sign language assistance.
+- Gamification & Rewards – Blockchain-based certifications, NFT achievements, and leaderboards.
+- Smart Networking – AI mentor matching, real-time study groups, and automated feedback.
+- IoT & Smart Classrooms – AI-driven engagement tracking and virtual learning spaces.
+- Global Expansion – Partnerships with universities, corporations, and government programs.
 
 ---
 
