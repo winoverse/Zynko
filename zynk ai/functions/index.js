@@ -98,7 +98,7 @@ exports.processQuery = functions.https.onCall(async (data) => {
       result = await processTextQuery(content, userId);
       break;
     case 'voice':
-      result = await processVoiceQuery(content, userId);
+      result = await processVoiceQuery(content, userId, data.idToken);
       break;
     case 'image':
       result = await processImageQuery(content, userId);
@@ -363,9 +363,21 @@ async function processWithDialogflow(text) {
   }
 }
 
-async function processVoiceQuery(audioContent, userId) {
+async function processVoiceQuery(audioContent, userId, idToken) {
   try {
     console.log('Processing voice query for userId:', userId);
+
+    // Verify the ID token
+    const decodedToken = await admin.auth().verifyIdToken(idToken);
+    if (decodedToken.uid !== userId) {
+      throw new Error('Unauthorized request');
+    }
+
+    // Configure speech client with explicit auth
+    const speechClient = new speech.SpeechClient({
+      credentials: serviceAccount,
+      projectId: serviceAccount.project_id
+    });
 
     // Convert base64 to buffer
     const audioBuffer = Buffer.from(audioContent, 'base64');
@@ -373,20 +385,20 @@ async function processVoiceQuery(audioContent, userId) {
     // Configure speech recognition request
     const request = {
       audio: {
-        content: audioBuffer.toString('base64'),
+        content: audioBuffer.toString('base64')
       },
       config: {
         encoding: 'WEBM_OPUS',
         sampleRateHertz: 48000,
         languageCode: 'en-US',
-        model: 'default',
-      },
+        model: 'default'
+      }
     };
 
     // Perform speech recognition
     const [response] = await speechClient.recognize(request);
     const transcription = response.results
-      .map((result) => result.alternatives[0].transcript)
+      .map(result => result.alternatives[0].transcript)
       .join('\n');
 
     console.log('Transcribed text:', transcription);
@@ -395,11 +407,11 @@ async function processVoiceQuery(audioContent, userId) {
     const result = await processTextQuery(transcription, userId);
     return {
       ...result,
-      transcription, // Include transcription in response
+      transcription
     };
   } catch (error) {
     console.error('Error in voice processing:', error);
-    throw error;
+    throw new functions.https.HttpsError('internal', error.message);
   }
 }
 
