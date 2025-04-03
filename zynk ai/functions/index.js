@@ -14,21 +14,21 @@ console.log('Service Account Email:', serviceAccount.client_email);
 console.log('Project ID:', serviceAccount.project_id);
 
 // Initialize with explicit project ID
+// Decode the Base64-encoded JSON key from Netlify environment variable
+const serviceAccount = JSON.parse(
+  Buffer.from(process.env.GOOGLE_SERVICE_ACCOUNT_KEY, 'base64').toString()
+);
+
+console.log('Service Account Email:', serviceAccount.client_email);
+console.log('Project ID:', serviceAccount.project_id);
+
+// Initialize Firebase Admin SDK
 admin.initializeApp({
-  credential: admin.credential.cert({
-    type: "service_account",
-    project_id: process.env.FIREBASE_PROJECT_ID,
-    private_key_id: process.env.FIREBASE_PRIVATE_KEY_ID,
-    private_key: process.env.FIREBASE_PRIVATE_KEY.replace(/\\n/g, '\n'),  // Fix multi-line issue
-    client_email: process.env.FIREBASE_CLIENT_EMAIL,
-    client_id: process.env.FIREBASE_CLIENT_ID,
-    auth_uri: process.env.FIREBASE_AUTH_URI,
-    token_uri: process.env.FIREBASE_TOKEN_URI,
-    auth_provider_x509_cert_url: process.env.FIREBASE_AUTH_CERT_URL,
-    client_x509_cert_url: process.env.FIREBASE_CLIENT_CERT_URL
-  }),
+  credential: admin.credential.cert(serviceAccount),
+  projectId: serviceAccount.project_id,
 });
 
+module.exports = admin;
 // Then get Firestore instance
 const db = admin.firestore();
 
