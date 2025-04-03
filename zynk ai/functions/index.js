@@ -376,7 +376,7 @@ async function processVoiceQuery(audioContent, userId, idToken) {
     // Configure speech client with explicit auth
     const speechClient = new speech.SpeechClient({
       credentials: serviceAccount,
-      projectId: serviceAccount.project_id
+      projectId: serviceAccount.project_id,
     });
 
     // Convert base64 to buffer
@@ -385,20 +385,20 @@ async function processVoiceQuery(audioContent, userId, idToken) {
     // Configure speech recognition request
     const request = {
       audio: {
-        content: audioBuffer.toString('base64')
+        content: audioBuffer.toString('base64'),
       },
       config: {
         encoding: 'WEBM_OPUS',
         sampleRateHertz: 48000,
         languageCode: 'en-US',
-        model: 'default'
-      }
+        model: 'default',
+      },
     };
 
     // Perform speech recognition
     const [response] = await speechClient.recognize(request);
     const transcription = response.results
-      .map(result => result.alternatives[0].transcript)
+      .map((result) => result.alternatives[0].transcript)
       .join('\n');
 
     console.log('Transcribed text:', transcription);
@@ -407,7 +407,7 @@ async function processVoiceQuery(audioContent, userId, idToken) {
     const result = await processTextQuery(transcription, userId);
     return {
       ...result,
-      transcription
+      transcription,
     };
   } catch (error) {
     console.error('Error in voice processing:', error);
