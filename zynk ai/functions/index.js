@@ -18,6 +18,8 @@ console.log('Project ID:', serviceAccount.project_id);
 const serviceAccount = JSON.parse(
   Buffer.from(process.env.GOOGLE_SERVICE_ACCOUNT_KEY, 'base64').toString()
 );
+console.log("Decoded Service Account Key:", process.env.GOOGLE_SERVICE_ACCOUNT_KEY);
+
 
 console.log('Service Account Email:', serviceAccount.client_email);
 console.log('Project ID:', serviceAccount.project_id);
