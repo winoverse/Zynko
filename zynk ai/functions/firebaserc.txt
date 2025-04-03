@@ -1,5 +1,0 @@
-{
-  "projects": {
-    "default": "zynko-34cac"
-  }
-}
