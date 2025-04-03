@@ -8,19 +8,23 @@ const { TextToSpeechClient } = require('@google-cloud/text-to-speech');
 const vision = require('@google-cloud/vision');
 const speech = require('@google-cloud/speech');
 
-// Add this at the start of your code to verify service account
-const admin = require('firebase-admin');
-console.log('Service Account Email:', serviceAccount.client_email);
-console.log('Project ID:', serviceAccount.project_id);
-
 // Initialize with explicit project ID
-// Decode the Base64-encoded JSON key from Netlify environment variable
-const serviceAccount = JSON.parse(
-  Buffer.from(process.env.GOOGLE_SERVICE_ACCOUNT_KEY, 'base64').toString()
-);
-console.log("Decoded Service Account Key:", process.env.GOOGLE_SERVICE_ACCOUNT_KEY);
+// Check if service account key exists
+if (!process.env.GOOGLE_SERVICE_ACCOUNT_KEY) {
+  throw new Error('GOOGLE_SERVICE_ACCOUNT_KEY environment variable is not set');
+}
 
+// Decode the Base64-encoded JSON key from environment variable
+let serviceAccount;
+try {
+  serviceAccount = JSON.parse(
+    Buffer.from(process.env.GOOGLE_SERVICE_ACCOUNT_KEY, 'base64').toString(),
+  );
+} catch (error) {
+  throw new Error(`Failed to parse service account key: ${error.message}`);
+}
 
+// Now we can use serviceAccount after it's initialized
 console.log('Service Account Email:', serviceAccount.client_email);
 console.log('Project ID:', serviceAccount.project_id);
 
@@ -30,7 +34,6 @@ admin.initializeApp({
   projectId: serviceAccount.project_id,
 });
 
-module.exports = admin;
 // Then get Firestore instance
 const db = admin.firestore();
 
