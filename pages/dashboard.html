@@ -2475,17 +2475,25 @@
             
             if (subject.toLowerCase() === 'english') {
                 modal.innerHTML = `
-                    <div class="subject-content">
-                        <h2>Welcome to English!</h2>
-                        <p>Ready to embark on an exciting journey of learning English?</p>
-                        <button class="lets-go-btn" onclick="showTerms()">
-                            Let's Go! 
-                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                                <path d="M5 12h14M12 5l7 7-7 7"/>
-                            </svg>
-                        </button>
-                    </div>
-                `;
+    <div class="subject-content">
+        <div class="modal-header">
+            <h2>Welcome to English!</h2>
+            <button type="button" class="close-modal" onclick="closeModal(this)">
+                <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor">
+                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                </svg>
+            </button>
+        </div>
+        <p>Ready to embark on an exciting journey of learning English?</p>
+        <button class="lets-go-btn" onclick="showTerms()">
+            Let's Go! 
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                <path d="M5 12h14M12 5l7 7-7 7"/>
+            </svg>
+        </button>
+    </div>
+`;
             } else {
                 modal.innerHTML = `
                     <div class="subject-content">
