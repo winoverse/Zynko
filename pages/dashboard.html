@@ -2472,6 +2472,32 @@
                     showSubjectModal(subjectName);
                 });
             });
+
+            // Function to hide all sections
+            function hideAllSections() {
+                const subjectsSection = document.querySelector('.subjects-section');
+                const communitySection = document.querySelector('.community-section');
+                const reportSection = document.querySelector('.report-section');
+                
+                if (subjectsSection) subjectsSection.style.display = 'none';
+                if (communitySection) communitySection.style.display = 'none';
+                if (reportSection) reportSection.style.display = 'none';
+            }
+
+            // Handle community link click
+            const communityLink = document.querySelector('.nav-link[title="Community"]');
+            if (communityLink) {
+                communityLink.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    hideAllSections();
+                    const communitySection = document.querySelector('.community-section');
+                    if (communitySection) {
+                        communitySection.style.display = 'block';
+                        loadCommunities();
+                    }
+                    updateActiveNav(communityLink);
+                });
+            }
         });
 
         function showSubjectModal(subject) {
