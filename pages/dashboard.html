@@ -2789,14 +2789,32 @@
             function hideAllSections() {
                 mainSections.forEach(section => section.style.display = 'none');
                 // Also explicitly hide the subjects section
-                const subjectsSection = document.querySelector('.subjects-section');
                 if (subjectsSection) {
                     subjectsSection.style.display = 'none';
                 }
+                if (communitySection) {
+                    communitySection.style.display = 'none';
+                }
+                if (leaderboardSection) {
+                    leaderboardSection.style.display = 'none';
+                }
+                if (reportSection) {
+                    reportSection.style.display = 'none';
+                }
             }
 
-            // Handle community link click - REMOVED THIS EVENT LISTENER TO FIX DUPLICATE CARDS ISSUE
-            // The event listener is already defined in the first DOMContentLoaded event handler above
+            // Handle community link click
+            if (communityLink) {
+                communityLink.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    hideAllSections();
+                    if (communitySection) {
+                        communitySection.style.display = 'block';
+                        loadCommunities();
+                    }
+                    updateActiveNav(communityLink);
+                });
+            }
 
             // Handle dashboard/home link click
             const dashboardLink = document.querySelector('.nav-link[href="#"]:not([title])');
