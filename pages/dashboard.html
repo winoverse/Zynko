@@ -2148,6 +2148,11 @@
                 e.preventDefault();
                 mainSections.forEach(section => section.style.display = 'none');
                 communitySection.style.display = 'block';
+                // Explicitly hide the subjects section
+                const subjectsSection = document.querySelector('.subjects-section');
+                if (subjectsSection) {
+                    subjectsSection.style.display = 'none';
+                }
                 updateActiveNav(communityLink);
                 loadCommunities();
             });
@@ -2757,6 +2762,11 @@
             // Function to hide all sections
             function hideAllSections() {
                 mainSections.forEach(section => section.style.display = 'none');
+                // Also explicitly hide the subjects section
+                const subjectsSection = document.querySelector('.subjects-section');
+                if (subjectsSection) {
+                    subjectsSection.style.display = 'none';
+                }
             }
 
             // Handle community link click - REMOVED THIS EVENT LISTENER TO FIX DUPLICATE CARDS ISSUE
