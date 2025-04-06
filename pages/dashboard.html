@@ -2264,9 +2264,12 @@
             const grid = document.getElementById('communitiesGrid');
             const yourGrid = document.getElementById('yourCommunitiesGrid');
             const joinedGrid = document.getElementById('joinedCommunitiesGrid');
-            grid.innerHTML = '';
-            yourGrid.innerHTML = '';
-            joinedGrid.innerHTML = '';
+            
+            // Clear all grids first
+            if (grid) grid.innerHTML = '';
+            if (yourGrid) yourGrid.innerHTML = '';
+            if (joinedGrid) joinedGrid.innerHTML = '';
+            
             const currentUserId = firebase.auth().currentUser.uid;
 
             try {
@@ -2319,134 +2322,141 @@
                     `;
 
                     // Add card to appropriate grid(s)
-                    if (data.createdBy === currentUserId) {
+                    if (data.createdBy === currentUserId && yourGrid) {
                         yourGrid.innerHTML += cardHtml;
                     }
                     
-                    if (isJoined) {
+                    if (isJoined && joinedGrid) {
                         joinedGrid.innerHTML += cardHtml;
                     }
                     
-                    if (!isJoined && data.createdBy !== currentUserId) {
+                    if (!isJoined && data.createdBy !== currentUserId && grid) {
                         grid.innerHTML += cardHtml;
                     }
                 });
 
-                // Add join/leave event listeners
-                document.querySelectorAll('.join-btn').forEach(btn => {
-                    btn.addEventListener('click', async (e) => {
-                        const communityId = e.target.dataset.id;
-                        const isJoined = e.target.classList.contains('joined');
-                        const button = e.target;
-                        
-                        // Add loading state
-                        button.classList.add('loading');
-                        
-                        try {
-                            const communityRef = db.collection('communities').doc(communityId);
-                            const communityDoc = await communityRef.get();
-                            const members = communityDoc.data().members;
-
-                            if (isJoined) {
-                                // Leave community
-                                await communityRef.update({
-                                    members: members.filter(id => id !== currentUserId)
-                                });
-                                await Toast.fire({
-                                    icon: 'success',
-                                    title: 'Left the community'
-                                });
-                            } else {
-                                // Join community
-                                await communityRef.update({
-                                    members: [...members, currentUserId]
-                                });
-                                await Toast.fire({
-                                    icon: 'success',
-                                    title: 'Joined the community!'
-                                });
-                            }
-                            
-                            loadCommunities(); // Reload to update UI
-                        } catch (error) {
-                            console.error('Error updating membership:', error);
-                            await Swal.fire({
-                                icon: 'error',
-                                title: 'Error',
-                                text: 'Failed to update membership'
-                            });
-                            // Remove loading state if error occurs
-                            button.classList.remove('loading');
-                        }
-                    });
-                });
-
-                // Add delete event listeners
-                document.querySelectorAll('.delete-btn').forEach(btn => {
-                    btn.addEventListener('click', async (e) => {
-                        const communityId = e.target.dataset.id;
-                        
-                        const result = await Swal.fire({
-                            title: 'Are you sure?',
-                            text: "You won't be able to revert this!",
-                            icon: 'warning',
-                            showCancelButton: true,
-                            confirmButtonColor: '#ff4444',
-                            cancelButtonColor: '#999',
-                            confirmButtonText: 'Yes, delete it!'
-                        });
-
-                        if (result.isConfirmed) {
-                            try {
-                                await db.collection('communities').doc(communityId).delete();
-                                await Toast.fire({
-                                    icon: 'success',
-                                    title: 'Community deleted successfully!'
-                                });
-                                loadCommunities(); // Reload the communities
-                            } catch (error) {
-                                console.error('Error deleting community:', error);
-                                await Swal.fire({
-                                    icon: 'error',
-                                    title: 'Error',
-                                    text: 'Failed to delete community'
-                                });
-                            }
-                        }
-                    });
-                });
-
-                // Add open chat event listeners
-                document.querySelectorAll('.open-chat-btn').forEach(btn => {
-                    btn.addEventListener('click', async (e) => {
-                        const user = firebase.auth().currentUser;
-                        if (!user) {
-                            await Swal.fire({
-                                icon: 'error',
-                                title: 'Authentication Required',
-                                text: 'Please sign in to access the chat'
-                            });
-                            return;
-                        }
-
-                        const communityId = e.target.dataset.id;
-                        const communityName = e.target.dataset.name;
-                        
-                        // Store community info in sessionStorage
-                        sessionStorage.setItem('currentCommunity', JSON.stringify({
-                            id: communityId,
-                            name: communityName,
-                            userId: user.uid,
-                            userName: user.displayName || 'Anonymous'
-                        }));
-                        
-                        // Open chat in new window/tab
-                        window.location.href = '/pages/chat.html';
-                    });
-                });
+                // Add event listeners for buttons
+                addCommunityCardEventListeners();
             } catch (error) {
                 console.error('Error loading communities:', error);
             }
+        }
+
+        // Separate function to add event listeners
+        function addCommunityCardEventListeners() {
+            // Add join/leave event listeners
+            document.querySelectorAll('.join-btn').forEach(btn => {
+                btn.addEventListener('click', async (e) => {
+                    const communityId = e.target.dataset.id;
+                    const isJoined = e.target.classList.contains('joined');
+                    const button = e.target;
+                    
+                    // Add loading state
+                    button.classList.add('loading');
+                    
+                    try {
+                        const communityRef = db.collection('communities').doc(communityId);
+                        const communityDoc = await communityRef.get();
+                        const members = communityDoc.data().members;
+                        const currentUserId = firebase.auth().currentUser.uid;
+
+                        if (isJoined) {
+                            // Leave community
+                            await communityRef.update({
+                                members: members.filter(id => id !== currentUserId)
+                            });
+                            await Toast.fire({
+                                icon: 'success',
+                                title: 'Left the community'
+                            });
+                        } else {
+                            // Join community
+                            await communityRef.update({
+                                members: [...members, currentUserId]
+                            });
+                            await Toast.fire({
+                                icon: 'success',
+                                title: 'Joined the community!'
+                            });
+                        }
+                        
+                        loadCommunities(); // Reload to update UI
+                    } catch (error) {
+                        console.error('Error updating membership:', error);
+                        await Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: 'Failed to update membership'
+                        });
+                        // Remove loading state if error occurs
+                        button.classList.remove('loading');
+                    }
+                });
+            });
+
+            // Add delete event listeners
+            document.querySelectorAll('.delete-btn').forEach(btn => {
+                btn.addEventListener('click', async (e) => {
+                    const communityId = e.target.dataset.id;
+                    
+                    const result = await Swal.fire({
+                        title: 'Are you sure?',
+                        text: "You won't be able to revert this!",
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: '#ff4444',
+                        cancelButtonColor: '#999',
+                        confirmButtonText: 'Yes, delete it!'
+                    });
+
+                    if (result.isConfirmed) {
+                        try {
+                            await db.collection('communities').doc(communityId).delete();
+                            await Toast.fire({
+                                icon: 'success',
+                                title: 'Community deleted successfully!'
+                            });
+                            loadCommunities(); // Reload the communities
+                        } catch (error) {
+                            console.error('Error deleting community:', error);
+                            await Swal.fire({
+                                icon: 'error',
+                                title: 'Error',
+                                text: 'Failed to delete community'
+                            });
+                        }
+                    }
+                });
+            });
+
+            // Add open chat event listeners
+            document.querySelectorAll('.open-chat-btn').forEach(btn => {
+                btn.addEventListener('click', async (e) => {
+                    const user = firebase.auth().currentUser;
+                    if (!user) {
+                        await Swal.fire({
+                            icon: 'error',
+                            title: 'Authentication Required',
+                            text: 'Please sign in to access the chat'
+                        });
+                        return;
+                    }
+
+                    const communityId = e.target.dataset.id;
+                    const communityName = e.target.dataset.name;
+                    
+                    // Store community info in sessionStorage
+                    sessionStorage.setItem('currentCommunity', JSON.stringify({
+                        id: communityId,
+                        name: communityName,
+                        userId: user.uid,
+                        userName: user.displayName || 'Anonymous'
+                    }));
+                    
+                    // Open chat in new window/tab
+                    window.location.href = '/pages/chat.html';
+                });
+            });
         }
 
         // Debounce helper function
